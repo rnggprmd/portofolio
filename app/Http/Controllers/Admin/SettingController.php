@@ -26,10 +26,6 @@ class SettingController extends Controller
             'contact_email' => 'rangga.pramudya@example.com',
             'github_username' => 'rnggprmd',
             'github_url' => 'https://github.com/rnggprmd',
-            'github_commits' => '680+',
-            'github_streak' => '24 Days',
-            'github_prs' => '45+',
-            'github_repos' => '18',
             'linkedin_url' => 'https://linkedin.com',
             'cv_url' => '#',
         ];
@@ -52,19 +48,23 @@ class SettingController extends Controller
             'avatar_file' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:5120',
         ]);
 
+        $data = $request->except(['_token', 'cv_file', 'avatar_file']);
+
+        // 1. Handle PDF CV Upload
         if ($request->hasFile('cv_file')) {
             $path = $request->file('cv_file')->store('cv', 'public');
             SiteSetting::setKey('cv_url', '/storage/' . $path);
+            unset($data['cv_url']); // Prevent overwriting newly uploaded CV path!
         }
 
+        // 2. Handle Avatar Image Upload
         if ($request->hasFile('avatar_file')) {
             $path = $request->file('avatar_file')->store('avatars', 'public');
             SiteSetting::setKey('avatar_url', '/storage/' . $path);
+            unset($data['avatar_url']); // Prevent overwriting newly uploaded Avatar path!
         }
 
-        $data = $request->except(['_token', 'cv_file', 'avatar_file']);
-
-        // Auto sync github_url if username is provided
+        // 3. Auto sync github_url if username is provided
         if (!empty($data['github_username'])) {
             $username = trim($data['github_username'], '@');
             $data['github_username'] = $username;
@@ -73,7 +73,22 @@ class SettingController extends Controller
             }
         }
 
+        // 4. Save all remaining form settings to MySQL
         foreach ($data as $key => $value) {
+            // Do not overwrite cv_url or avatar_url with fallback '#' if a valid storage URL already exists in DB
+            if ($key === 'cv_url' && ($value === '#' || empty($value))) {
+                $existingCv = SiteSetting::getByKey('cv_url');
+                if (!empty($existingCv) && $existingCv !== '#') {
+                    continue;
+                }
+            }
+            if ($key === 'avatar_url' && empty($value)) {
+                $existingAvatar = SiteSetting::getByKey('avatar_url');
+                if (!empty($existingAvatar)) {
+                    continue;
+                }
+            }
+
             SiteSetting::setKey($key, is_array($value) ? json_encode($value) : $value);
         }
 

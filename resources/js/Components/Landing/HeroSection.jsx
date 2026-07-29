@@ -10,6 +10,7 @@ export default function HeroSection({ settings = {} }) {
     const [titleIndex, setTitleIndex] = useState(0);
     const [isFlipped, setIsFlipped] = useState(false);
     const [hoveredTag, setHoveredTag] = useState(null);
+    const [displayedName, setDisplayedName] = useState('');
 
     const name = settings.hero_name || 'Rangga Pramudya';
     const role = settings.hero_role || 'Software Engineer';
@@ -45,6 +46,39 @@ export default function HeroSection({ settings = {} }) {
         React: "React 19 • Custom Hooks, State & Component Architecture",
         Tailwind: "Tailwind CSS v4 • Utility-First Responsive Design System",
     };
+
+    // Infinite Typewriter Typing & Deleting Loop
+    useEffect(() => {
+        let timeout;
+        let isDeleting = false;
+        let charIndex = 0;
+
+        const typeLoop = () => {
+            if (!isDeleting) {
+                setDisplayedName(name.substring(0, charIndex + 1));
+                charIndex++;
+                if (charIndex === name.length) {
+                    isDeleting = true;
+                    timeout = setTimeout(typeLoop, 2800);
+                    return;
+                }
+                timeout = setTimeout(typeLoop, 85);
+            } else {
+                setDisplayedName(name.substring(0, charIndex - 1));
+                charIndex--;
+                if (charIndex === 0) {
+                    isDeleting = false;
+                    timeout = setTimeout(typeLoop, 600);
+                    return;
+                }
+                timeout = setTimeout(typeLoop, 45);
+            }
+        };
+
+        typeLoop();
+
+        return () => clearTimeout(timeout);
+    }, [name]);
 
     const scrollToSection = (e, id) => {
         if (e) e.preventDefault();
@@ -101,15 +135,20 @@ export default function HeroSection({ settings = {} }) {
             <div className="max-w-6xl mx-auto w-full relative z-10 grid lg:grid-cols-12 items-center gap-12 my-auto py-4">
                 {/* Left Column: Heading, Dynamic Titles, Description, CTA Buttons */}
                 <div className="lg:col-span-7 text-center lg:text-left space-y-6 sm:space-y-8">
-                    {/* Main Heading & Dynamic Animated Title Switcher */}
+                    {/* Main Heading with Infinite Typewriter Typing & Deleting Loop */}
                     <div className="space-y-3 sm:space-y-4">
                         <motion.h1
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.1 }}
-                            className="font-heading font-extrabold text-4xl sm:text-6xl md:text-7xl tracking-tight leading-[1.1] text-gray-900 dark:text-white"
+                            className="font-heading font-extrabold text-4xl sm:text-6xl md:text-7xl tracking-tight leading-[1.1] text-gray-900 dark:text-white flex items-center justify-center lg:justify-start min-h-[48px] sm:min-h-[72px]"
                         >
-                            {name}
+                            <span>{displayedName}</span>
+                            <motion.span
+                                animate={{ opacity: [1, 0] }}
+                                transition={{ duration: 0.7, repeat: Infinity, repeatType: 'reverse' }}
+                                className="inline-block w-1.5 sm:w-2.5 h-8 sm:h-12 md:h-14 bg-gray-900 dark:bg-white ml-2 rounded-xs align-middle shrink-0 shadow-xs"
+                            />
                         </motion.h1>
 
                         {/* Rotating Title Switcher */}
@@ -244,13 +283,25 @@ export default function HeroSection({ settings = {} }) {
                                 transition={{ duration: 0.6, type: 'spring', stiffness: 260, damping: 20 }}
                                 className="w-full h-full relative [transform-style:preserve-3d]"
                             >
-                                {/* FRONT SIDE OF CARD */}
-                                <div className="absolute inset-0 w-full h-full rounded-2xl p-5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 shadow-2xl space-y-3 flex flex-col justify-between [backface-visibility:hidden]">
-                                    {/* Card Slot Opening */}
-                                    <div className="w-10 h-2 rounded-full bg-gray-200 dark:bg-slate-800 mx-auto border border-gray-300 dark:border-slate-700 shrink-0" />
+                                {/* FRONT SIDE OF CARD WITH GEOMETRIC DOT PATTERN & TECH WATERMARK */}
+                                <div className="absolute inset-0 w-full h-full rounded-2xl p-5 bg-white dark:bg-slate-900 bg-[radial-gradient(#d1d5db_1px,transparent_1px)] dark:bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:12px_12px] border border-gray-200 dark:border-slate-800 shadow-2xl space-y-3 flex flex-col justify-between [backface-visibility:hidden] overflow-hidden">
+                                    
+                                    {/* Subtle Holographic Reflective Shine Overlay */}
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 dark:via-white/5 to-transparent pointer-events-none -rotate-45 translate-y-[-50%] group-hover:translate-y-[50%] transition-transform duration-1000" />
+                                    
+                                    {/* Tech Corner Metallic Accents */}
+                                    <div className="absolute top-2 left-2 w-2 h-2 border-t-2 border-l-2 border-gray-400 dark:border-slate-600" />
+                                    <div className="absolute top-2 right-2 w-2 h-2 border-t-2 border-r-2 border-gray-400 dark:border-slate-600" />
+                                    <div className="absolute bottom-2 left-2 w-2 h-2 border-b-2 border-l-2 border-gray-400 dark:border-slate-600" />
+                                    <div className="absolute bottom-2 right-2 w-2 h-2 border-b-2 border-r-2 border-gray-400 dark:border-slate-600" />
+
+                                    {/* Top Decorative Metallic Bar & Centered Slot Opening */}
+                                    <div className="relative z-10 flex items-center justify-center border-b border-gray-200/60 dark:border-slate-800 pb-2">
+                                        <div className="w-10 h-1.5 rounded-full bg-gray-300 dark:bg-slate-700 border border-gray-400 dark:border-slate-600 shrink-0" />
+                                    </div>
 
                                     {/* Avatar Frame (Dynamic Photo or Fallback Initials) */}
-                                    <div className="w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 dark:from-slate-950 dark:to-slate-900 border border-gray-200 dark:border-slate-800 p-1 shadow-sm overflow-hidden flex items-center justify-center relative shrink-0">
+                                    <div className="relative z-10 w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 dark:from-slate-950 dark:to-slate-900 border border-gray-300 dark:border-slate-700 p-1 shadow-md overflow-hidden flex items-center justify-center shrink-0">
                                         {avatarUrl ? (
                                             <img
                                                 src={avatarUrl}
@@ -270,30 +321,30 @@ export default function HeroSection({ settings = {} }) {
                                     </div>
 
                                     {/* Name & Dynamic Role */}
-                                    <div className="text-center space-y-0.5">
+                                    <div className="relative z-10 text-center space-y-0.5">
                                         <h3 className="font-heading font-bold text-base text-gray-900 dark:text-white flex items-center justify-center gap-1">
                                             <span>{name}</span>
                                             <UserCheck className="w-4 h-4 text-gray-900 dark:text-white inline shrink-0" />
                                         </h3>
-                                        <p className="font-mono text-xs text-gray-500 dark:text-slate-400">
+                                        <p className="font-mono text-xs text-gray-600 dark:text-slate-400 font-medium">
                                             {role}
                                         </p>
                                     </div>
 
                                     {/* Subtle Specialty Info */}
-                                    <div className="border-t border-gray-100 dark:border-slate-800 pt-2 flex items-center justify-between text-[10px] font-mono text-gray-500 dark:text-slate-400">
+                                    <div className="relative z-10 border-t border-gray-200/80 dark:border-slate-800 pt-2 flex items-center justify-between text-[10px] font-mono text-gray-500 dark:text-slate-400">
                                         <span>{t.hero.specialty}</span>
-                                        <span className="font-semibold text-gray-900 dark:text-white uppercase">{specialtyLabel}</span>
+                                        <span className="font-semibold text-gray-900 dark:text-white uppercase tracking-wider">{specialtyLabel}</span>
                                     </div>
 
                                     {/* Interactive Tech Badges with Tooltips */}
-                                    <div className="flex justify-center gap-1.5 relative">
+                                    <div className="relative z-10 flex justify-center gap-1.5">
                                         {cardTechTags.map((tag) => (
                                             <span
                                                 key={tag}
                                                 onMouseEnter={(e) => { e.stopPropagation(); setHoveredTag(tag); }}
                                                 onMouseLeave={(e) => { e.stopPropagation(); setHoveredTag(null); }}
-                                                className="px-2.5 py-1 rounded-md text-[10px] font-mono font-medium bg-gray-100 dark:bg-slate-800 text-gray-800 dark:text-slate-200 border border-gray-200/80 dark:border-slate-700 hover:border-gray-400 transition"
+                                                className="px-2.5 py-1 rounded-md text-[10px] font-mono font-medium bg-white/90 dark:bg-slate-800/90 text-gray-900 dark:text-slate-100 border border-gray-300 dark:border-slate-700 shadow-2xs hover:border-gray-900 dark:hover:border-white transition"
                                             >
                                                 {tag}
                                             </span>
@@ -315,28 +366,32 @@ export default function HeroSection({ settings = {} }) {
                                     </div>
 
                                     {/* Flip Hint */}
-                                    <div className="text-center font-mono text-[9px] text-gray-400 dark:text-slate-500 pt-1 flex items-center justify-center gap-1">
+                                    <div className="relative z-10 text-center font-mono text-[9px] text-gray-500 dark:text-slate-400 pt-1 flex items-center justify-center gap-1 font-semibold">
                                         <RotateCw className="w-3 h-3 text-gray-700 dark:text-slate-300" />
                                         <span>{t.hero.clickToFlip} &rarr;</span>
                                     </div>
                                 </div>
 
-                                {/* BACK SIDE OF CARD (ROTATE 180 DEG) */}
-                                <div className="absolute inset-0 w-full h-full rounded-2xl p-5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 shadow-2xl space-y-3 flex flex-col justify-between [backface-visibility:hidden] [transform:rotateY(180deg)]">
-                                    {/* Card Slot Opening */}
-                                    <div className="w-10 h-2 rounded-full bg-gray-200 dark:bg-slate-800 mx-auto border border-gray-300 dark:border-slate-700 shrink-0" />
+                                {/* BACK SIDE OF CARD WITH CIRCUIT / GRID PATTERN */}
+                                <div className="absolute inset-0 w-full h-full rounded-2xl p-5 bg-white dark:bg-slate-900 bg-[radial-gradient(#d1d5db_1px,transparent_1px)] dark:bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:12px_12px] border border-gray-200 dark:border-slate-800 shadow-2xl space-y-3 flex flex-col justify-between [backface-visibility:hidden] [transform:rotateY(180deg)] overflow-hidden">
+                                    
+                                    {/* Corner Metallic Accents */}
+                                    <div className="absolute top-2 left-2 w-2 h-2 border-t-2 border-l-2 border-gray-400 dark:border-slate-600" />
+                                    <div className="absolute top-2 right-2 w-2 h-2 border-t-2 border-r-2 border-gray-400 dark:border-slate-600" />
+                                    <div className="absolute bottom-2 left-2 w-2 h-2 border-b-2 border-l-2 border-gray-400 dark:border-slate-600" />
+                                    <div className="absolute bottom-2 right-2 w-2 h-2 border-b-2 border-r-2 border-gray-400 dark:border-slate-600" />
 
                                     {/* Back Header */}
-                                    <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-2">
-                                        <div className="flex items-center gap-1 font-mono text-[10px] font-bold text-gray-600 dark:text-slate-400 uppercase tracking-wider">
+                                    <div className="relative z-10 flex items-center justify-between border-b border-gray-200 dark:border-slate-800 pb-2">
+                                        <div className="flex items-center gap-1 font-mono text-[10px] font-bold text-gray-700 dark:text-slate-300 uppercase tracking-wider">
                                             <ShieldCheck className="w-3.5 h-3.5 text-gray-900 dark:text-white" />
                                             <span>{t.hero.verifiedPass}</span>
                                         </div>
-                                        <span className="font-mono text-[9px] text-gray-400">ID: RP-2026</span>
+                                        <span className="font-mono text-[9px] text-gray-500 font-semibold">ID: RP-2026</span>
                                     </div>
 
                                     {/* Barcode Container */}
-                                    <div className="p-3 bg-gray-50 dark:bg-slate-950 rounded-xl border border-gray-200 dark:border-slate-800 space-y-2 text-center">
+                                    <div className="relative z-10 p-3 bg-white/90 dark:bg-slate-950/90 rounded-xl border border-gray-200 dark:border-slate-800 space-y-2 text-center shadow-2xs">
                                         <div className="h-9 bg-gray-900 dark:bg-slate-800 rounded p-1 flex items-center justify-between px-2 text-white">
                                             <div className="h-full w-1 bg-white" />
                                             <div className="h-full w-2 bg-white" />
@@ -349,14 +404,14 @@ export default function HeroSection({ settings = {} }) {
                                             <div className="h-full w-2 bg-white" />
                                             <div className="h-full w-1 bg-white" />
                                         </div>
-                                        <div className="font-mono text-[9px] text-gray-500 dark:text-slate-400 tracking-widest uppercase">
+                                        <div className="font-mono text-[9px] text-gray-600 dark:text-slate-400 font-bold tracking-widest uppercase">
                                             * PASS-{name.split(' ')[0] || 'DEV'}-88942-SE *
                                         </div>
                                     </div>
 
                                     {/* Social Media Links Header */}
-                                    <div className="space-y-2 pt-1">
-                                        <div className="font-mono text-[10px] uppercase font-bold text-gray-400 dark:text-slate-500 text-center">
+                                    <div className="relative z-10 space-y-2 pt-1">
+                                        <div className="font-mono text-[10px] uppercase font-bold text-gray-500 dark:text-slate-400 text-center">
                                             {t.hero.connectSocial}
                                         </div>
 
@@ -393,7 +448,7 @@ export default function HeroSection({ settings = {} }) {
                                     </div>
 
                                     {/* Flip Back Hint */}
-                                    <div className="text-center font-mono text-[9px] text-gray-400 dark:text-slate-500 pt-1 flex items-center justify-center gap-1">
+                                    <div className="relative z-10 text-center font-mono text-[9px] text-gray-500 dark:text-slate-400 pt-1 flex items-center justify-center gap-1 font-semibold">
                                         <RotateCw className="w-3 h-3 text-gray-700 dark:text-slate-300" />
                                         <span>{t.hero.clickToFlip} &rarr;</span>
                                     </div>

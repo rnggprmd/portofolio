@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import AdminLayout from '@/Layouts/AdminLayout';
@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/Com
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
-import { Save, User, Sparkles, CheckCircle2, CreditCard, FileText, ExternalLink } from 'lucide-react';
+import { Save, User, Sparkles, CheckCircle2, CreditCard, FileText, ExternalLink, Image } from 'lucide-react';
 import { GithubIcon } from '@/Components/Landing/BrandIcons';
 
 export default function SettingsIndex({ settings = {} }) {
@@ -30,10 +30,24 @@ export default function SettingsIndex({ settings = {} }) {
         cv_file: null,
     });
 
+    // Keep form state in sync when server returns updated file URLs
+    useEffect(() => {
+        if (settings.cv_url) {
+            setData('cv_url', settings.cv_url);
+        }
+        if (settings.avatar_url) {
+            setData('avatar_url', settings.avatar_url);
+        }
+    }, [settings.cv_url, settings.avatar_url]);
+
     const handleSubmit = (e) => {
         e.preventDefault();
         post('/admin/settings', {
             forceFormData: true,
+            onSuccess: () => {
+                setData('cv_file', null);
+                setData('avatar_file', null);
+            }
         });
     };
 
@@ -51,7 +65,7 @@ export default function SettingsIndex({ settings = {} }) {
                         Hero & Identitas (Pengaturan Profil)
                     </h2>
                     <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400 font-sans mt-1">
-                        Kelola seluruh informasi Hero Section, username GitHub, upload CV PDF, kontak, dan tautan sosial media
+                        Kelola seluruh informasi Hero Section, username GitHub, upload CV PDF, foto profil card 3D, kontak, dan tautan sosial media
                     </p>
                 </div>
 
@@ -142,12 +156,12 @@ export default function SettingsIndex({ settings = {} }) {
                                 {errors.cv_file && <div className="text-rose-500 text-xs mt-1">{errors.cv_file}</div>}
 
                                 {data.cv_url && data.cv_url !== '#' && (
-                                    <div className="mt-2 p-3 rounded-2xl bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 flex items-center justify-between text-xs">
-                                        <div className="flex items-center gap-2 font-mono text-gray-600 dark:text-slate-400">
-                                            <FileText className="w-4 h-4 text-gray-900 dark:text-white" />
-                                            <span>File CV Saat Ini: <span className="font-bold text-gray-900 dark:text-white">{data.cv_url}</span></span>
+                                    <div className="mt-2 p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/80 flex items-center justify-between text-xs">
+                                        <div className="flex items-center gap-2 font-mono text-emerald-800 dark:text-emerald-300">
+                                            <FileText className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                                            <span>File CV Terupload: <span className="font-bold text-gray-900 dark:text-white">{data.cv_url}</span></span>
                                         </div>
-                                        <a href={data.cv_url} target="_blank" rel="noreferrer" className="text-xs font-semibold text-gray-900 dark:text-white underline hover:no-underline flex items-center gap-1">
+                                        <a href={data.cv_url} target="_blank" rel="noreferrer" className="text-xs font-semibold text-emerald-900 dark:text-emerald-300 underline hover:no-underline flex items-center gap-1">
                                             <span>Buka CV</span>
                                             <ExternalLink className="w-3.5 h-3.5" />
                                         </a>
@@ -169,7 +183,7 @@ export default function SettingsIndex({ settings = {} }) {
 
                         <CardContent className="p-6 space-y-4">
                             <div className="space-y-1.5">
-                                <Label htmlFor="avatar_file" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Upload Foto Profil / Avatar Card (Format JPG, PNG, WEBP)</Label>
+                                <Label htmlFor="avatar_file" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Upload Foto Profil / Avatar Card (Format JPG, PNG, WEBP, Maks. 5 MB)</Label>
                                 <Input
                                     id="avatar_file"
                                     type="file"
@@ -178,6 +192,21 @@ export default function SettingsIndex({ settings = {} }) {
                                     className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-gray-900 file:text-white dark:file:bg-white dark:file:text-gray-900"
                                 />
                                 {errors.avatar_file && <div className="text-rose-500 text-xs mt-1">{errors.avatar_file}</div>}
+
+                                {data.avatar_url && (
+                                    <div className="mt-2 p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/80 flex items-center justify-between text-xs">
+                                        <div className="flex items-center gap-3">
+                                            <img src={data.avatar_url} alt="Avatar Card" className="w-10 h-10 rounded-xl object-cover border border-emerald-300 dark:border-emerald-700 shrink-0" />
+                                            <div className="font-mono text-emerald-800 dark:text-emerald-300">
+                                                <span>Foto Card Terupload: <span className="font-bold text-gray-900 dark:text-white">{data.avatar_url}</span></span>
+                                            </div>
+                                        </div>
+                                        <a href={data.avatar_url} target="_blank" rel="noreferrer" className="text-xs font-semibold text-emerald-900 dark:text-emerald-300 underline hover:no-underline flex items-center gap-1">
+                                            <span>Lihat Foto</span>
+                                            <ExternalLink className="w-3.5 h-3.5" />
+                                        </a>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="grid sm:grid-cols-2 gap-4">
