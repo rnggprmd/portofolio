@@ -1,9 +1,60 @@
 @import 'tailwindcss';
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
+@variant dark (&:where(.dark, .dark *));
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-heading: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    --color-background: #ffffff;
+    --color-surface: #ffffff;
+    --color-section: #ffffff;
+    --color-card: #ffffff;
+    --color-border: #e5e7eb;
+    --color-heading: #111827;
+    --color-body: #4b5563;
+    --color-secondary: #6b7280;
+    --color-muted: #9ca3af;
+}
+
+@keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(3deg); }
+}
+
+.animate-marquee {
+    display: flex;
+    width: max-content;
+    animation: marquee 25s linear infinite;
+}
+
+.animate-marquee:hover {
+    animation-play-state: paused;
+}
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Global Subtle CSS Background Grid Pattern directly rendered on base body background */
+.bg-grid-pattern {
+    background-image: linear-gradient(to right, rgba(229, 231, 235, 0.65) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(229, 231, 235, 0.65) 1px, transparent 1px);
+    background-size: 3.5rem 3.5rem;
+}
+.dark .bg-grid-pattern {
+    background-image: linear-gradient(to right, rgba(30, 41, 59, 0.45) 1px, transparent 1px),
+                      linear-gradient(to bottom, rgba(30, 41, 59, 0.45) 1px, transparent 1px);
+    background-size: 3.5rem 3.5rem;
+}
+
+.bg-dots-pattern {
+    background-image: radial-gradient(rgba(209, 213, 219, 0.6) 1px, transparent 1px);
+    background-size: 1.5rem 1.5rem;
 }

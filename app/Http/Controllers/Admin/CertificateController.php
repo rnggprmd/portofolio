@@ -1,0 +1,60 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Certificate;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class CertificateController extends Controller
+{
+    public function index(): Response
+    {
+        return Inertia::render('Admin/Certificates/Index', [
+            'certificates' => Certificate::orderBy('order', 'asc')->orderBy('id', 'desc')->get(),
+        ]);
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'issuer' => 'required|string|max:255',
+            'year' => 'required|string|max:255',
+            'credential_id' => 'nullable|string|max:255',
+            'badge' => 'nullable|string|max:255',
+            'verify_url' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        Certificate::create($validated);
+
+        return redirect()->back()->with('success', 'Sertifikat berhasil ditambahkan.');
+    }
+
+    public function update(Request $request, Certificate $certificate): RedirectResponse
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'issuer' => 'required|string|max:255',
+            'year' => 'required|string|max:255',
+            'credential_id' => 'nullable|string|max:255',
+            'badge' => 'nullable|string|max:255',
+            'verify_url' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+        ]);
+
+        $certificate->update($validated);
+
+        return redirect()->back()->with('success', 'Sertifikat berhasil diperbarui.');
+    }
+
+    public function destroy(Certificate $certificate): RedirectResponse
+    {
+        $certificate->delete();
+        return redirect()->back()->with('success', 'Sertifikat berhasil dihapus.');
+    }
+}
