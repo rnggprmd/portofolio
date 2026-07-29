@@ -7,7 +7,21 @@ import { Card } from '@/Components/ui/card';
 import { Badge } from '@/Components/ui/badge';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
-import { Plus, Pencil, Trash2, X, PlusCircle, Wrench, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, PlusCircle, Wrench, Search, ChevronLeft, ChevronRight, Code2, Server, Database as DatabaseIcon, Layout, Cloud, Network as NetworkIcon, Globe, Cpu, ShieldCheck, Smartphone } from 'lucide-react';
+
+const getCategoryIcon = (category) => {
+    const cat = (category || '').toLowerCase();
+    if (cat.includes('front')) return Code2;
+    if (cat.includes('back')) return Server;
+    if (cat.includes('data')) return DatabaseIcon;
+    if (cat.includes('net') || cat.includes('jaringan') || cat.includes('sysadmin')) return NetworkIcon;
+    if (cat.includes('ui') || cat.includes('ux') || cat.includes('design')) return Layout;
+    if (cat.includes('devops') || cat.includes('cloud')) return Cloud;
+    if (cat.includes('sec') || cat.includes('cyber')) return ShieldCheck;
+    if (cat.includes('mobile') || cat.includes('app')) return Smartphone;
+    if (cat.includes('ai') || cat.includes('ml')) return Cpu;
+    return Wrench;
+};
 
 export default function SkillsIndex({ skills = [] }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -148,20 +162,22 @@ export default function SkillsIndex({ skills = [] }) {
                                         </td>
                                     </tr>
                                 ) : (
-                                    paginatedSkills.map((skill, idx) => (
-                                        <tr key={skill.id} className="hover:bg-gray-50/80 dark:hover:bg-slate-800/40 transition duration-150 group">
-                                            <td className="py-4 px-6 font-mono text-xs font-bold text-gray-400 dark:text-slate-500 text-center">
-                                                {(currentPage - 1) * itemsPerPage + idx + 1}
-                                            </td>
-                                            {/* Nama Skill */}
-                                            <td className="py-4 px-6 font-semibold text-gray-900 dark:text-white">
-                                                <div className="flex items-center gap-2.5">
-                                                    <div className="w-7 h-7 rounded-lg bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white flex items-center justify-center shrink-0">
-                                                        <Wrench className="w-3.5 h-3.5" />
+                                    paginatedSkills.map((skill, idx) => {
+                                        const CatIcon = getCategoryIcon(skill.category);
+                                        return (
+                                            <tr key={skill.id} className="hover:bg-gray-50/80 dark:hover:bg-slate-800/40 transition duration-150 group">
+                                                <td className="py-4 px-6 font-mono text-xs font-bold text-gray-400 dark:text-slate-500 text-center">
+                                                    {(currentPage - 1) * itemsPerPage + idx + 1}
+                                                </td>
+                                                {/* Nama Skill */}
+                                                <td className="py-4 px-6 font-semibold text-gray-900 dark:text-white">
+                                                    <div className="flex items-center gap-2.5">
+                                                        <div className="w-7 h-7 rounded-lg bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white flex items-center justify-center shrink-0">
+                                                            <CatIcon className="w-3.5 h-3.5" />
+                                                        </div>
+                                                        <span>{skill.name}</span>
                                                     </div>
-                                                    <span>{skill.name}</span>
-                                                </div>
-                                            </td>
+                                                </td>
 
                                             {/* Kategori Badge */}
                                             <td className="py-4 px-6">
@@ -209,8 +225,9 @@ export default function SkillsIndex({ skills = [] }) {
                                                     </button>
                                                 </div>
                                             </td>
-                                        </tr>
-                                    ))
+                                         </tr>
+                                        );
+                                    })
                                 )}
                             </tbody>
                         </table>

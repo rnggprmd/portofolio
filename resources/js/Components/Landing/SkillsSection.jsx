@@ -1,7 +1,21 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Code2, Server, Database, Layout, Cloud, Wrench } from 'lucide-react';
+import { Code2, Server, Database, Layout, Cloud, Wrench, Network as NetworkIcon, Globe, Cpu, Terminal, ShieldCheck, Smartphone } from 'lucide-react';
 import { useLanguage } from '../../Context/LanguageContext';
+
+const getCategoryIcon = (category) => {
+    const cat = (category || '').toLowerCase();
+    if (cat.includes('front')) return Code2;
+    if (cat.includes('back')) return Server;
+    if (cat.includes('data')) return Database;
+    if (cat.includes('net') || cat.includes('jaringan') || cat.includes('sysadmin')) return NetworkIcon;
+    if (cat.includes('ui') || cat.includes('ux') || cat.includes('design')) return Layout;
+    if (cat.includes('devops') || cat.includes('cloud')) return Cloud;
+    if (cat.includes('sec') || cat.includes('cyber')) return ShieldCheck;
+    if (cat.includes('mobile') || cat.includes('app')) return Smartphone;
+    if (cat.includes('ai') || cat.includes('ml')) return Cpu;
+    return Wrench;
+};
 
 function BentoCard({ item, idx, totalItems }) {
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -15,17 +29,7 @@ function BentoCard({ item, idx, totalItems }) {
         });
     };
 
-    const icons = {
-        'Frontend': Code2,
-        'UI/UX': Layout,
-        'Backend': Server,
-        'Database': Database,
-        'DevOps': Cloud,
-        'DevOps & Tools': Cloud,
-        'Tools': Wrench,
-    };
-
-    const Icon = icons[item.tag] || icons[item.category] || Code2;
+    const Icon = getCategoryIcon(item.tag || item.category);
 
     // Intelligent Bento Column Spanning (Guarantees rows add up to 12 cols with zero empty holes)
     const getColSpan = () => {
