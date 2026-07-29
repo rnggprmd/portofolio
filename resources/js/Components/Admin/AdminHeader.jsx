@@ -36,16 +36,16 @@ export default function AdminHeader({ setIsOpen }) {
                     </div>
                 </div>
 
-                <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+                {/* Red Borderless Logout Button */}
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                     <Link
                         href="/logout"
                         method="post"
                         as="button"
+                        className="flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
                     >
-                        <Button variant="outline" size="sm" className="gap-1.5 text-xs rounded-full border-gray-300 dark:border-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/30 hover:text-rose-600 dark:hover:text-rose-400 transition cursor-pointer">
-                            <LogOut className="w-3.5 h-3.5" />
-                            <span>Logout</span>
-                        </Button>
+                        <LogOut className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
+                        <span>Logout</span>
                     </Link>
                 </motion.div>
             </div>

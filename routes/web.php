@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ExperienceController;
@@ -25,12 +26,14 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // Protected Admin Panel Routes
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::post('settings', [SettingController::class, 'update'])->name('settings.update');
+    Route::get('about', [AboutController::class, 'index'])->name('about.index');
+    Route::post('about', [AboutController::class, 'update'])->name('about.update');
     Route::resource('projects', ProjectController::class)->except(['create', 'edit', 'show']);
     Route::resource('skills', SkillController::class)->except(['create', 'edit', 'show']);
     Route::resource('experiences', ExperienceController::class)->except(['create', 'edit', 'show']);
     Route::resource('certificates', CertificateController::class)->except(['create', 'edit', 'show']);
     Route::resource('tech-stacks', TechStackController::class)->except(['create', 'edit', 'show']);
-    Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
-    Route::post('settings', [SettingController::class, 'update'])->name('settings.update');
     Route::resource('messages', MessageController::class)->only(['index', 'show', 'destroy']);
 });

@@ -39,23 +39,33 @@ export default function Navbar({ theme, toggleTheme, onOpenCommandPalette }) {
 
     useEffect(() => {
         const handleScroll = () => {
-            setScrolled(window.scrollY > 20);
+            const currentScrollY = window.scrollY;
+            setScrolled(currentScrollY > 20);
 
-            const sections = navItems.map(item => document.getElementById(item.id));
-            const scrollPosition = window.scrollY + 120;
+            // 1. If near top of page (less than 120px), force active section to 'home'
+            if (currentScrollY < 120) {
+                setActiveSection('home');
+                return;
+            }
 
-            sections.forEach(section => {
-                if (section) {
-                    const top = section.offsetTop;
-                    const height = section.offsetHeight;
-                    if (scrollPosition >= top && scrollPosition < top + height) {
-                        setActiveSection(section.id);
+            // 2. Check current visible section using getBoundingClientRect
+            const sectionIds = ['contact', 'experience', 'projects', 'skills', 'about', 'github', 'home'];
+            
+            for (const id of sectionIds) {
+                const el = document.getElementById(id);
+                if (el) {
+                    const rect = el.getBoundingClientRect();
+                    // If section is in the active viewport zone
+                    if (rect.top <= window.innerHeight * 0.45 && rect.bottom >= 120) {
+                        setActiveSection(id);
+                        return;
                     }
                 }
-            });
+            }
         };
 
-        window.addEventListener('scroll', handleScroll);
+        handleScroll();
+        window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 

@@ -5,15 +5,19 @@ import AdminLayout from '@/Layouts/AdminLayout';
 import { Button } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
 import { Badge } from '@/Components/ui/badge';
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/Components/ui/table';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
-import { Plus, Pencil, Trash2, X, Briefcase } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Briefcase, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function ExperiencesIndex({ experiences = [] }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [editingExperience, setEditingExperience] = useState(null);
+    const [editingExp, setEditingExp] = useState(null);
+
+    // Search & Pagination State
+    const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 8;
 
     const { data, setData, reset, processing } = useForm({
         period: '',
@@ -23,46 +27,44 @@ export default function ExperiencesIndex({ experiences = [] }) {
         description: '',
         responsibilities: '',
         tech_badges: '',
+        order: 0,
     });
 
     const openCreateModal = () => {
-        setEditingExperience(null);
+        setEditingExp(null);
         reset();
         setIsModalOpen(true);
     };
 
     const openEditModal = (exp) => {
-        setEditingExperience(exp);
+        setEditingExp(exp);
         setData({
             period: exp.period,
             role: exp.role,
             company: exp.company,
             location: exp.location || '',
             description: exp.description || '',
-            responsibilities: Array.isArray(exp.responsibilities) ? exp.responsibilities.join('\n') : exp.responsibilities || '',
-            tech_badges: Array.isArray(exp.tech_badges) ? exp.tech_badges.join(', ') : exp.tech_badges || '',
+            responsibilities: Array.isArray(exp.responsibilities) ? exp.responsibilities.join('\n') : '',
+            tech_badges: Array.isArray(exp.tech_badges) ? exp.tech_badges.join(', ') : '',
+            order: exp.order || 0,
         });
         setIsModalOpen(true);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const formattedData = {
+        const payload = {
             ...data,
-            responsibilities: typeof data.responsibilities === 'string'
-                ? data.responsibilities.split('\n').map(s => s.trim()).filter(Boolean)
-                : data.responsibilities,
-            tech_badges: typeof data.tech_badges === 'string'
-                ? data.tech_badges.split(',').map(s => s.trim()).filter(Boolean)
-                : data.tech_badges,
+            responsibilities: data.responsibilities.split('\n').map((s) => s.trim()).filter(Boolean),
+            tech_badges: data.tech_badges.split(',').map((s) => s.trim()).filter(Boolean),
         };
 
-        if (editingExperience) {
-            router.put(`/admin/experiences/${editingExperience.id}`, formattedData, {
+        if (editingExp) {
+            router.put(`/admin/experiences/${editingExp.id}`, payload, {
                 onSuccess: () => setIsModalOpen(false),
             });
         } else {
-            router.post('/admin/experiences', formattedData, {
+            router.post('/admin/experiences', payload, {
                 onSuccess: () => setIsModalOpen(false),
             });
         }
@@ -74,98 +76,182 @@ export default function ExperiencesIndex({ experiences = [] }) {
         }
     };
 
+    // Search Filtering & Pagination Math
+    const filteredExperiences = experiences.filter(exp =>
+        exp.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        exp.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (exp.description && exp.description.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+
+    const totalPages = Math.ceil(filteredExperiences.length / itemsPerPage) || 1;
+    const paginatedExperiences = filteredExperiences.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
     return (
         <AdminLayout>
             <Head title="Manajemen Pengalaman" />
 
-            <div className="space-y-8">
+            <div className="space-y-8 max-w-6xl mx-auto">
                 {/* Header Title */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <span className="font-mono text-xs uppercase tracking-widest text-gray-500 dark:text-slate-400 font-semibold">
-                            Karir & Riwayat Kerja
+                            Seksi 05 // Landing Page
                         </span>
                         <h2 className="font-heading text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
-                            Manajemen Pengalaman
+                            Manajemen Pengalaman Kerja
                         </h2>
                         <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400 font-sans mt-1">
-                            Kelola riwayat pekerjaan, posisi, dan tanggung jawab karir Anda
+                            Kelola riwayat pekerjaan, posisi, perusahaan, dan periode karir Anda
                         </p>
                     </div>
 
                     <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                        <Button onClick={openCreateModal} className="rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-black dark:hover:bg-gray-100 gap-1.5 shadow-md">
+                        <Button onClick={openCreateModal} className="rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-black dark:hover:bg-gray-100 gap-1.5 shadow-md cursor-pointer">
                             <Plus className="w-4 h-4" />
                             <span>Tambah Pengalaman</span>
                         </Button>
                     </motion.div>
                 </div>
 
-                {/* Table Card */}
-                <Card className="rounded-3xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 shadow-xs overflow-hidden">
-                    <Table>
-                        <TableHeader className="bg-gray-50 dark:bg-slate-950 border-b border-gray-200 dark:border-slate-800">
-                            <TableRow>
-                                <TableHead className="font-mono text-xs uppercase text-gray-900 dark:text-white">Posisi & Perusahaan</TableHead>
-                                <TableHead className="font-mono text-xs uppercase text-gray-900 dark:text-white">Periode</TableHead>
-                                <TableHead className="font-mono text-xs uppercase text-gray-900 dark:text-white">Tech Badges</TableHead>
-                                <TableHead className="font-mono text-xs uppercase text-gray-900 dark:text-white text-right">Aksi</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody className="divide-y divide-gray-100 dark:divide-slate-800">
-                            {experiences.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={4} className="text-center py-8 text-gray-500 font-mono text-xs">
-                                        Belum ada riwayat pengalaman kerja ditambahkan.
-                                    </TableCell>
-                                </TableRow>
-                            ) : (
-                                experiences.map((exp) => (
-                                    <TableRow key={exp.id} className="hover:bg-gray-50/50 dark:hover:bg-slate-800/40 transition">
-                                        <TableCell className="py-4">
-                                            <div className="font-heading font-bold text-gray-900 dark:text-white text-base flex items-center gap-2">
-                                                <Briefcase className="w-4 h-4 text-gray-500" />
-                                                <span>{exp.role}</span>
-                                            </div>
-                                            <div className="text-xs text-gray-600 dark:text-slate-400 font-medium mt-0.5">{exp.company} — {exp.location || 'Remote'}</div>
-                                        </TableCell>
-                                        <TableCell className="py-4">
-                                            <Badge variant="outline" className="rounded-full text-[10px] font-mono border-gray-200 dark:border-slate-700">
-                                                {exp.period}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="py-4">
-                                            <div className="flex flex-wrap gap-1">
-                                                {(Array.isArray(exp.tech_badges) ? exp.tech_badges : []).map((t, idx) => (
-                                                    <span key={idx} className="px-2 py-0.5 rounded-md text-[10px] font-mono font-medium bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-slate-700">
-                                                        {t}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="py-4 text-right space-x-2">
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => openEditModal(exp)}
-                                                className="gap-1 text-xs rounded-full border-gray-200 dark:border-slate-800"
-                                            >
-                                                <Pencil className="w-3.5 h-3.5" /> Edit
-                                            </Button>
-                                            <Button
-                                                variant="destructive"
-                                                size="sm"
-                                                onClick={() => handleDelete(exp.id)}
-                                                className="gap-1 text-xs rounded-full"
-                                            >
-                                                <Trash2 className="w-3.5 h-3.5" /> Hapus
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
+                {/* Filter Search Bar & Total Counter */}
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="relative w-full sm:w-80">
+                        <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
+                        <Input
+                            type="text"
+                            placeholder="Cari posisi atau perusahaan..."
+                            value={searchQuery}
+                            onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                setCurrentPage(1);
+                            }}
+                            className="pl-10 rounded-2xl bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 text-xs sm:text-sm"
+                        />
+                    </div>
+                    <div className="text-xs font-mono text-gray-500 dark:text-slate-400">
+                        Total: <span className="font-bold text-gray-900 dark:text-white">{experiences.length}</span> pengalaman
+                    </div>
+                </div>
+
+                {/* Modern Responsive Table */}
+                <Card className="rounded-3xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 shadow-md overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="border-b border-gray-200 dark:border-slate-800 bg-gray-50/80 dark:bg-slate-950/50 text-[11px] font-mono font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
+                                    <th className="py-4 px-6 w-16 text-center">No.</th>
+                                    <th className="py-4 px-6">Posisi & Perusahaan</th>
+                                    <th className="py-4 px-6">Periode</th>
+                                    <th className="py-4 px-6">Tech Badges</th>
+                                    <th className="py-4 px-6 text-right">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 dark:divide-slate-800/60 text-xs sm:text-sm font-sans">
+                                {paginatedExperiences.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="5" className="py-12 px-6 text-center text-gray-500 dark:text-slate-500 font-mono text-xs">
+                                            {searchQuery ? `Tidak ada pengalaman yang cocok dengan kata kunci "${searchQuery}".` : 'Belum ada pengalaman kerja ditambahkan. Silakan klik "+ Tambah Pengalaman".'}
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    paginatedExperiences.map((exp, idx) => (
+                                        <tr key={exp.id} className="hover:bg-gray-50/80 dark:hover:bg-slate-800/40 transition duration-150 group">
+                                            <td className="py-4 px-6 font-mono text-xs font-bold text-gray-400 dark:text-slate-500 text-center">
+                                                {(currentPage - 1) * itemsPerPage + idx + 1}
+                                            </td>
+                                            <td className="py-4 px-6">
+                                                <div className="flex items-start gap-3">
+                                                    <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white flex items-center justify-center shrink-0 mt-0.5">
+                                                        <Briefcase className="w-4 h-4" />
+                                                    </div>
+                                                    <div>
+                                                        <div className="font-heading font-bold text-gray-900 dark:text-white text-base">{exp.role}</div>
+                                                        <div className="text-xs text-gray-500 dark:text-slate-400 font-medium mt-0.5">{exp.company} — {exp.location || 'Remote'}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            <td className="py-4 px-6">
+                                                <Badge variant="outline" className="rounded-full text-[10px] font-mono px-3 py-1 bg-gray-100/80 dark:bg-slate-800/80 text-gray-700 dark:text-slate-300 border-gray-200 dark:border-slate-700">
+                                                    {exp.period}
+                                                </Badge>
+                                            </td>
+
+                                            <td className="py-4 px-6">
+                                                <div className="flex flex-wrap gap-1">
+                                                    {(Array.isArray(exp.tech_badges) ? exp.tech_badges : []).map((t, idx) => (
+                                                        <span key={idx} className="px-2 py-0.5 rounded-md text-[10px] font-mono font-medium bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-slate-300 border border-gray-200 dark:border-slate-700">
+                                                            {t}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </td>
+
+                                            <td className="py-4 px-6 text-right">
+                                                <div className="flex items-center justify-end gap-1.5">
+                                                    <button
+                                                        onClick={() => openEditModal(exp)}
+                                                        title="Edit Pengalaman"
+                                                        className="p-2 rounded-full border border-gray-200 dark:border-slate-800 text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                                                    >
+                                                        <Pencil className="w-3.5 h-3.5" />
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleDelete(exp.id)}
+                                                        title="Hapus Pengalaman"
+                                                        className="p-2 rounded-full border border-rose-200 dark:border-rose-900/50 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
+                                                    >
+                                                        <Trash2 className="w-3.5 h-3.5" />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* Table Pagination Controls Footer */}
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-gray-200 dark:border-slate-800 bg-gray-50/50 dark:bg-slate-950/30 text-xs font-mono text-gray-500 dark:text-slate-400">
+                        <div>
+                            Menampilkan <span className="font-bold text-gray-900 dark:text-white">{filteredExperiences.length > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0}</span> sampai <span className="font-bold text-gray-900 dark:text-white">{Math.min(currentPage * itemsPerPage, filteredExperiences.length)}</span> dari <span className="font-bold text-gray-900 dark:text-white">{filteredExperiences.length}</span> pengalaman
+                        </div>
+
+                        {totalPages > 1 && (
+                            <div className="flex items-center gap-1.5">
+                                <button
+                                    disabled={currentPage === 1}
+                                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                                    className="p-1.5 rounded-lg border border-gray-200 dark:border-slate-800 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                                >
+                                    <ChevronLeft className="w-4 h-4" />
+                                </button>
+
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                                    <button
+                                        key={page}
+                                        onClick={() => setCurrentPage(page)}
+                                        className={`w-7 h-7 rounded-lg border font-mono font-bold text-xs transition cursor-pointer ${
+                                            currentPage === page
+                                                ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white shadow-xs'
+                                                : 'border-gray-200 dark:border-slate-800 hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-700 dark:text-slate-300'
+                                        }`}
+                                    >
+                                        {page}
+                                    </button>
+                                ))}
+
+                                <button
+                                    disabled={currentPage === totalPages}
+                                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                                    className="p-1.5 rounded-lg border border-gray-200 dark:border-slate-800 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                                >
+                                    <ChevronRight className="w-4 h-4" />
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </Card>
             </div>
 
@@ -181,15 +267,15 @@ export default function ExperiencesIndex({ experiences = [] }) {
                         >
                             <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-4">
                                 <h3 className="font-heading font-bold text-xl text-gray-900 dark:text-white">
-                                    {editingExperience ? 'Edit Pengalaman' : 'Tambah Pengalaman Baru'}
+                                    {editingExp ? 'Edit Pengalaman Kerja' : 'Tambah Pengalaman Baru'}
                                 </h3>
-                                <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition">
+                                <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition cursor-pointer">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
 
                             <form onSubmit={handleSubmit} className="space-y-4">
-                                <div className="grid grid-cols-2 gap-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-1.5">
                                         <Label htmlFor="role" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Posisi / Jabatan</Label>
                                         <Input
@@ -197,26 +283,26 @@ export default function ExperiencesIndex({ experiences = [] }) {
                                             type="text"
                                             value={data.role}
                                             onChange={(e) => setData('role', e.target.value)}
-                                            placeholder="Senior Full-Stack Engineer"
+                                            placeholder="Senior Full Stack Engineer"
                                             className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
                                             required
                                         />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="company" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Nama Perusahaan</Label>
+                                        <Label htmlFor="company" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Perusahaan</Label>
                                         <Input
                                             id="company"
                                             type="text"
                                             value={data.company}
                                             onChange={(e) => setData('company', e.target.value)}
-                                            placeholder="Tech Agency Inc."
+                                            placeholder="Tech Corporation Ltd."
                                             className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
                                             required
                                         />
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-1.5">
                                         <Label htmlFor="period" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Periode Kerja</Label>
                                         <Input
@@ -224,44 +310,54 @@ export default function ExperiencesIndex({ experiences = [] }) {
                                             type="text"
                                             value={data.period}
                                             onChange={(e) => setData('period', e.target.value)}
-                                            placeholder="2024 — PRESENT"
+                                            placeholder="2023 - Sekarang"
                                             className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
                                             required
                                         />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="location" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Lokasi</Label>
+                                        <Label htmlFor="location" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Lokasi / Tipe</Label>
                                         <Input
                                             id="location"
                                             type="text"
                                             value={data.location}
                                             onChange={(e) => setData('location', e.target.value)}
-                                            placeholder="Jakarta / Remote"
+                                            placeholder="Jakarta, Indonesia (Hybrid)"
                                             className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <Label htmlFor="responsibilities" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Tanggung Jawab (pisahkan dengan baris baru)</Label>
+                                    <Label htmlFor="description" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Ringkasan Peran</Label>
                                     <Textarea
-                                        id="responsibilities"
-                                        value={data.responsibilities}
-                                        onChange={(e) => setData('responsibilities', e.target.value)}
-                                        rows={3}
-                                        placeholder="Memimpin arsitektur sistem&#10;Mengoptimalkan performa aplikasi"
-                                        className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
+                                        id="description"
+                                        value={data.description}
+                                        onChange={(e) => setData('description', e.target.value)}
+                                        placeholder="Penjelasan singkat mengenai peran dan pencapaian utama..."
+                                        className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm min-h-[70px]"
                                     />
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <Label htmlFor="tech_badges" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Tech Badges (pisahkan dengan koma)</Label>
+                                    <Label htmlFor="responsibilities" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Tanggung Jawab (1 Poin Per Baris)</Label>
+                                    <Textarea
+                                        id="responsibilities"
+                                        value={data.responsibilities}
+                                        onChange={(e) => setData('responsibilities', e.target.value)}
+                                        placeholder="Mengembangkan arsitektur RESTful API&#10;Memimpin tim frontend dalam migrasi React 19"
+                                        className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm min-h-[90px]"
+                                    />
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <Label htmlFor="tech_badges" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Tech Badges (Pisahkan dengan Koma)</Label>
                                     <Input
                                         id="tech_badges"
                                         type="text"
                                         value={data.tech_badges}
                                         onChange={(e) => setData('tech_badges', e.target.value)}
-                                        placeholder="Laravel 13, React 19, Inertia, Docker"
+                                        placeholder="Laravel, React, PostgreSQL, Docker"
                                         className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
                                     />
                                 </div>
@@ -271,11 +367,11 @@ export default function ExperiencesIndex({ experiences = [] }) {
                                         type="button"
                                         variant="ghost"
                                         onClick={() => setIsModalOpen(false)}
-                                        className="rounded-full text-xs"
+                                        className="rounded-full text-xs cursor-pointer"
                                     >
                                         Batal
                                     </Button>
-                                    <Button type="submit" disabled={processing} className="rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold text-xs shadow-md">
+                                    <Button type="submit" disabled={processing} className="rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold text-xs shadow-md cursor-pointer">
                                         Simpan Pengalaman
                                     </Button>
                                 </div>

@@ -253,14 +253,31 @@ export default function HeroSection({ settings = {} }) {
                         </div>
                     </div>
 
-                    {/* Elastic Drag-able & 3D Tilt Container */}
+                    {/* Elastic Drag-able & 3D Tilt Container with Gentle Floating & Swaying Animation */}
                     <motion.div
                         drag
                         dragConstraints={{ top: 0, left: 0, right: 0, bottom: 0 }}
                         dragElastic={0.45}
                         dragSnapToOrigin={true}
                         whileDrag={{ scale: 1.05, cursor: 'grabbing' }}
-                        transition={{ type: 'spring', stiffness: 350, damping: 18 }}
+                        animate={{
+                            y: [0, -10, 0, 8, 0],
+                            rotate: [0, 1.8, -1.8, 1, 0],
+                        }}
+                        transition={{
+                            y: {
+                                duration: 5,
+                                repeat: Infinity,
+                                repeatType: 'mirror',
+                                ease: 'easeInOut'
+                            },
+                            rotate: {
+                                duration: 6,
+                                repeat: Infinity,
+                                repeatType: 'mirror',
+                                ease: 'easeInOut'
+                            }
+                        }}
                         className="relative pt-8 flex flex-col items-center group cursor-pointer touch-none"
                     >
                         {/* Fabric Lanyard Strap */}

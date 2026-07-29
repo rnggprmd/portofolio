@@ -22,6 +22,14 @@ class HomeController extends Controller
         $techStacks = TechStack::orderBy('order', 'asc')->orderBy('id', 'desc')->get();
         $settings = SiteSetting::pluck('value', 'key')->all();
 
+        // Calculate auto dynamic real-time counts from DB with fallback / override capability
+        $statsCounts = [
+            'projects' => isset($settings['stat_projects']) && $settings['stat_projects'] !== '' ? (int)$settings['stat_projects'] : ($projects->count() > 0 ? $projects->count() : 15),
+            'experience' => isset($settings['stat_experience']) && $settings['stat_experience'] !== '' ? (int)$settings['stat_experience'] : ($experiences->count() > 0 ? $experiences->count() : 3),
+            'certificates' => isset($settings['stat_certificates']) && $settings['stat_certificates'] !== '' ? (int)$settings['stat_certificates'] : ($certificates->count() > 0 ? $certificates->count() : 10),
+            'techStack' => isset($settings['stat_tech_stack']) && $settings['stat_tech_stack'] !== '' ? (int)$settings['stat_tech_stack'] : ($techStacks->count() > 0 ? $techStacks->count() : 12),
+        ];
+
         return Inertia::render('Home', [
             'projects' => $projects,
             'skills' => $skills,
@@ -29,6 +37,7 @@ class HomeController extends Controller
             'certificates' => $certificates,
             'techStacks' => $techStacks,
             'settings' => $settings,
+            'statsCounts' => $statsCounts,
         ]);
     }
 }

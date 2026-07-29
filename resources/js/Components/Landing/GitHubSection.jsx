@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { GitCommit, GitPullRequest, Flame, Star, ArrowUpRight, Sparkles } from 'lucide-react';
 import { GithubIcon } from './BrandIcons';
 import { useLanguage } from '../../Context/LanguageContext';
@@ -8,6 +8,8 @@ export default function GitHubSection({ settings = {}, githubUrl = 'https://gith
     const { lang } = useLanguage();
     const [hoveredDay, setHoveredDay] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isSnakeActive, setIsSnakeActive] = useState(true);
+    const [snakeIndex, setSnakeIndex] = useState(0);
 
     const [liveStats, setLiveStats] = useState({
         repos: 0,
@@ -25,14 +27,12 @@ export default function GitHubSection({ settings = {}, githubUrl = 'https://gith
         if (!cleanUsername) return;
         setLoading(true);
 
-        // Fetch User Profile Data (Public Repos, Followers, etc.)
         fetch(`https://api.github.com/users/${cleanUsername}`)
             .then((res) => {
                 if (res.ok) return res.json();
                 throw new Error('User not found');
             })
             .then((userData) => {
-                // Fetch Recent Public Events to calculate Commits & PRs
                 fetch(`https://api.github.com/users/${cleanUsername}/events/public?per_page=100`)
                     .then((res) => res.json())
                     .then((events) => {
@@ -56,7 +56,6 @@ export default function GitHubSection({ settings = {}, githubUrl = 'https://gith
                             });
                         }
 
-                        // Estimate total annual commits based on recent velocity or fallback multiplier
                         const estimatedCommits = commitCount > 0 ? `${commitCount * 4}+` : `${(userData.public_repos || 10) * 25}+`;
                         const estimatedPrs = prCount > 0 ? `${prCount * 3}+` : `${Math.floor((userData.public_repos || 5) * 1.5)}+`;
                         const streakDays = activeDays.size > 0 ? `${activeDays.size} Days` : '12 Days';
@@ -82,7 +81,6 @@ export default function GitHubSection({ settings = {}, githubUrl = 'https://gith
                     });
             })
             .catch(() => {
-                // Fallback to settings or default values
                 setLiveStats({
                     repos: parseInt(settings.github_repos) || 18,
                     followers: 15,
@@ -123,7 +121,41 @@ export default function GitHubSection({ settings = {}, githubUrl = 'https://gith
         return weeks;
     };
 
-    const weeks = generateContributionWeeks(cleanUsername);
+    const weeks = useMemo(() => generateContributionWeeks(cleanUsername), [cleanUsername]);
+
+    // Extract all green cells for the Snake animation path
+    const snakePath = useMemo(() => {
+        const path = [];
+        weeks.forEach((week, wIdx) => {
+            week.forEach((day, dIdx) => {
+                if (day.level > 0) {
+                    path.push({ wIdx, dIdx, level: day.level, commits: day.commits });
+                }
+            });
+        });
+        return path;
+    }, [weeks]);
+
+    // Snake Crawling Timer Loop (320ms per step)
+    useEffect(() => {
+        if (!isSnakeActive || snakePath.length === 0) return;
+        const interval = setInterval(() => {
+            setSnakeIndex((prev) => (prev + 1) % snakePath.length);
+        }, 320);
+        return () => clearInterval(interval);
+    }, [isSnakeActive, snakePath]);
+
+    // Snake Body Segment Coordinates
+    const getSnakeSegment = (offset) => {
+        if (snakePath.length === 0) return null;
+        const index = (snakeIndex - offset + snakePath.length) % snakePath.length;
+        return snakePath[index];
+    };
+
+    const snakeHead = getSnakeSegment(0);
+    const snakeBody1 = getSnakeSegment(1);
+    const snakeBody2 = getSnakeSegment(2);
+    const snakeBody3 = getSnakeSegment(3);
 
     const getLevelColor = (level) => {
         switch (level) {
@@ -197,7 +229,7 @@ export default function GitHubSection({ settings = {}, githubUrl = 'https://gith
                     })}
                 </div>
 
-                {/* Dynamic Heatmap Card for @username */}
+                {/* Dynamic Heatmap Card for @username with Interactive GitHub Snake Animation */}
                 <motion.div
                     whileHover={{ y: -4 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 22 }}
@@ -212,7 +244,7 @@ export default function GitHubSection({ settings = {}, githubUrl = 'https://gith
                                 <h3 className="font-heading font-bold text-lg text-gray-900 dark:text-white">
                                     {lang === 'en' ? 'Contribution Heatmap' : 'Peta Panas Kontribusi'}
                                 </h3>
-                                <p className="font-mono text-xs text-gray-500 dark:text-slate-400">
+                                <p className="font-mono text-xs text-gray-500 dark:text-slate-400 mt-0.5">
                                     @{cleanUsername} • GitHub Profile ({liveStats.followers} Followers)
                                 </p>
                             </div>
@@ -222,27 +254,55 @@ export default function GitHubSection({ settings = {}, githubUrl = 'https://gith
                             href={cleanUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-black dark:hover:bg-gray-100 font-semibold text-xs transition duration-200 shadow-md self-start sm:self-center"
+                            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-black dark:hover:bg-gray-100 font-semibold text-xs transition duration-200 shadow-md self-start sm:self-center cursor-pointer"
                         >
                             <span>{lang === 'en' ? 'Visit GitHub Profile' : 'Kunjungi Profil GitHub'}</span>
                             <ArrowUpRight className="w-4 h-4" />
                         </a>
                     </div>
 
-                    {/* Heatmap Grid */}
+                    {/* Heatmap Grid with Interactive GitHub Snake */}
                     <div className="space-y-3 overflow-x-auto pb-2">
-                        <div className="flex gap-1.5 justify-between min-w-[650px] p-2">
+                        <div className="flex gap-1.5 justify-between min-w-[650px] p-2 relative">
                             {weeks.map((week, wIdx) => (
                                 <div key={wIdx} className="flex flex-col gap-1.5">
-                                    {week.map((day, dIdx) => (
-                                        <motion.div
-                                            key={dIdx}
-                                            whileHover={{ scale: 1.35 }}
-                                            onMouseEnter={() => setHoveredDay(day)}
-                                            onMouseLeave={() => setHoveredDay(null)}
-                                            className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-md border transition-all duration-150 cursor-pointer ${getLevelColor(day.level)}`}
-                                        />
-                                    ))}
+                                    {week.map((day, dIdx) => {
+                                        const isHead = snakeHead && snakeHead.wIdx === wIdx && snakeHead.dIdx === dIdx;
+                                        const isBody1 = snakeBody1 && snakeBody1.wIdx === wIdx && snakeBody1.dIdx === dIdx;
+                                        const isBody2 = snakeBody2 && snakeBody2.wIdx === wIdx && snakeBody2.dIdx === dIdx;
+                                        const isBody3 = snakeBody3 && snakeBody3.wIdx === wIdx && snakeBody3.dIdx === dIdx;
+
+                                        return (
+                                            <div key={dIdx} className="relative">
+                                                <motion.div
+                                                    whileHover={{ scale: 1.35 }}
+                                                    onMouseEnter={() => setHoveredDay(day)}
+                                                    onMouseLeave={() => setHoveredDay(null)}
+                                                    className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-md border transition-all duration-150 cursor-pointer ${getLevelColor(day.level)} ${
+                                                        isHead
+                                                            ? 'ring-2 ring-emerald-500 dark:ring-emerald-400 bg-emerald-500 dark:bg-emerald-300 scale-125 z-20 shadow-md'
+                                                            : isBody1
+                                                            ? 'bg-emerald-400 dark:bg-emerald-400 scale-110 z-10'
+                                                            : isBody2
+                                                            ? 'bg-emerald-300 dark:bg-emerald-500 z-10'
+                                                            : isBody3
+                                                            ? 'bg-emerald-200 dark:bg-emerald-600 z-10'
+                                                            : ''
+                                                    }`}
+                                                />
+                                                {/* Animated Snake Eyes on Head */}
+                                                {isHead && (
+                                                    <motion.div
+                                                        initial={{ scale: 0 }}
+                                                        animate={{ scale: 1 }}
+                                                        className="absolute inset-0 flex items-center justify-center pointer-events-none z-30"
+                                                    >
+                                                        <div className="w-1.5 h-1.5 rounded-full bg-white dark:bg-gray-900 shadow-xs" />
+                                                    </motion.div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             ))}
                         </div>

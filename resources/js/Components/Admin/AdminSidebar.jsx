@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, FolderKanban, Wrench, Mail, Globe, X, Code2, Briefcase, Award, Settings, Layers, User } from 'lucide-react';
+import { LayoutDashboard, FolderKanban, Wrench, Mail, Globe, X, Code2, Briefcase, Award, Settings, Layers, UserCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function AdminSidebar({ isOpen, setIsOpen }) {
@@ -12,7 +12,7 @@ export default function AdminSidebar({ isOpen, setIsOpen }) {
             groupTitle: 'UTAMA',
             items: [
                 {
-                    tag: 'OVERVIEW DSIBOARD',
+                    tag: 'OVERVIEW DASHBOARD',
                     name: 'Dashboard',
                     href: '/admin/dashboard',
                     icon: LayoutDashboard,
@@ -29,10 +29,10 @@ export default function AdminSidebar({ isOpen, setIsOpen }) {
                     icon: Settings,
                 },
                 {
-                    tag: 'SEC 02 // PROJECTS SECTION',
-                    name: 'Proyek Showcase',
-                    href: '/admin/projects',
-                    icon: FolderKanban,
+                    tag: 'SEC 02 // ABOUT SECTION',
+                    name: 'Tentang Saya (About)',
+                    href: '/admin/about',
+                    icon: UserCheck,
                 },
                 {
                     tag: 'SEC 03 // SKILLS SECTION',
@@ -41,19 +41,25 @@ export default function AdminSidebar({ isOpen, setIsOpen }) {
                     icon: Wrench,
                 },
                 {
-                    tag: 'SEC 04 // EXPERIENCE SECTION',
+                    tag: 'SEC 04 // PROJECTS SECTION',
+                    name: 'Proyek Showcase',
+                    href: '/admin/projects',
+                    icon: FolderKanban,
+                },
+                {
+                    tag: 'SEC 05 // EXPERIENCE SECTION',
                     name: 'Pengalaman Kerja',
                     href: '/admin/experiences',
                     icon: Briefcase,
                 },
                 {
-                    tag: 'SEC 05 // CERTIFICATES SECTION',
+                    tag: 'SEC 06 // CERTIFICATES SECTION',
                     name: 'Sertifikasi & Kredensial',
                     href: '/admin/certificates',
                     icon: Award,
                 },
                 {
-                    tag: 'SEC 06 // TECH STACK SECTION',
+                    tag: 'SEC 07 // TECH STACK SECTION',
                     name: 'Tech Stack Logos',
                     href: '/admin/tech-stacks',
                     icon: Layers,
@@ -64,7 +70,7 @@ export default function AdminSidebar({ isOpen, setIsOpen }) {
             groupTitle: 'KOMUNIKASI',
             items: [
                 {
-                    tag: 'SEC 07 // CONTACT SECTION',
+                    tag: 'SEC 08 // CONTACT SECTION',
                     name: 'Pesan Masuk',
                     href: '/admin/messages',
                     icon: Mail,

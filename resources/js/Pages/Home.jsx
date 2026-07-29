@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Head } from '@inertiajs/react';
+import { motion } from 'framer-motion';
 import { LanguageProvider } from '../Context/LanguageContext';
 import Navbar from '../Components/Landing/Navbar';
 import HeroSection from '../Components/Landing/HeroSection';
@@ -21,7 +22,8 @@ export default function Home({
     experiences = [],
     certificates = [],
     techStacks = [],
-    settings = {}
+    settings = {},
+    statsCounts = {}
 }) {
     const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
     const [theme, setTheme] = useState(() => {
@@ -45,6 +47,13 @@ export default function Home({
         setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
     };
 
+    const sectionAnimation = {
+        initial: { opacity: 0, y: 35 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true, margin: "-60px" },
+        transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
+    };
+
     return (
         <LanguageProvider>
             <Head title={`${settings.hero_name || 'Rangga Pramudya'} - Software Engineer Portfolio`} />
@@ -57,21 +66,45 @@ export default function Home({
                     onOpenCommandPalette={() => setCommandPaletteOpen(true)}
                 />
 
-                {/* Main Landing Sections */}
+                {/* Main Landing Sections with Buttery-Smooth Viewport Reveal Animations */}
                 <main>
                     <HeroSection settings={settings} />
-                    <GitHubSection
-                        settings={settings}
-                        githubUrl={settings.github_url || 'https://github.com/rnggprmd'}
-                        githubUsername={settings.github_username || 'rnggprmd'}
-                    />
-                    <AboutSection settings={settings} />
-                    <SkillsSection initialSkills={skills} />
-                    <ProjectsSection initialProjects={projects} />
-                    <ExperienceSection initialExperiences={experiences} />
-                    <CertificatesSection initialCertificates={certificates} />
-                    <TechStackSection initialTechStacks={techStacks} />
-                    <ContactSection settings={settings} />
+
+                    <motion.div {...sectionAnimation}>
+                        <GitHubSection
+                            settings={settings}
+                            githubUrl={settings.github_url || 'https://github.com/rnggprmd'}
+                            githubUsername={settings.github_username || 'rnggprmd'}
+                        />
+                    </motion.div>
+
+                    <motion.div {...sectionAnimation}>
+                        <AboutSection settings={settings} statsCounts={statsCounts} />
+                    </motion.div>
+
+                    <motion.div {...sectionAnimation}>
+                        <SkillsSection initialSkills={skills} />
+                    </motion.div>
+
+                    <motion.div {...sectionAnimation}>
+                        <ProjectsSection initialProjects={projects} />
+                    </motion.div>
+
+                    <motion.div {...sectionAnimation}>
+                        <ExperienceSection initialExperiences={experiences} />
+                    </motion.div>
+
+                    <motion.div {...sectionAnimation}>
+                        <CertificatesSection initialCertificates={certificates} />
+                    </motion.div>
+
+                    <motion.div {...sectionAnimation}>
+                        <TechStackSection initialTechStacks={techStacks} />
+                    </motion.div>
+
+                    <motion.div {...sectionAnimation}>
+                        <ContactSection settings={settings} />
+                    </motion.div>
                 </main>
 
                 {/* Footer */}

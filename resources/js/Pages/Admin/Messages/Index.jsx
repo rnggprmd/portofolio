@@ -104,14 +104,13 @@ export default function MessagesIndex({ messages = [] }) {
                                             Dikirim pada: {new Date(selectedMessage.created_at).toLocaleString('id-ID')}
                                         </div>
                                     </div>
-                                    <Button
-                                        variant="destructive"
-                                        size="sm"
+                                    <button
                                         onClick={() => handleDelete(selectedMessage.id)}
-                                        className="gap-1 text-xs rounded-full"
+                                        title="Hapus Pesan"
+                                        className="p-2 rounded-full border border-rose-200 dark:border-rose-900/50 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
                                     >
-                                        <Trash2 className="w-3.5 h-3.5" /> Hapus
-                                    </Button>
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
                                 </div>
 
                                 <div className="bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 rounded-2xl p-5 text-sm text-gray-800 dark:text-slate-200 leading-relaxed whitespace-pre-wrap min-h-[200px] font-sans">

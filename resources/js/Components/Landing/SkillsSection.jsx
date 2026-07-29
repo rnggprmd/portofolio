@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Code2, Server, Database, Layout, Cloud } from 'lucide-react';
+import { Code2, Server, Database, Layout, Cloud, Wrench } from 'lucide-react';
 import { useLanguage } from '../../Context/LanguageContext';
 
-function BentoCard({ item, idx }) {
+function BentoCard({ item, idx, totalItems }) {
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
     const [isHovered, setIsHovered] = useState(false);
 
@@ -21,9 +21,27 @@ function BentoCard({ item, idx }) {
         'Backend': Server,
         'Database': Database,
         'DevOps': Cloud,
+        'DevOps & Tools': Cloud,
+        'Tools': Wrench,
     };
 
-    const Icon = icons[item.tag] || Code2;
+    const Icon = icons[item.tag] || icons[item.category] || Code2;
+
+    // Intelligent Bento Column Spanning (Guarantees rows add up to 12 cols with zero empty holes)
+    const getColSpan = () => {
+        if (totalItems === 1) return 'md:col-span-12';
+        if (totalItems === 2) return 'md:col-span-6';
+        if (totalItems === 3) return 'md:col-span-4'; // 4 + 4 + 4 = 12 (1 row of 3 cards)
+        if (totalItems === 4) {
+            return idx === 0 || idx === 3 ? 'md:col-span-8' : 'md:col-span-4';
+        }
+        if (totalItems === 5) {
+            if (idx === 0) return 'md:col-span-8';
+            if (idx === 1) return 'md:col-span-4';
+            return 'md:col-span-4'; // 4 + 4 + 4 = 12
+        }
+        return 'md:col-span-4';
+    };
 
     return (
         <motion.div
@@ -36,7 +54,7 @@ function BentoCard({ item, idx }) {
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className={`${item.tag === 'Frontend' ? 'md:col-span-8' : 'md:col-span-4'} relative p-6 sm:p-8 rounded-3xl border border-gray-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-gray-400 dark:hover:border-slate-700 hover:shadow-2xl transition-all duration-300 group overflow-hidden flex flex-col justify-between cursor-pointer`}
+            className={`${getColSpan()} relative p-6 sm:p-8 rounded-3xl border border-gray-200/90 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-gray-400 dark:hover:border-slate-700 hover:shadow-2xl transition-all duration-300 group overflow-hidden flex flex-col justify-between cursor-pointer`}
         >
             {/* Mouse Spotlight Track Glow */}
             {isHovered && (
@@ -69,15 +87,30 @@ function BentoCard({ item, idx }) {
                         <motion.div
                             key={sIdx}
                             whileHover={{ x: 4 }}
-                            className="space-y-1 p-2 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800/50 transition duration-200"
+                            className="space-y-1.5 p-2 rounded-xl hover:bg-gray-50 dark:hover:bg-slate-800/50 transition duration-200"
                         >
                             <div className="font-semibold text-sm text-gray-900 dark:text-slate-200 flex items-center justify-between">
                                 <span>{skill.name}</span>
                                 <span className="font-mono text-[11px] text-gray-700 dark:text-slate-300 font-bold">{skill.level}</span>
                             </div>
-                            <div className="text-xs text-gray-500 dark:text-slate-400 font-sans leading-relaxed">
-                                {skill.desc}
-                            </div>
+                            
+                            {/* Animated Level Bar */}
+                            {skill.percentage !== undefined && (
+                                <div className="w-full h-1.5 rounded-full bg-gray-200 dark:bg-slate-800 overflow-hidden">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        whileInView={{ width: `${skill.percentage}%` }}
+                                        transition={{ duration: 0.8, ease: 'easeOut', delay: sIdx * 0.1 }}
+                                        className="h-full bg-gray-900 dark:bg-white rounded-full"
+                                    />
+                                </div>
+                            )}
+
+                            {skill.desc && (
+                                <div className="text-xs text-gray-500 dark:text-slate-400 font-sans leading-relaxed pt-0.5">
+                                    {skill.desc}
+                                </div>
+                            )}
                         </motion.div>
                     ))}
                 </div>
@@ -86,13 +119,35 @@ function BentoCard({ item, idx }) {
     );
 }
 
-export default function SkillsSection() {
+export default function SkillsSection({ initialSkills = [] }) {
     const { t } = useLanguage();
     const [selectedFilter, setSelectedFilter] = useState('All');
 
-    const categories = ['All', 'Frontend', 'Backend', 'UI/UX', 'Database', 'DevOps'];
+    // Build Bento items dynamically from Database Skills if available
+    const bentoItems = initialSkills.length > 0 ? Object.values(
+        initialSkills.reduce((acc, skill) => {
+            const cat = skill.category || 'General';
+            if (!acc[cat]) {
+                acc[cat] = {
+                    category: cat,
+                    tag: cat,
+                    skills: []
+                };
+            }
+            acc[cat].skills.push({
+                name: skill.name,
+                level: `${skill.percentage}%`,
+                percentage: skill.percentage,
+                desc: skill.icon || `Kemahiran ${skill.percentage}% dalam ${skill.name}`
+            });
+            return acc;
+        }, {})
+    ) : t.skills.cards;
 
-    const bentoItems = t.skills.cards;
+    // Filter categories dynamically
+    const categories = ['All', ...new Set(
+        bentoItems.map(item => item.tag)
+    )];
 
     const filteredItems = bentoItems.filter(item => {
         if (selectedFilter === 'All') return true;
@@ -133,18 +188,18 @@ export default function SkillsSection() {
                                 selectedFilter === cat
                                     ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md'
                                     : 'bg-gray-100 dark:bg-slate-900 text-gray-600 dark:text-slate-400 hover:bg-gray-200 dark:hover:bg-slate-800'
-                            }`}
+                                }`}
                         >
                             {cat === 'All' ? t.skills.all : cat}
                         </motion.button>
                     ))}
                 </div>
 
-                {/* Bento Grid */}
+                {/* Intelligent Bento Grid (Guarantees rows fill 12 cols perfectly with zero holes) */}
                 <motion.div layout className="grid md:grid-cols-12 gap-6">
                     <AnimatePresence>
                         {filteredItems.map((item, idx) => (
-                            <BentoCard key={item.category} item={item} idx={idx} />
+                            <BentoCard key={item.category} item={item} idx={idx} totalItems={filteredItems.length} />
                         ))}
                     </AnimatePresence>
                 </motion.div>
