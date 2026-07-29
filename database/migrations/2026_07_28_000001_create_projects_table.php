@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('slug')->unique();
+            $table->string('category')->nullable()->default('Full Stack');
             $table->text('description');
             $table->string('image')->nullable();
             $table->json('tech_stack')->nullable();

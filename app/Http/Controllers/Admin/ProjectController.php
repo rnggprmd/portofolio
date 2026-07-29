@@ -23,13 +23,24 @@ class ProjectController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'category' => 'nullable|string|max:255',
             'description' => 'required|string',
             'image' => 'nullable|string',
+            'image_url' => 'nullable|string',
+            'image_file' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:5120',
             'tech_stack' => 'nullable|array',
-            'demo_url' => 'nullable|url',
-            'github_url' => 'nullable|url',
+            'demo_url' => 'nullable|string',
+            'github_url' => 'nullable|string',
             'is_featured' => 'boolean',
         ]);
+
+        if ($request->hasFile('image_file')) {
+            $path = $request->file('image_file')->store('projects', 'public');
+            $validated['image'] = '/storage/' . $path;
+        } elseif (empty($validated['image']) && !empty($validated['image_url'])) {
+            $validated['image'] = $validated['image_url'];
+        }
+        unset($validated['image_url'], $validated['image_file']);
 
         $validated['slug'] = Str::slug($validated['title']) . '-' . Str::random(5);
 
@@ -42,13 +53,24 @@ class ProjectController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'category' => 'nullable|string|max:255',
             'description' => 'required|string',
             'image' => 'nullable|string',
+            'image_url' => 'nullable|string',
+            'image_file' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:5120',
             'tech_stack' => 'nullable|array',
-            'demo_url' => 'nullable|url',
-            'github_url' => 'nullable|url',
+            'demo_url' => 'nullable|string',
+            'github_url' => 'nullable|string',
             'is_featured' => 'boolean',
         ]);
+
+        if ($request->hasFile('image_file')) {
+            $path = $request->file('image_file')->store('projects', 'public');
+            $validated['image'] = '/storage/' . $path;
+        } elseif (empty($validated['image']) && !empty($validated['image_url'])) {
+            $validated['image'] = $validated['image_url'];
+        }
+        unset($validated['image_url'], $validated['image_file']);
 
         $project->update($validated);
 

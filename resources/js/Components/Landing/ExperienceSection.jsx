@@ -23,11 +23,11 @@ export default function ExperienceSection({ initialExperiences = [] }) {
             description: exp.description || '',
             responsibilities: Array.isArray(exp.responsibilities) ? exp.responsibilities : [exp.description],
             tech: Array.isArray(exp.tech_badges) ? exp.tech_badges : ['Laravel', 'React'],
-            type: 'Career',
+            type: exp.type || 'Career',
         }))
         : defaultItems;
 
-    const categories = ['All', 'Career', 'Internship', 'Freelance', 'Organization'];
+    const categories = ['All', ...new Set(displayExperiences.map(exp => exp.type || 'Career'))];
 
     const filteredExperiences = displayExperiences.filter(exp => {
         if (selectedCategory === 'All') return true;

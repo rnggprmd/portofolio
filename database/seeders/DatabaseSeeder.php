@@ -52,6 +52,7 @@ class DatabaseSeeder extends Seeder
         if (Project::count() === 0) {
             Project::create([
                 'title' => 'Enterprise E-Commerce SaaS Platform',
+                'category' => 'Full Stack',
                 'description' => 'High-scale multi-tenant e-commerce platform built with Laravel 13, React 19, Inertia.js, and Redis caching layer.',
                 'tech_stack' => ['Laravel 13', 'React 19', 'Inertia.js', 'Tailwind CSS', 'MySQL'],
                 'demo_url' => 'https://example.com',
@@ -60,6 +61,7 @@ class DatabaseSeeder extends Seeder
             ]);
             Project::create([
                 'title' => 'AI Integrated Logistics Dashboard',
+                'category' => 'Backend',
                 'description' => 'Real-time supply chain tracking dashboard with predictive analytics and automated dispatching system.',
                 'tech_stack' => ['Laravel', 'React', 'Tailwind CSS', 'PostgreSQL', 'Redis'],
                 'demo_url' => 'https://example.com',
@@ -82,6 +84,7 @@ class DatabaseSeeder extends Seeder
                 'period' => '2024 — PRESENT',
                 'role' => 'Senior Full-Stack Engineer',
                 'company' => 'Tech Solutions Agency',
+                'type' => 'Career',
                 'location' => 'Jakarta / Remote',
                 'description' => 'Memimpin pengembangan sistem e-commerce enterprise dan arsitektur microservices berbasis Laravel dan React.',
                 'responsibilities' => [
@@ -96,6 +99,7 @@ class DatabaseSeeder extends Seeder
                 'period' => '2022 — 2024',
                 'role' => 'Full-Stack Developer',
                 'company' => 'Digital Creative Studio',
+                'type' => 'Freelance',
                 'location' => 'Bandung, Indonesia',
                 'description' => 'Membangun aplikasi web kustom untuk klien internasional menggunakan stack Laravel dan Vue/React.',
                 'responsibilities' => [

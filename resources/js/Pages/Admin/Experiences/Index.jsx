@@ -23,6 +23,7 @@ export default function ExperiencesIndex({ experiences = [] }) {
         period: '',
         role: '',
         company: '',
+        type: 'Career',
         location: '',
         description: '',
         responsibilities: '',
@@ -42,6 +43,7 @@ export default function ExperiencesIndex({ experiences = [] }) {
             period: exp.period,
             role: exp.role,
             company: exp.company,
+            type: exp.type || 'Career',
             location: exp.location || '',
             description: exp.description || '',
             responsibilities: Array.isArray(exp.responsibilities) ? exp.responsibilities.join('\n') : '',
@@ -141,6 +143,7 @@ export default function ExperiencesIndex({ experiences = [] }) {
                                 <tr className="border-b border-gray-200 dark:border-slate-800 bg-gray-50/80 dark:bg-slate-950/50 text-[11px] font-mono font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                                     <th className="py-4 px-6 w-16 text-center">No.</th>
                                     <th className="py-4 px-6">Posisi & Perusahaan</th>
+                                    <th className="py-4 px-6">Kategori</th>
                                     <th className="py-4 px-6">Periode</th>
                                     <th className="py-4 px-6">Tech Badges</th>
                                     <th className="py-4 px-6 text-right">Aksi</th>
@@ -149,7 +152,7 @@ export default function ExperiencesIndex({ experiences = [] }) {
                             <tbody className="divide-y divide-gray-100 dark:divide-slate-800/60 text-xs sm:text-sm font-sans">
                                 {paginatedExperiences.length === 0 ? (
                                     <tr>
-                                        <td colSpan="5" className="py-12 px-6 text-center text-gray-500 dark:text-slate-500 font-mono text-xs">
+                                        <td colSpan="6" className="py-12 px-6 text-center text-gray-500 dark:text-slate-500 font-mono text-xs">
                                             {searchQuery ? `Tidak ada pengalaman yang cocok dengan kata kunci "${searchQuery}".` : 'Belum ada pengalaman kerja ditambahkan. Silakan klik "+ Tambah Pengalaman".'}
                                         </td>
                                     </tr>
@@ -160,15 +163,16 @@ export default function ExperiencesIndex({ experiences = [] }) {
                                                 {(currentPage - 1) * itemsPerPage + idx + 1}
                                             </td>
                                             <td className="py-4 px-6">
-                                                <div className="flex items-start gap-3">
-                                                    <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white flex items-center justify-center shrink-0 mt-0.5">
-                                                        <Briefcase className="w-4 h-4" />
-                                                    </div>
-                                                    <div>
-                                                        <div className="font-heading font-bold text-gray-900 dark:text-white text-base">{exp.role}</div>
-                                                        <div className="text-xs text-gray-500 dark:text-slate-400 font-medium mt-0.5">{exp.company} — {exp.location || 'Remote'}</div>
-                                                    </div>
+                                                <div>
+                                                    <div className="font-heading font-bold text-gray-900 dark:text-white text-base">{exp.role}</div>
+                                                    <div className="text-xs text-gray-500 dark:text-slate-400 font-medium mt-0.5">{exp.company} — {exp.location || 'Remote'}</div>
                                                 </div>
+                                            </td>
+
+                                            <td className="py-4 px-6">
+                                                <Badge variant="outline" className="rounded-full text-[10px] font-mono px-3 py-1 bg-gray-100/80 dark:bg-slate-800/80 text-gray-700 dark:text-slate-300 border-gray-200 dark:border-slate-700">
+                                                    {exp.type || 'Career'}
+                                                </Badge>
                                             </td>
 
                                             <td className="py-4 px-6">
@@ -263,10 +267,11 @@ export default function ExperiencesIndex({ experiences = [] }) {
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
-                            className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto relative"
+                            className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl max-w-lg w-full shadow-2xl flex flex-col max-h-[85vh] overflow-hidden"
                         >
-                            <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-4">
-                                <h3 className="font-heading font-bold text-xl text-gray-900 dark:text-white">
+                            {/* Pinned Modal Header */}
+                            <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 px-6 py-5 shrink-0 bg-white dark:bg-slate-900">
+                                <h3 className="font-heading font-bold text-lg sm:text-xl text-gray-900 dark:text-white">
                                     {editingExp ? 'Edit Pengalaman Kerja' : 'Tambah Pengalaman Baru'}
                                 </h3>
                                 <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition cursor-pointer">
@@ -274,95 +279,113 @@ export default function ExperiencesIndex({ experiences = [] }) {
                                 </button>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {/* Form Container with Internal Scroll Body */}
+                            <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+                                <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div className="space-y-1.5">
+                                            <Label htmlFor="role" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Posisi / Jabatan</Label>
+                                            <Input
+                                                id="role"
+                                                type="text"
+                                                value={data.role}
+                                                onChange={(e) => setData('role', e.target.value)}
+                                                placeholder="Senior Full Stack Engineer"
+                                                className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
+                                                required
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <Label htmlFor="company" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Perusahaan</Label>
+                                            <Input
+                                                id="company"
+                                                type="text"
+                                                value={data.company}
+                                                onChange={(e) => setData('company', e.target.value)}
+                                                placeholder="Tech Corporation Ltd."
+                                                className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                        <div className="space-y-1.5">
+                                            <Label htmlFor="type" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Kategori</Label>
+                                            <select
+                                                id="type"
+                                                value={data.type}
+                                                onChange={(e) => setData('type', e.target.value)}
+                                                className="w-full h-10 px-3 rounded-2xl bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-xs sm:text-sm text-gray-900 dark:text-slate-200 focus:outline-none"
+                                            >
+                                                <option value="Career">Career</option>
+                                                <option value="Internship">Internship</option>
+                                                <option value="Freelance">Freelance</option>
+                                                <option value="Organization">Organization</option>
+                                            </select>
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <Label htmlFor="period" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Periode Kerja</Label>
+                                            <Input
+                                                id="period"
+                                                type="text"
+                                                value={data.period}
+                                                onChange={(e) => setData('period', e.target.value)}
+                                                placeholder="2023 - Sekarang"
+                                                className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
+                                                required
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <Label htmlFor="location" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Lokasi / Tipe</Label>
+                                            <Input
+                                                id="location"
+                                                type="text"
+                                                value={data.location}
+                                                onChange={(e) => setData('location', e.target.value)}
+                                                placeholder="Jakarta (Hybrid)"
+                                                className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
+                                            />
+                                        </div>
+                                    </div>
+
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="role" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Posisi / Jabatan</Label>
-                                        <Input
-                                            id="role"
-                                            type="text"
-                                            value={data.role}
-                                            onChange={(e) => setData('role', e.target.value)}
-                                            placeholder="Senior Full Stack Engineer"
-                                            className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
-                                            required
+                                        <Label htmlFor="description" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Ringkasan Peran</Label>
+                                        <Textarea
+                                            id="description"
+                                            value={data.description}
+                                            onChange={(e) => setData('description', e.target.value)}
+                                            placeholder="Penjelasan singkat mengenai peran dan pencapaian utama..."
+                                            className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm min-h-[70px]"
                                         />
                                     </div>
-                                    <div className="space-y-1.5">
-                                        <Label htmlFor="company" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Perusahaan</Label>
-                                        <Input
-                                            id="company"
-                                            type="text"
-                                            value={data.company}
-                                            onChange={(e) => setData('company', e.target.value)}
-                                            placeholder="Tech Corporation Ltd."
-                                            className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
-                                            required
-                                        />
-                                    </div>
-                                </div>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="period" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Periode Kerja</Label>
-                                        <Input
-                                            id="period"
-                                            type="text"
-                                            value={data.period}
-                                            onChange={(e) => setData('period', e.target.value)}
-                                            placeholder="2023 - Sekarang"
-                                            className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
-                                            required
+                                        <Label htmlFor="responsibilities" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Tanggung Jawab (1 Poin Per Baris)</Label>
+                                        <Textarea
+                                            id="responsibilities"
+                                            value={data.responsibilities}
+                                            onChange={(e) => setData('responsibilities', e.target.value)}
+                                            placeholder="Mengembangkan arsitektur RESTful API&#10;Memimpin tim frontend dalam migrasi React 19"
+                                            className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm min-h-[90px]"
                                         />
                                     </div>
+
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="location" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Lokasi / Tipe</Label>
+                                        <Label htmlFor="tech_badges" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Tech Badges (Pisahkan dengan Koma)</Label>
                                         <Input
-                                            id="location"
+                                            id="tech_badges"
                                             type="text"
-                                            value={data.location}
-                                            onChange={(e) => setData('location', e.target.value)}
-                                            placeholder="Jakarta, Indonesia (Hybrid)"
+                                            value={data.tech_badges}
+                                            onChange={(e) => setData('tech_badges', e.target.value)}
+                                            placeholder="Laravel, React, PostgreSQL, Docker"
                                             className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
                                         />
                                     </div>
                                 </div>
 
-                                <div className="space-y-1.5">
-                                    <Label htmlFor="description" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Ringkasan Peran</Label>
-                                    <Textarea
-                                        id="description"
-                                        value={data.description}
-                                        onChange={(e) => setData('description', e.target.value)}
-                                        placeholder="Penjelasan singkat mengenai peran dan pencapaian utama..."
-                                        className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm min-h-[70px]"
-                                    />
-                                </div>
-
-                                <div className="space-y-1.5">
-                                    <Label htmlFor="responsibilities" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Tanggung Jawab (1 Poin Per Baris)</Label>
-                                    <Textarea
-                                        id="responsibilities"
-                                        value={data.responsibilities}
-                                        onChange={(e) => setData('responsibilities', e.target.value)}
-                                        placeholder="Mengembangkan arsitektur RESTful API&#10;Memimpin tim frontend dalam migrasi React 19"
-                                        className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm min-h-[90px]"
-                                    />
-                                </div>
-
-                                <div className="space-y-1.5">
-                                    <Label htmlFor="tech_badges" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Tech Badges (Pisahkan dengan Koma)</Label>
-                                    <Input
-                                        id="tech_badges"
-                                        type="text"
-                                        value={data.tech_badges}
-                                        onChange={(e) => setData('tech_badges', e.target.value)}
-                                        placeholder="Laravel, React, PostgreSQL, Docker"
-                                        className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
-                                    />
-                                </div>
-
-                                <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-slate-800">
+                                {/* Pinned Modal Footer */}
+                                <div className="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50/80 dark:bg-slate-950/80 border-t border-gray-100 dark:border-slate-800 shrink-0">
                                     <Button
                                         type="button"
                                         variant="ghost"

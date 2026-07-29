@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowUpRight, Eye, X, CheckCircle2, Search } from 'lucide-react';
+import { ArrowUpRight, Eye, X, CheckCircle2, Search, Image as ImageIcon } from 'lucide-react';
 import { GithubIcon } from './BrandIcons';
 import { useLanguage } from '../../Context/LanguageContext';
 
@@ -17,15 +17,30 @@ export default function ProjectsSection({ initialProjects = [] }) {
         4: ['Node.js', 'Express', 'MySQL', 'Docker', 'JWT'],
     };
 
-    const projectItems = t.projects.items.map(item => ({
-        ...item,
-        tech_stack: techStacks[item.id] || ['React', 'Laravel', 'Tailwind CSS'],
-        demo_url: 'https://example.com',
-        github_url: 'https://github.com',
-        is_featured: item.id <= 2,
-    }));
+    const projectItems = initialProjects.length > 0
+        ? initialProjects.map(p => ({
+            ...p,
+            tech_stack: Array.isArray(p.tech_stack)
+                ? p.tech_stack
+                : (typeof p.tech_stack === 'string'
+                    ? (p.tech_stack.trim().startsWith('[')
+                        ? JSON.parse(p.tech_stack)
+                        : p.tech_stack.split(',').map(s => s.trim()).filter(Boolean))
+                    : ['Laravel', 'React']),
+            category: p.category || 'Full Stack',
+            demo_url: p.demo_url || 'https://example.com',
+            github_url: p.github_url || 'https://github.com',
+            is_featured: Boolean(p.is_featured),
+        }))
+        : t.projects.items.map(item => ({
+            ...item,
+            tech_stack: techStacks[item.id] || ['React', 'Laravel', 'Tailwind CSS'],
+            demo_url: 'https://example.com',
+            github_url: 'https://github.com',
+            is_featured: item.id <= 2,
+        }));
 
-    const categories = ['All', 'Full Stack', 'Frontend', 'Backend'];
+    const categories = ['All', ...new Set(projectItems.map(p => p.category || 'Full Stack'))];
 
     const filteredProjects = projectItems.filter(p => {
         const matchesCategory = activeFilter === 'All'
@@ -103,12 +118,16 @@ export default function ProjectsSection({ initialProjects = [] }) {
                                     onClick={() => setSelectedProject(project)}
                                     className="relative w-full h-56 sm:h-64 bg-gray-100 dark:bg-slate-950 overflow-hidden flex items-center justify-center border-b border-gray-100 dark:border-slate-800 cursor-pointer"
                                 >
-                                    <div className="w-full h-full bg-gradient-to-br from-gray-900 to-gray-800 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center justify-center text-white p-6 text-center">
-                                        <div className="text-4xl mb-2 transform group-hover:scale-110 transition duration-300">
-                                            💻
+                                    {project.image_url ? (
+                                        <img src={project.image_url} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                                    ) : (
+                                        <div className="w-full h-full bg-gradient-to-br from-gray-900 to-gray-800 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center justify-center text-white p-6 text-center">
+                                            <div className="w-12 h-12 rounded-2xl bg-white/10 dark:bg-slate-800/80 backdrop-blur-md flex items-center justify-center mb-2.5 group-hover:scale-110 group-hover:bg-white/20 transition duration-300 shadow-inner">
+                                                <ImageIcon className="w-6 h-6 text-white/80 group-hover:text-white transition" />
+                                            </div>
+                                            <span className="font-heading font-bold text-base sm:text-lg text-white/90 group-hover:text-white transition">{project.title}</span>
                                         </div>
-                                        <span className="font-heading font-bold text-lg">{project.title}</span>
-                                    </div>
+                                    )}
 
                                     <div className="absolute inset-0 bg-gray-900/40 dark:bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-xs">
                                         <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white dark:bg-slate-900 text-gray-900 dark:text-white text-xs font-bold shadow-lg transform translate-y-2 group-hover:translate-y-0 transition">

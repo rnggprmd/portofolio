@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('period');
             $table->string('role');
             $table->string('company');
+            $table->string('type')->nullable()->default('Career');
             $table->string('location')->nullable();
             $table->text('description')->nullable();
             $table->json('responsibilities')->nullable();

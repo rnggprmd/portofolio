@@ -52,10 +52,10 @@ export const translations = {
                 techStack: "Tech Stack"
             },
             interests: [
-                { label: '☕ Espresso & Code', desc: 'Fueling architecture sessions with specialty coffee' },
-                { label: '📚 System Design Reading', desc: 'Exploring distributed systems & scalable design' },
-                { label: '🎧 Focus Ambient Music', desc: 'Listening to instrumental lo-fi during deep coding' },
-                { label: '🏎️ F1 & UI Craft', desc: 'Appreciating high-precision engineering in motorsports & digital UI' },
+                { label: 'Espresso & Code', desc: 'Fueling architecture sessions with specialty coffee' },
+                { label: 'System Design Reading', desc: 'Exploring distributed systems & scalable design' },
+                { label: 'Focus Ambient Music', desc: 'Listening to instrumental lo-fi during deep coding' },
+                { label: 'F1 & UI Craft', desc: 'Appreciating high-precision engineering in motorsports & digital UI' },
             ]
         },
         skills: {
@@ -411,10 +411,10 @@ export const translations = {
                 techStack: "Tech Stack"
             },
             interests: [
-                { label: '☕ Kopi Espresso & Kode', desc: 'Menemani sesi arsitektur sistem dengan kopi racikan spesial' },
-                { label: '📚 Membaca Desain Sistem', desc: 'Mempelajari sistem terdistribusi & arsitektur terukur' },
-                { label: '🎧 Musik Musik Lo-Fi', desc: 'Mendengarkan musik instrumen lo-fi saat penulisan kode mendalam' },
-                { label: '🏎️ Presisi F1 & Desain UI', desc: 'Mengagumi rekayasa presisi tinggi di balap F1 & antarmuka digital' },
+                { label: 'Kopi Espresso & Kode', desc: 'Menemani sesi arsitektur sistem dengan kopi racikan spesial' },
+                { label: 'Membaca Desain Sistem', desc: 'Mempelajari sistem terdistribusi & arsitektur terukur' },
+                { label: 'Musik Lo-Fi Focus', desc: 'Mendengarkan musik instrumen lo-fi saat penulisan kode mendalam' },
+                { label: 'Presisi F1 & Desain UI', desc: 'Mengagumi rekayasa presisi tinggi di balap F1 & antarmuka digital' },
             ]
         },
         skills: {

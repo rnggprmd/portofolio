@@ -21,8 +21,10 @@ export default function ProjectsIndex({ projects = [] }) {
 
     const { data, setData, reset, processing } = useForm({
         title: '',
+        category: 'Full Stack',
         description: '',
         image_url: '',
+        image_file: null,
         demo_url: '',
         github_url: '',
         tech_stack: '',
@@ -39,11 +41,13 @@ export default function ProjectsIndex({ projects = [] }) {
         setEditingProject(project);
         setData({
             title: project.title,
+            category: project.category || 'Full Stack',
             description: project.description,
-            image_url: project.image_url || '',
+            image_url: project.image_url || project.image || '',
+            image_file: null,
             demo_url: project.demo_url || '',
             github_url: project.github_url || '',
-            tech_stack: Array.isArray(project.tech_stack) ? project.tech_stack.join(', ') : '',
+            tech_stack: Array.isArray(project.tech_stack) ? project.tech_stack.join(', ') : (typeof project.tech_stack === 'string' ? project.tech_stack : ''),
             is_featured: Boolean(project.is_featured),
         });
         setIsModalOpen(true);
@@ -53,16 +57,29 @@ export default function ProjectsIndex({ projects = [] }) {
         e.preventDefault();
         const payload = {
             ...data,
-            tech_stack: data.tech_stack.split(',').map((s) => s.trim()).filter(Boolean),
+            tech_stack: typeof data.tech_stack === 'string'
+                ? data.tech_stack.split(',').map((s) => s.trim()).filter(Boolean)
+                : data.tech_stack,
         };
 
         if (editingProject) {
-            router.put(`/admin/projects/${editingProject.id}`, payload, {
-                onSuccess: () => setIsModalOpen(false),
+            router.post(`/admin/projects/${editingProject.id}`, {
+                _method: 'PUT',
+                ...payload,
+            }, {
+                forceFormData: true,
+                onSuccess: () => {
+                    setIsModalOpen(false);
+                    setData('image_file', null);
+                },
             });
         } else {
             router.post('/admin/projects', payload, {
-                onSuccess: () => setIsModalOpen(false),
+                forceFormData: true,
+                onSuccess: () => {
+                    setIsModalOpen(false);
+                    setData('image_file', null);
+                },
             });
         }
     };
@@ -137,6 +154,7 @@ export default function ProjectsIndex({ projects = [] }) {
                                 <tr className="border-b border-gray-200 dark:border-slate-800 bg-gray-50/80 dark:bg-slate-950/50 text-[11px] font-mono font-bold text-gray-500 dark:text-slate-400 uppercase tracking-wider">
                                     <th className="py-4 px-6 w-16 text-center">No.</th>
                                     <th className="py-4 px-6">Nama Proyek & Deskripsi</th>
+                                    <th className="py-4 px-6">Kategori</th>
                                     <th className="py-4 px-6">Tech Stack</th>
                                     <th className="py-4 px-6">Status Showcase</th>
                                     <th className="py-4 px-6 text-right">Aksi</th>
@@ -145,7 +163,7 @@ export default function ProjectsIndex({ projects = [] }) {
                             <tbody className="divide-y divide-gray-100 dark:divide-slate-800/60 text-xs sm:text-sm font-sans">
                                 {paginatedProjects.length === 0 ? (
                                     <tr>
-                                        <td colSpan="5" className="py-12 px-6 text-center text-gray-500 dark:text-slate-500 font-mono text-xs">
+                                        <td colSpan="6" className="py-12 px-6 text-center text-gray-500 dark:text-slate-500 font-mono text-xs">
                                             {searchQuery ? `Tidak ada proyek yang cocok dengan kata kunci "${searchQuery}".` : 'Belum ada proyek ditambahkan. Silakan klik "+ Tambah Proyek Baru".'}
                                         </td>
                                     </tr>
@@ -156,15 +174,16 @@ export default function ProjectsIndex({ projects = [] }) {
                                                 {(currentPage - 1) * itemsPerPage + idx + 1}
                                             </td>
                                             <td className="py-4 px-6">
-                                                <div className="flex items-start gap-3">
-                                                    <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white flex items-center justify-center shrink-0 mt-0.5">
-                                                        <FolderKanban className="w-4 h-4" />
-                                                    </div>
-                                                    <div>
-                                                        <div className="font-heading font-bold text-gray-900 dark:text-white text-base">{project.title}</div>
-                                                        <div className="text-xs text-gray-500 dark:text-slate-400 line-clamp-1 mt-0.5 font-sans">{project.description}</div>
-                                                    </div>
+                                                <div>
+                                                    <div className="font-heading font-bold text-gray-900 dark:text-white text-base">{project.title}</div>
+                                                    <div className="text-xs text-gray-500 dark:text-slate-400 line-clamp-1 mt-0.5 font-sans">{project.description}</div>
                                                 </div>
+                                            </td>
+
+                                            <td className="py-4 px-6">
+                                                <Badge variant="outline" className="rounded-full text-[10px] font-mono px-3 py-1 bg-gray-100/80 dark:bg-slate-800/80 text-gray-700 dark:text-slate-300 border-gray-200 dark:border-slate-700">
+                                                    {project.category || 'Full Stack'}
+                                                </Badge>
                                             </td>
 
                                             <td className="py-4 px-6">
@@ -180,10 +199,10 @@ export default function ProjectsIndex({ projects = [] }) {
                                             <td className="py-4 px-6">
                                                 {project.is_featured ? (
                                                     <Badge variant="outline" className="gap-1 rounded-full border-amber-300 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 text-[10px] font-mono">
-                                                        <Star className="w-3 h-3 fill-amber-400 text-amber-400" /> Unggulan
+                                                        <Star className="w-3 h-3 fill-amber-400 text-amber-400" /> Featured
                                                     </Badge>
                                                 ) : (
-                                                    <Badge variant="secondary" className="rounded-full text-[10px] font-mono">Standar</Badge>
+                                                    <Badge variant="secondary" className="rounded-full text-[10px] font-mono">Standard</Badge>
                                                 )}
                                             </td>
 
@@ -263,10 +282,11 @@ export default function ProjectsIndex({ projects = [] }) {
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
-                            className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto relative"
+                            className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl max-w-lg w-full shadow-2xl flex flex-col max-h-[85vh] overflow-hidden"
                         >
-                            <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-4">
-                                <h3 className="font-heading font-bold text-xl text-gray-900 dark:text-white">
+                            {/* Pinned Modal Header */}
+                            <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 px-6 py-5 shrink-0 bg-white dark:bg-slate-900">
+                                <h3 className="font-heading font-bold text-lg sm:text-xl text-gray-900 dark:text-white">
                                     {editingProject ? 'Edit Proyek' : 'Tambah Proyek Baru'}
                                 </h3>
                                 <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition cursor-pointer">
@@ -274,83 +294,147 @@ export default function ProjectsIndex({ projects = [] }) {
                                 </button>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                <div className="space-y-1.5">
-                                    <Label htmlFor="title" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Judul Proyek</Label>
-                                    <Input
-                                        id="title"
-                                        type="text"
-                                        value={data.title}
-                                        onChange={(e) => setData('title', e.target.value)}
-                                        placeholder="E-Commerce Enterprise Platform"
-                                        className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
-                                        required
-                                    />
-                                </div>
+                            {/* Form Container with Internal Scroll Body */}
+                            <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+                                <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div className="space-y-1.5">
+                                            <Label htmlFor="title" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Judul Proyek</Label>
+                                            <Input
+                                                id="title"
+                                                type="text"
+                                                value={data.title}
+                                                onChange={(e) => setData('title', e.target.value)}
+                                                placeholder="E-Commerce SaaS Platform"
+                                                className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
+                                                required
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <Label htmlFor="category" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Kategori Proyek</Label>
+                                            <Input
+                                                id="category"
+                                                type="text"
+                                                value={data.category}
+                                                onChange={(e) => setData('category', e.target.value)}
+                                                placeholder="Full Stack / Frontend / Backend"
+                                                className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
 
-                                <div className="space-y-1.5">
-                                    <Label htmlFor="description" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Deskripsi Singkat</Label>
-                                    <Textarea
-                                        id="description"
-                                        value={data.description}
-                                        onChange={(e) => setData('description', e.target.value)}
-                                        placeholder="Penjelasan singkat mengenai fitur utama dan dampak proyek..."
-                                        className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm min-h-[80px]"
-                                        required
-                                    />
-                                </div>
-
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="demo_url" className="text-xs font-semibold text-gray-700 dark:text-slate-300">URL Demo (Live)</Label>
+                                        <Label htmlFor="description" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Deskripsi Singkat</Label>
+                                        <Textarea
+                                            id="description"
+                                            value={data.description}
+                                            onChange={(e) => setData('description', e.target.value)}
+                                            placeholder="Penjelasan singkat mengenai fitur utama dan dampak proyek..."
+                                            className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm min-h-[80px]"
+                                            required
+                                        />
+                                    </div>
+
+                                    {/* Upload Berkas Gambar atau URL Gambar */}
+                                    <div className="space-y-3 p-4 rounded-2xl bg-gray-50 dark:bg-slate-950/60 border border-gray-200 dark:border-slate-800">
+                                        <div className="space-y-1.5">
+                                            <Label htmlFor="image_file" className="text-xs font-semibold text-gray-700 dark:text-slate-300 flex items-center justify-between">
+                                                <span>Upload Gambar Proyek (PNG, JPG, WEBP)</span>
+                                                <span className="text-[10px] text-gray-500 font-normal">Maks. 5MB</span>
+                                            </Label>
+                                            <Input
+                                                id="image_file"
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={(e) => setData('image_file', e.target.files[0])}
+                                                className="rounded-xl bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 text-xs cursor-pointer"
+                                            />
+                                        </div>
+
+                                        <div className="text-center font-mono text-[10px] text-gray-400 dark:text-slate-500 uppercase tracking-widest">
+                                            — atau gunakan URL eksternal —
+                                        </div>
+
+                                        <div className="space-y-1.5">
+                                            <Input
+                                                id="image_url"
+                                                type="text"
+                                                value={data.image_url}
+                                                onChange={(e) => setData('image_url', e.target.value)}
+                                                placeholder="https://example.com/screenshot.jpg"
+                                                className="rounded-xl bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 text-xs"
+                                            />
+                                        </div>
+
+                                        {/* Live Image Preview */}
+                                        {(data.image_file || data.image_url) && (
+                                            <div className="mt-2 pt-2 border-t border-gray-200 dark:border-slate-800 flex items-center gap-3">
+                                                <div className="w-16 h-12 rounded-lg bg-gray-200 dark:bg-slate-800 overflow-hidden shrink-0 border border-gray-300 dark:border-slate-700">
+                                                    <img
+                                                        src={data.image_file ? URL.createObjectURL(data.image_file) : data.image_url}
+                                                        alt="Preview"
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                </div>
+                                                <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">✓ Preview Gambar Siap</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div className="space-y-1.5">
+                                            <Label htmlFor="demo_url" className="text-xs font-semibold text-gray-700 dark:text-slate-300">URL Demo (Live)</Label>
+                                            <Input
+                                                id="demo_url"
+                                                type="url"
+                                                value={data.demo_url}
+                                                onChange={(e) => setData('demo_url', e.target.value)}
+                                                placeholder="https://example.com"
+                                                className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <Label htmlFor="github_url" className="text-xs font-semibold text-gray-700 dark:text-slate-300">URL Repository GitHub</Label>
+                                            <Input
+                                                id="github_url"
+                                                type="url"
+                                                value={data.github_url}
+                                                onChange={(e) => setData('github_url', e.target.value)}
+                                                placeholder="https://github.com/..."
+                                                className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-1.5">
+                                        <Label htmlFor="tech_stack" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Tech Stack (Pisahkan dengan Koma)</Label>
                                         <Input
-                                            id="demo_url"
-                                            type="url"
-                                            value={data.demo_url}
-                                            onChange={(e) => setData('demo_url', e.target.value)}
-                                            placeholder="https://example.com"
+                                            id="tech_stack"
+                                            type="text"
+                                            value={data.tech_stack}
+                                            onChange={(e) => setData('tech_stack', e.target.value)}
+                                            placeholder="Laravel, React, PostgreSQL, Tailwind"
                                             className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
                                         />
                                     </div>
-                                    <div className="space-y-1.5">
-                                        <Label htmlFor="github_url" className="text-xs font-semibold text-gray-700 dark:text-slate-300">URL Repository GitHub</Label>
-                                        <Input
-                                            id="github_url"
-                                            type="url"
-                                            value={data.github_url}
-                                            onChange={(e) => setData('github_url', e.target.value)}
-                                            placeholder="https://github.com/..."
-                                            className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
+
+                                    <div className="flex items-center gap-2 pt-2">
+                                        <input
+                                            type="checkbox"
+                                            id="is_featured"
+                                            checked={data.is_featured}
+                                            onChange={(e) => setData('is_featured', e.target.checked)}
+                                            className="rounded border-gray-300 dark:border-slate-800 text-gray-900 dark:text-white focus:ring-0 cursor-pointer"
                                         />
+                                        <Label htmlFor="is_featured" className="text-xs font-semibold text-gray-700 dark:text-slate-300 cursor-pointer">
+                                            Tampilkan sebagai Featured Project di Landing Page
+                                        </Label>
                                     </div>
                                 </div>
 
-                                <div className="space-y-1.5">
-                                    <Label htmlFor="tech_stack" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Tech Stack (Pisahkan dengan Koma)</Label>
-                                    <Input
-                                        id="tech_stack"
-                                        type="text"
-                                        value={data.tech_stack}
-                                        onChange={(e) => setData('tech_stack', e.target.value)}
-                                        placeholder="Laravel, React, PostgreSQL, Tailwind"
-                                        className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
-                                    />
-                                </div>
-
-                                <div className="flex items-center gap-2 pt-2">
-                                    <input
-                                        type="checkbox"
-                                        id="is_featured"
-                                        checked={data.is_featured}
-                                        onChange={(e) => setData('is_featured', e.target.checked)}
-                                        className="rounded border-gray-300 dark:border-slate-800 text-gray-900 dark:text-white focus:ring-0 cursor-pointer"
-                                    />
-                                    <Label htmlFor="is_featured" className="text-xs font-semibold text-gray-700 dark:text-slate-300 cursor-pointer">
-                                        Tampilkan sebagai Proyek Unggulan di Landing Page
-                                    </Label>
-                                </div>
-
-                                <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-slate-800">
+                                {/* Pinned Modal Footer */}
+                                <div className="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50/80 dark:bg-slate-950/80 border-t border-gray-100 dark:border-slate-800 shrink-0">
                                     <Button
                                         type="button"
                                         variant="ghost"

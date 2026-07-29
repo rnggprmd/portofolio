@@ -13,6 +13,7 @@ class Project extends Model
     protected $fillable = [
         'title',
         'slug',
+        'category',
         'description',
         'image',
         'tech_stack',
@@ -25,6 +26,13 @@ class Project extends Model
         'tech_stack' => 'array',
         'is_featured' => 'boolean',
     ];
+
+    protected $appends = ['image_url'];
+
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->attributes['image'] ?? null;
+    }
 
     protected static function boot()
     {

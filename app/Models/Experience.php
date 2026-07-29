@@ -13,6 +13,7 @@ class Experience extends Model
         'period',
         'role',
         'company',
+        'type',
         'location',
         'description',
         'responsibilities',
