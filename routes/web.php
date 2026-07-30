@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CertificateController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ExperienceController;
 use App\Http\Controllers\Admin\MessageController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SkillController;
@@ -26,6 +27,9 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // Protected Admin Panel Routes
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
+    Route::put('profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
     Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('settings', [SettingController::class, 'update'])->name('settings.update');
     Route::get('about', [AboutController::class, 'index'])->name('about.index');

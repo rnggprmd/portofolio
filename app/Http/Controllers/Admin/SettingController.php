@@ -28,6 +28,7 @@ class SettingController extends Controller
             'github_url' => 'https://github.com/rnggprmd',
             'linkedin_url' => 'https://linkedin.com',
             'cv_url' => '#',
+            'site_logo' => '/storage/logo/logo portofolio.png',
         ];
 
         $settings = [];
@@ -63,6 +64,7 @@ class SettingController extends Controller
             SiteSetting::setKey('avatar_url', '/storage/' . $path);
             unset($data['avatar_url']); // Prevent overwriting newly uploaded Avatar path!
         }
+
 
         // 3. Auto sync github_url if username is provided
         if (!empty($data['github_username'])) {

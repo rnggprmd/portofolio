@@ -73,8 +73,10 @@ export default function ProjectsSection({ initialProjects = [] }) {
                     {/* Category Filter Tabs */}
                     <div className="flex flex-wrap items-center justify-center gap-2">
                         {categories.map((cat) => (
-                            <button
+                            <motion.button
                                 key={cat}
+                                whileHover={{ scale: 1.06 }}
+                                whileTap={{ scale: 0.94 }}
                                 onClick={() => setActiveFilter(cat)}
                                 className={`px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer ${
                                     activeFilter === cat
@@ -83,7 +85,7 @@ export default function ProjectsSection({ initialProjects = [] }) {
                                 }`}
                             >
                                 {cat === 'All' ? t.skills.all : cat}
-                            </button>
+                            </motion.button>
                         ))}
                     </div>
 

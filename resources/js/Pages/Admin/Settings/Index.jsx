@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/Com
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
-import { Save, User, Sparkles, CheckCircle2, CreditCard, FileText, ExternalLink, Image } from 'lucide-react';
+import { Save, User, Sparkles, CheckCircle2, CreditCard, FileText, ExternalLink } from 'lucide-react';
 import { GithubIcon } from '@/Components/Landing/BrandIcons';
 
 export default function SettingsIndex({ settings = {} }) {
@@ -55,7 +55,7 @@ export default function SettingsIndex({ settings = {} }) {
         <AdminLayout>
             <Head title="Hero & Identitas (Pengaturan Profil)" />
 
-            <div className="space-y-8 max-w-4xl mx-auto">
+            <div className="space-y-6">
                 {/* Header Title */}
                 <div>
                     <span className="font-mono text-xs uppercase tracking-widest text-gray-500 dark:text-slate-400 font-semibold">
@@ -318,14 +318,16 @@ export default function SettingsIndex({ settings = {} }) {
 
                     {/* Submit Button */}
                     <div className="flex justify-end pt-2">
-                        <Button
-                            type="submit"
-                            disabled={processing}
-                            className="rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-black dark:hover:bg-gray-100 font-semibold px-8 py-3 shadow-md gap-2 cursor-pointer"
-                        >
-                            <Save className="w-4 h-4" />
-                            <span>Simpan Perubahan Hero & Identitas</span>
-                        </Button>
+                        <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                            <Button
+                                type="submit"
+                                disabled={processing}
+                                className="rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-black dark:hover:bg-gray-100 font-semibold px-8 py-3 shadow-md gap-2 cursor-pointer transition-transform"
+                            >
+                                <Save className="w-4 h-4" />
+                                <span>Simpan Perubahan Hero & Identitas</span>
+                            </Button>
+                        </motion.div>
                     </div>
                 </form>
             </div>

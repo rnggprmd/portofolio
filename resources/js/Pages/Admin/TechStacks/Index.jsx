@@ -6,12 +6,76 @@ import { Button } from '@/Components/ui/button';
 import { Card } from '@/Components/ui/card';
 import { Badge } from '@/Components/ui/badge';
 import { Input } from '@/Components/ui/input';
-import { Label } from '@/Components/ui/label';
 import { Plus, Pencil, Trash2, X, Layers, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import TechIcon from '@/Components/Landing/TechIcon';
+import {
+    ReactIcon,
+    LaravelIcon,
+    TailwindIcon,
+    InertiaIcon,
+    NodeIcon,
+    ExpressIcon,
+    MysqlIcon,
+    PostgresqlIcon,
+    DockerIcon,
+    GitIcon,
+    FigmaIcon,
+    CiscoIcon,
+    PythonIcon,
+    JavaIcon,
+    PhpIcon,
+    AwsIcon,
+    VueIcon,
+    AngularIcon,
+    TypescriptIcon,
+    JavascriptIcon,
+    NextjsIcon,
+    FlutterIcon,
+    RedisIcon,
+    MongodbIcon,
+    LinuxIcon,
+    NginxIcon,
+    VercelIcon
+} from '@/Components/Landing/BrandIcons';
+
+const iconMap = {
+    React: ReactIcon, react: ReactIcon,
+    Laravel: LaravelIcon, laravel: LaravelIcon,
+    Tailwind: TailwindIcon, tailwind: TailwindIcon, 'tailwind css': TailwindIcon,
+    Inertia: InertiaIcon, inertia: InertiaIcon, 'inertia.js': InertiaIcon,
+    Node: NodeIcon, node: NodeIcon, 'node.js': NodeIcon,
+    Express: ExpressIcon, express: ExpressIcon, 'express.js': ExpressIcon,
+    Mysql: MysqlIcon, mysql: MysqlIcon,
+    Postgresql: PostgresqlIcon, postgresql: PostgresqlIcon, postgres: PostgresqlIcon,
+    Docker: DockerIcon, docker: DockerIcon,
+    Git: GitIcon, git: GitIcon,
+    Figma: FigmaIcon, figma: FigmaIcon,
+    Cisco: CiscoIcon, cisco: CiscoIcon,
+    Python: PythonIcon, python: PythonIcon,
+    Java: JavaIcon, java: JavaIcon,
+    Php: PhpIcon, php: PhpIcon,
+    Aws: AwsIcon, aws: AwsIcon,
+    Vue: VueIcon, vue: VueIcon, 'vue.js': VueIcon,
+    Angular: AngularIcon, angular: AngularIcon,
+    Typescript: TypescriptIcon, typescript: TypescriptIcon, ts: TypescriptIcon,
+    Javascript: JavascriptIcon, javascript: JavascriptIcon, js: JavascriptIcon,
+    Nextjs: NextjsIcon, nextjs: NextjsIcon, 'next.js': NextjsIcon,
+    Flutter: FlutterIcon, flutter: FlutterIcon,
+    Redis: RedisIcon, redis: RedisIcon,
+    Mongodb: MongodbIcon, mongodb: MongodbIcon, mongo: MongodbIcon,
+    Linux: LinuxIcon, linux: LinuxIcon,
+    Nginx: NginxIcon, nginx: NginxIcon,
+    Vercel: VercelIcon, vercel: VercelIcon,
+};
 
 export default function TechStacksIndex({ techStacks = [] }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingTech, setEditingTech] = useState(null);
+    const [isCustomCategory, setIsCustomCategory] = useState(false);
+
+    const defaultCategories = ['Frontend', 'Backend', 'Database', 'DevOps & Tools', 'Design', 'Other'];
+    const databaseCategories = [...new Set(techStacks.map(t => t.category).filter(Boolean))];
+    const existingCategories = Array.from(new Set([...defaultCategories, ...databaseCategories]));
 
     // Search & Pagination State
     const [searchQuery, setSearchQuery] = useState('');
@@ -28,12 +92,14 @@ export default function TechStacksIndex({ techStacks = [] }) {
 
     const openCreateModal = () => {
         setEditingTech(null);
+        setIsCustomCategory(false);
         reset();
         setIsModalOpen(true);
     };
 
     const openEditModal = (tech) => {
         setEditingTech(tech);
+        setIsCustomCategory(!existingCategories.includes(tech.category));
         setData({
             name: tech.name,
             icon_name: tech.icon_name,
@@ -146,9 +212,9 @@ export default function TechStacksIndex({ techStacks = [] }) {
                                                 {(currentPage - 1) * itemsPerPage + idx + 1}
                                             </td>
                                             <td className="py-4 px-6">
-                                                <div className="flex items-start gap-3">
-                                                    <div className="w-8 h-8 rounded-lg bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white flex items-center justify-center shrink-0 mt-0.5">
-                                                        <Layers className="w-4 h-4" />
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-8 h-8 rounded-xl bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white flex items-center justify-center shrink-0 border border-gray-200/60 dark:border-slate-700/60 p-1.5 overflow-hidden">
+                                                        <TechIcon iconName={tech.icon_name} name={tech.name} className="w-4 h-4" />
                                                     </div>
                                                     <div>
                                                         <div className="font-heading font-bold text-gray-900 dark:text-white text-base">{tech.name}</div>
@@ -169,20 +235,24 @@ export default function TechStacksIndex({ techStacks = [] }) {
 
                                             <td className="py-4 px-6 text-right">
                                                 <div className="flex items-center justify-end gap-1.5">
-                                                    <button
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.15 }}
+                                                        whileTap={{ scale: 0.9 }}
                                                         onClick={() => openEditModal(tech)}
                                                         title="Edit Tech Stack"
                                                         className="p-2 rounded-full border border-gray-200 dark:border-slate-800 text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 transition cursor-pointer"
                                                     >
                                                         <Pencil className="w-3.5 h-3.5" />
-                                                    </button>
-                                                    <button
+                                                    </motion.button>
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.15 }}
+                                                        whileTap={{ scale: 0.9 }}
                                                         onClick={() => handleDelete(tech.id)}
                                                         title="Hapus Tech Stack"
                                                         className="p-2 rounded-full border border-rose-200 dark:border-rose-900/50 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
                                                     >
                                                         <Trash2 className="w-3.5 h-3.5" />
-                                                    </button>
+                                                    </motion.button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -243,10 +313,11 @@ export default function TechStacksIndex({ techStacks = [] }) {
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
-                            className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl space-y-6 relative"
+                            className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl max-w-md w-full shadow-2xl flex flex-col max-h-[85vh] overflow-hidden"
                         >
-                            <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-4">
-                                <h3 className="font-heading font-bold text-xl text-gray-900 dark:text-white">
+                            {/* Pinned Modal Header */}
+                            <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 px-6 py-5 shrink-0 bg-white dark:bg-slate-900">
+                                <h3 className="font-heading font-bold text-lg sm:text-xl text-gray-900 dark:text-white">
                                     {editingTech ? 'Edit Tech Stack' : 'Tambah Tech Stack Baru'}
                                 </h3>
                                 <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition cursor-pointer">
@@ -254,68 +325,105 @@ export default function TechStacksIndex({ techStacks = [] }) {
                                 </button>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                <div className="space-y-1.5">
-                                    <Label htmlFor="name" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Nama Teknologi</Label>
-                                    <Input
-                                        id="name"
-                                        type="text"
-                                        value={data.name}
-                                        onChange={(e) => setData('name', e.target.value)}
-                                        placeholder="Laravel, React, Docker, Tailwind CSS"
-                                        className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
-                                        required
-                                    />
-                                </div>
-
-                                <div className="space-y-1.5">
-                                    <Label htmlFor="icon_name" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Icon Name / Identifier</Label>
-                                    <Input
-                                        id="icon_name"
-                                        type="text"
-                                        value={data.icon_name}
-                                        onChange={(e) => setData('icon_name', e.target.value)}
-                                        placeholder="laravel, react, docker, tailwind"
-                                        className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm font-mono"
-                                        required
-                                    />
-                                </div>
-
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {/* Form Container with Internal Scroll Body */}
+                            <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+                                <div className="flex-1 overflow-y-auto p-6 space-y-4">
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="category" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Kategori</Label>
-                                        <select
-                                            id="category"
-                                            value={data.category}
-                                            onChange={(e) => setData('category', e.target.value)}
-                                            className="w-full h-10 px-3.5 py-2 rounded-2xl bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-gray-900 dark:text-white text-sm focus:outline-none"
-                                        >
-                                            <option value="Frontend">Frontend</option>
-                                            <option value="Backend">Backend</option>
-                                            <option value="Database">Database</option>
-                                            <option value="DevOps & Tools">DevOps & Tools</option>
-                                            <option value="Design">Design</option>
-                                            <option value="Other">Lainnya</option>
-                                        </select>
+                                        <Label htmlFor="name" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Nama Teknologi</Label>
+                                        <Input
+                                            id="name"
+                                            type="text"
+                                            value={data.name}
+                                            onChange={(e) => setData('name', e.target.value)}
+                                            placeholder="Laravel, React, Docker, Tailwind CSS"
+                                            className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
+                                            required
+                                        />
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="proficiency" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Penguasaan</Label>
-                                        <select
-                                            id="proficiency"
-                                            value={data.proficiency}
-                                            onChange={(e) => setData('proficiency', e.target.value)}
-                                            className="w-full h-10 px-3.5 py-2 rounded-2xl bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-gray-900 dark:text-white text-sm focus:outline-none"
-                                        >
-                                            <option value="Mastery">Mastery</option>
-                                            <option value="Advanced">Advanced</option>
-                                            <option value="Intermediate">Intermediate</option>
-                                            <option value="Beginner">Beginner</option>
-                                        </select>
+                                        <Label htmlFor="icon_name" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Icon Name / Identifier</Label>
+                                        <Input
+                                            id="icon_name"
+                                            type="text"
+                                            value={data.icon_name}
+                                            onChange={(e) => setData('icon_name', e.target.value)}
+                                            placeholder="laravel, react, docker, tailwind"
+                                            className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm font-mono"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div className="space-y-1.5">
+                                            <div className="flex items-center justify-between">
+                                                <Label htmlFor="category" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Kategori</Label>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setIsCustomCategory(!isCustomCategory);
+                                                        if (!isCustomCategory) {
+                                                            setData('category', '');
+                                                        } else {
+                                                            setData('category', 'Frontend');
+                                                        }
+                                                    }}
+                                                    className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer font-semibold"
+                                                >
+                                                    {isCustomCategory ? 'Pilih Opsi' : '+ Baru (Custom)'}
+                                                </button>
+                                            </div>
+
+                                            {isCustomCategory ? (
+                                                <Input
+                                                    type="text"
+                                                    value={data.category}
+                                                    onChange={(e) => setData('category', e.target.value)}
+                                                    placeholder="Ketik kategori baru..."
+                                                    className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
+                                                    required
+                                                />
+                                            ) : (
+                                                <select
+                                                    id="category"
+                                                    value={data.category}
+                                                    onChange={(e) => {
+                                                        if (e.target.value === '__custom__') {
+                                                            setIsCustomCategory(true);
+                                                            setData('category', '');
+                                                        } else {
+                                                            setData('category', e.target.value);
+                                                        }
+                                                    }}
+                                                    className="w-full h-10 px-3.5 py-2 rounded-2xl bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-gray-900 dark:text-white text-sm focus:outline-none"
+                                                >
+                                                    {existingCategories.map(cat => (
+                                                        <option key={cat} value={cat}>{cat}</option>
+                                                    ))}
+                                                    <option value="__custom__">+ Ketik Kategori Baru...</option>
+                                                </select>
+                                            )}
+                                        </div>
+
+                                        <div className="space-y-1.5">
+                                            <Label htmlFor="proficiency" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Penguasaan</Label>
+                                            <select
+                                                id="proficiency"
+                                                value={data.proficiency}
+                                                onChange={(e) => setData('proficiency', e.target.value)}
+                                                className="w-full h-10 px-3.5 py-2 rounded-2xl bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-gray-900 dark:text-white text-sm focus:outline-none"
+                                            >
+                                                <option value="Mastery">Mastery</option>
+                                                <option value="Advanced">Advanced</option>
+                                                <option value="Intermediate">Intermediate</option>
+                                                <option value="Beginner">Beginner</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-slate-800">
+                                {/* Pinned Modal Footer */}
+                                <div className="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50/80 dark:bg-slate-950/80 border-t border-gray-100 dark:border-slate-800 shrink-0">
                                     <Button
                                         type="button"
                                         variant="ghost"

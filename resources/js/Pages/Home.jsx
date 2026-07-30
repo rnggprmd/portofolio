@@ -56,7 +56,7 @@ export default function Home({
 
     return (
         <LanguageProvider>
-            <Head title={`${settings.hero_name || 'Rangga Pramudya'} - Software Engineer Portfolio`} />
+            <Head title={`${settings.hero_name || 'Rangga Pramudya'} - Portofolio`} />
 
             <div className="min-h-screen bg-white dark:bg-slate-950 bg-grid-pattern text-gray-900 dark:text-slate-100 font-sans antialiased selection:bg-gray-900 selection:text-white dark:selection:bg-white dark:selection:text-gray-900 transition-colors duration-300">
                 {/* Navbar with Theme, Language & Command Palette Triggers */}
@@ -64,6 +64,7 @@ export default function Home({
                     theme={theme}
                     toggleTheme={toggleTheme}
                     onOpenCommandPalette={() => setCommandPaletteOpen(true)}
+                    settings={settings}
                 />
 
                 {/* Main Landing Sections with Buttery-Smooth Viewport Reveal Animations */}

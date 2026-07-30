@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, usePage } from '@inertiajs/react';
-import { motion } from 'framer-motion';
-import { LayoutDashboard, FolderKanban, Wrench, Mail, Globe, X, Code2, Briefcase, Award, Settings, Layers, UserCheck } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { LayoutDashboard, FolderKanban, Wrench, Mail, Globe, X, Code2, Briefcase, Award, Settings, Layers, UserCheck, KeyRound } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function AdminSidebar({ isOpen, setIsOpen }) {
@@ -48,7 +48,7 @@ export default function AdminSidebar({ isOpen, setIsOpen }) {
                 },
                 {
                     tag: 'SEC 05 // EXPERIENCE SECTION',
-                    name: 'Pengalaman Kerja',
+                    name: 'Pengalaman & Karir',
                     href: '/admin/experiences',
                     icon: Briefcase,
                 },
@@ -81,34 +81,49 @@ export default function AdminSidebar({ isOpen, setIsOpen }) {
 
     return (
         <>
-            {isOpen && (
-                <div
-                    className="fixed inset-0 z-40 bg-black/50 md:hidden backdrop-blur-sm transition-opacity"
-                    onClick={() => setIsOpen(false)}
-                />
-            )}
+            {/* Animated Mobile & Desktop Overlay */}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="fixed inset-0 z-40 bg-black/60 lg:hidden backdrop-blur-xs cursor-pointer"
+                        onClick={() => setIsOpen(false)}
+                    />
+                )}
+            </AnimatePresence>
 
+            {/* Interactive Sidebar Drawer */}
             <aside
                 className={cn(
-                    'fixed top-0 left-0 z-50 h-screen w-64 bg-white/95 dark:bg-slate-900/95 border-r border-gray-200 dark:border-slate-800 text-gray-900 dark:text-slate-100 backdrop-blur-md transition-transform duration-300 ease-in-out md:translate-x-0 flex flex-col justify-between',
+                    'fixed top-0 left-0 z-50 h-screen w-64 bg-white/95 dark:bg-slate-900/95 border-r border-gray-200 dark:border-slate-800 text-gray-900 dark:text-slate-100 backdrop-blur-md transition-all duration-300 ease-in-out flex flex-col justify-between shadow-2xl lg:shadow-none',
                     isOpen ? 'translate-x-0' : '-translate-x-full'
                 )}
             >
                 <div className="flex flex-col h-full">
                     {/* Sidebar Header */}
                     <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200 dark:border-slate-800 shrink-0">
-                        <Link href="/admin/dashboard" className="flex items-center gap-2.5 font-heading font-bold text-base text-gray-900 dark:text-white">
-                            <div className="w-8 h-8 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center font-bold text-sm shadow-xs">
-                                <Code2 className="w-4 h-4" />
+                        <Link href="/admin/dashboard" className="flex items-center gap-2.5 font-heading font-bold text-base text-gray-900 dark:text-white group">
+                            <div className="w-8 h-8 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center shadow-xs group-hover:rotate-6 transition-transform overflow-hidden p-1">
+                                <img 
+                                    src="/storage/logo/logo portofolio.png" 
+                                    alt="Logo" 
+                                    className="w-full h-full object-contain rounded-lg"
+                                />
                             </div>
                             <span className="tracking-tight">Admin Center</span>
                         </Link>
-                        <button
+                        <motion.button
+                            whileHover={{ rotate: 90, scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
                             onClick={() => setIsOpen(false)}
-                            className="md:hidden text-gray-500 hover:text-gray-900 dark:hover:text-white p-1"
+                            className="lg:hidden text-gray-500 hover:text-gray-900 dark:hover:text-white p-1.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                            title="Tutup Sidebar"
                         >
                             <X className="w-5 h-5" />
-                        </button>
+                        </motion.button>
                     </div>
 
                     {/* Grouped Navigation with Tags Above Menu Buttons */}
@@ -152,18 +167,7 @@ export default function AdminSidebar({ isOpen, setIsOpen }) {
                         ))}
                     </nav>
 
-                    {/* Sidebar Footer Link */}
-                    <div className="p-4 border-t border-gray-200 dark:border-slate-800 shrink-0">
-                        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                            <Link
-                                href="/"
-                                className="flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-2xl bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-800 dark:text-slate-200 text-xs font-semibold transition border border-gray-200 dark:border-slate-700 shadow-2xs"
-                            >
-                                <Globe className="w-4 h-4" />
-                                <span>Lihat Landing Page</span>
-                            </Link>
-                        </motion.div>
-                    </div>
+
                 </div>
             </aside>
         </>

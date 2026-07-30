@@ -5,9 +5,14 @@ import { Mail, MapPin, Send, CheckCircle2, MessageSquare, Copy, Check, Sparkles 
 import { GithubIcon, LinkedinIcon } from './BrandIcons';
 import { useLanguage } from '../../Context/LanguageContext';
 
-export default function ContactSection() {
+export default function ContactSection({ settings = {} }) {
     const { t } = useLanguage();
     const [copiedEmail, setCopiedEmail] = useState(false);
+
+    const contactEmail = settings.contact_email || settings.email || 'rangga.pramudya@example.com';
+    const githubUrl = settings.github_url || 'https://github.com/rnggprmd';
+    const linkedinUrl = settings.linkedin_url || 'https://linkedin.com';
+
     const { data, setData, post, processing, reset, errors, recentlySuccessful } = useForm({
         name: '',
         email: '',
@@ -23,7 +28,7 @@ export default function ContactSection() {
     ];
 
     const handleCopyEmail = () => {
-        navigator.clipboard.writeText('rangga.pramudya@example.com');
+        navigator.clipboard.writeText(contactEmail);
         setCopiedEmail(true);
         setTimeout(() => setCopiedEmail(false), 2000);
     };
@@ -65,8 +70,8 @@ export default function ContactSection() {
                                     <div className="flex-1">
                                         <div className="text-xs font-mono font-medium text-gray-400 dark:text-slate-500 uppercase">Email</div>
                                         <div className="flex items-center justify-between gap-2 mt-0.5">
-                                            <a href="mailto:rangga.pramudya@example.com" className="font-semibold text-gray-900 dark:text-white hover:underline text-xs sm:text-sm">
-                                                rangga.pramudya@example.com
+                                            <a href={`mailto:${contactEmail}`} className="font-semibold text-gray-900 dark:text-white hover:underline text-xs sm:text-sm">
+                                                {contactEmail}
                                             </a>
                                             <button
                                                 onClick={handleCopyEmail}
@@ -94,29 +99,19 @@ export default function ContactSection() {
                                     </div>
                                 </div>
 
-                                <div className="flex items-start gap-4">
-                                    <div className="w-10 h-10 rounded-2xl bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white flex items-center justify-center shrink-0">
-                                        <MessageSquare className="w-5 h-5" />
-                                    </div>
-                                    <div>
-                                        <div className="text-xs font-mono font-medium text-gray-400 dark:text-slate-500 uppercase">{t.contact.availability}</div>
-                                        <div className="font-semibold text-gray-900 dark:text-white mt-0.5">
-                                            {t.contact.availabilityVal}
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
 
                             <div className="pt-4 border-t border-gray-100 dark:border-slate-800">
                                 <div className="text-xs font-mono font-medium text-gray-400 dark:text-slate-500 uppercase mb-3">Connect via Social</div>
                                 <div className="flex gap-3">
-                                    <a href="https://github.com" target="_blank" rel="noreferrer" className="p-3 rounded-2xl bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white hover:bg-gray-900 dark:hover:bg-white dark:hover:text-gray-900 hover:text-white hover:scale-105 transition">
+                                    <a href={githubUrl} target="_blank" rel="noreferrer" className="p-3 rounded-2xl bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white hover:bg-gray-900 dark:hover:bg-white dark:hover:text-gray-900 hover:text-white hover:scale-105 transition">
                                         <GithubIcon className="w-4 h-4" />
                                     </a>
-                                    <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="p-3 rounded-2xl bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white hover:bg-gray-900 dark:hover:bg-white dark:hover:text-gray-900 hover:text-white hover:scale-105 transition">
+                                    <a href={linkedinUrl} target="_blank" rel="noreferrer" className="p-3 rounded-2xl bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white hover:bg-gray-900 dark:hover:bg-white dark:hover:text-gray-900 hover:text-white hover:scale-105 transition">
                                         <LinkedinIcon className="w-4 h-4" />
                                     </a>
-                                    <a href="mailto:rangga.pramudya@example.com" className="p-3 rounded-2xl bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white hover:bg-gray-900 dark:hover:bg-white dark:hover:text-gray-900 hover:text-white hover:scale-105 transition">
+                                    <a href={`mailto:${contactEmail}`} className="p-3 rounded-2xl bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white hover:bg-gray-900 dark:hover:bg-white dark:hover:text-gray-900 hover:text-white hover:scale-105 transition">
                                         <Mail className="w-4 h-4" />
                                     </a>
                                 </div>
@@ -149,9 +144,11 @@ export default function ContactSection() {
                                 </div>
                                 <div className="flex flex-wrap gap-1.5">
                                     {subjectPresets.map((preset, idx) => (
-                                        <button
+                                        <motion.button
                                             key={idx}
                                             type="button"
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
                                             onClick={() => setData('subject', preset)}
                                             className={`px-3 py-1 rounded-full text-xs font-medium border transition cursor-pointer ${
                                                 data.subject === preset
@@ -160,7 +157,7 @@ export default function ContactSection() {
                                             }`}
                                         >
                                             {preset}
-                                        </button>
+                                        </motion.button>
                                     ))}
                                 </div>
                             </div>
@@ -174,7 +171,7 @@ export default function ContactSection() {
                                             value={data.name}
                                             onChange={(e) => setData('name', e.target.value)}
                                             className="w-full px-4 py-3 rounded-2xl bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-gray-900 dark:focus:border-white focus:bg-white dark:focus:bg-slate-950 transition"
-                                            placeholder="Jane Doe"
+                                            placeholder="John Doe"
                                             required
                                         />
                                         {errors.name && <div className="text-rose-500 text-xs mt-1">{errors.name}</div>}
@@ -187,7 +184,7 @@ export default function ContactSection() {
                                             value={data.email}
                                             onChange={(e) => setData('email', e.target.value)}
                                             className="w-full px-4 py-3 rounded-2xl bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-gray-900 dark:focus:border-white focus:bg-white dark:focus:bg-slate-950 transition"
-                                            placeholder="jane@example.com"
+                                            placeholder="john@example.com"
                                             required
                                         />
                                         {errors.email && <div className="text-rose-500 text-xs mt-1">{errors.email}</div>}
@@ -201,8 +198,9 @@ export default function ContactSection() {
                                         value={data.subject}
                                         onChange={(e) => setData('subject', e.target.value)}
                                         className="w-full px-4 py-3 rounded-2xl bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-gray-900 dark:focus:border-white focus:bg-white dark:focus:bg-slate-950 transition"
-                                        placeholder="Project Inquiry / Job Opportunity"
+                                        placeholder="Project Discussion / Collaboration"
                                     />
+                                    {errors.subject && <div className="text-rose-500 text-xs mt-1">{errors.subject}</div>}
                                 </div>
 
                                 <div className="space-y-1.5">
@@ -221,14 +219,16 @@ export default function ContactSection() {
                                     {errors.message && <div className="text-rose-500 text-xs mt-1">{errors.message}</div>}
                                 </div>
 
-                                <button
+                                <motion.button
                                     type="submit"
                                     disabled={processing}
-                                    className="w-full py-4 rounded-2xl bg-gray-900 dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-gray-900 font-semibold text-sm shadow-md hover:shadow-lg hover:scale-[1.01] transition duration-200 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                                    whileHover={{ scale: 1.02 }}
+                                    whileTap={{ scale: 0.98 }}
+                                    className="w-full py-4 rounded-2xl bg-gray-900 dark:bg-white hover:bg-black dark:hover:bg-gray-100 text-white dark:text-gray-900 font-semibold text-sm shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                                 >
                                     <Send className="w-4 h-4" />
                                     <span>{processing ? t.contact.sending : t.contact.send}</span>
-                                </button>
+                                </motion.button>
                             </form>
                         </div>
                     </div>

@@ -112,21 +112,20 @@ export default function SkillsIndex({ skills = [] }) {
                         </p>
                     </div>
 
-                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                        <Button onClick={openCreateModal} className="rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-black dark:hover:bg-gray-100 gap-1.5 shadow-md cursor-pointer">
-                            <Plus className="w-4 h-4" />
-                            <span>Tambah Skill Baru</span>
-                        </Button>
-                    </motion.div>
+                    <Button
+                        onClick={openCreateModal}
+                        className="rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold text-xs px-5 py-2.5 shadow-lg hover:bg-gray-800 dark:hover:bg-slate-100 transition cursor-pointer self-start sm:self-auto flex items-center gap-2"
+                    >
+                        <Plus className="w-4 h-4" /> Tambah Skill Baru
+                    </Button>
                 </div>
 
-                {/* Filter Search Bar & Total Counter */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="relative w-full sm:w-80">
+                {/* Filter Search Bar */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-4 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm">
+                    <div className="relative flex-1 max-w-md">
                         <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
                         <Input
-                            type="text"
-                            placeholder="Cari skill atau kategori..."
+                            placeholder="Cari nama skill atau kategori..."
                             value={searchQuery}
                             onChange={(e) => {
                                 setSearchQuery(e.target.value);
@@ -171,12 +170,7 @@ export default function SkillsIndex({ skills = [] }) {
                                                 </td>
                                                 {/* Nama Skill */}
                                                 <td className="py-4 px-6 font-semibold text-gray-900 dark:text-white">
-                                                    <div className="flex items-center gap-2.5">
-                                                        <div className="w-7 h-7 rounded-lg bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white flex items-center justify-center shrink-0">
-                                                            <CatIcon className="w-3.5 h-3.5" />
-                                                        </div>
-                                                        <span>{skill.name}</span>
-                                                    </div>
+                                                    {skill.name}
                                                 </td>
 
                                             {/* Kategori Badge */}
@@ -209,20 +203,24 @@ export default function SkillsIndex({ skills = [] }) {
                                             {/* Tombol Aksi Icon Only */}
                                             <td className="py-4 px-6 text-right">
                                                 <div className="flex items-center justify-end gap-1.5">
-                                                    <button
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.15 }}
+                                                        whileTap={{ scale: 0.9 }}
                                                         onClick={() => openEditModal(skill)}
                                                         title="Edit Skill"
                                                         className="p-2 rounded-full border border-gray-200 dark:border-slate-800 text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 transition cursor-pointer"
                                                     >
                                                         <Pencil className="w-3.5 h-3.5" />
-                                                    </button>
-                                                    <button
+                                                    </motion.button>
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.15 }}
+                                                        whileTap={{ scale: 0.9 }}
                                                         onClick={() => handleDelete(skill.id)}
                                                         title="Hapus Skill"
                                                         className="p-2 rounded-full border border-rose-200 dark:border-rose-900/50 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
                                                     >
                                                         <Trash2 className="w-3.5 h-3.5" />
-                                                    </button>
+                                                    </motion.button>
                                                 </div>
                                             </td>
                                          </tr>
@@ -284,10 +282,11 @@ export default function SkillsIndex({ skills = [] }) {
                             initial={{ opacity: 0, scale: 0.95 }}
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.95 }}
-                            className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl space-y-5 relative"
+                            className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl max-w-md w-full shadow-2xl flex flex-col max-h-[85vh] overflow-hidden"
                         >
-                            <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-4">
-                                <h3 className="font-heading font-bold text-xl text-gray-900 dark:text-white">
+                            {/* Pinned Modal Header */}
+                            <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 px-6 py-5 shrink-0 bg-white dark:bg-slate-900">
+                                <h3 className="font-heading font-bold text-lg sm:text-xl text-gray-900 dark:text-white">
                                     {editingSkill ? 'Edit Skill' : 'Tambah Skill Baru'}
                                 </h3>
                                 <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition cursor-pointer">
@@ -295,99 +294,103 @@ export default function SkillsIndex({ skills = [] }) {
                                 </button>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                <div className="space-y-1.5">
-                                    <Label htmlFor="name" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Nama Skill</Label>
-                                    <Input
-                                        id="name"
-                                        type="text"
-                                        value={data.name}
-                                        onChange={(e) => setData('name', e.target.value)}
-                                        placeholder="misal: React.js, Laravel, Tailwind CSS, Flutter"
-                                        className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
-                                        required
-                                    />
-                                </div>
-
-                                <div className="space-y-1.5">
-                                    <div className="flex items-center justify-between">
-                                        <Label htmlFor="category" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Kategori Teknologi</Label>
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                setIsCustomCategory(!isCustomCategory);
-                                                if (!isCustomCategory) {
-                                                    setData('category', '');
-                                                } else {
-                                                    setData('category', 'Frontend');
-                                                }
-                                            }}
-                                            className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer font-semibold flex items-center gap-1"
-                                        >
-                                            <PlusCircle className="w-3 h-3" />
-                                            <span>{isCustomCategory ? 'Pilih Kategori Yang Ada' : 'Ketik Kategori Baru'}</span>
-                                        </button>
-                                    </div>
-
-                                    {isCustomCategory ? (
+                            {/* Form Container with Internal Scroll Body */}
+                            <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
+                                <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                                    <div className="space-y-1.5">
+                                        <Label htmlFor="name" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Nama Skill</Label>
                                         <Input
+                                            id="name"
                                             type="text"
-                                            value={data.category}
-                                            onChange={(e) => setData('category', e.target.value)}
-                                            placeholder="Tuliskan kategori baru (misal: Mobile App, AI & Data, Cybersecurity)..."
+                                            value={data.name}
+                                            onChange={(e) => setData('name', e.target.value)}
+                                            placeholder="misal: React.js, Laravel, Tailwind CSS, Flutter"
                                             className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
                                             required
                                         />
-                                    ) : (
-                                        <select
-                                            id="category"
-                                            value={data.category}
-                                            onChange={(e) => {
-                                                if (e.target.value === '__custom__') {
-                                                    setIsCustomCategory(true);
-                                                    setData('category', '');
-                                                } else {
-                                                    setData('category', e.target.value);
-                                                }
-                                            }}
-                                            className="w-full h-10 px-3.5 py-2 rounded-2xl bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-gray-900 dark:text-white text-sm focus:outline-none"
-                                        >
-                                            {existingCategories.map(cat => (
-                                                <option key={cat} value={cat}>{cat}</option>
-                                            ))}
-                                            <option value="__custom__">+ Ketik Kategori Baru (Custom)...</option>
-                                        </select>
-                                    )}
-                                </div>
-
-                                <div className="space-y-1.5">
-                                    <div className="flex justify-between text-xs font-semibold text-gray-700 dark:text-slate-300">
-                                        <Label>Tingkat Kemahiran (%)</Label>
-                                        <span className="font-mono text-gray-900 dark:text-white font-bold">{data.percentage}%</span>
                                     </div>
-                                    <input
-                                        type="range"
-                                        min="0"
-                                        max="100"
-                                        value={data.percentage}
-                                        onChange={(e) => setData('percentage', e.target.value)}
-                                        className="w-full accent-gray-900 dark:accent-white cursor-pointer"
-                                    />
+
+                                    <div className="space-y-1.5">
+                                        <div className="flex items-center justify-between">
+                                            <Label htmlFor="category" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Kategori Teknologi</Label>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setIsCustomCategory(!isCustomCategory);
+                                                    if (!isCustomCategory) {
+                                                        setData('category', '');
+                                                    } else {
+                                                        setData('category', 'Frontend');
+                                                    }
+                                                }}
+                                                className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer font-semibold flex items-center gap-1"
+                                            >
+                                                <PlusCircle className="w-3 h-3" />
+                                                <span>{isCustomCategory ? 'Pilih Kategori Yang Ada' : 'Ketik Kategori Baru'}</span>
+                                            </button>
+                                        </div>
+
+                                        {isCustomCategory ? (
+                                            <Input
+                                                type="text"
+                                                value={data.category}
+                                                onChange={(e) => setData('category', e.target.value)}
+                                                placeholder="Tuliskan kategori baru (misal: Mobile App, AI & Data, Cybersecurity)..."
+                                                className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
+                                                required
+                                            />
+                                        ) : (
+                                            <select
+                                                id="category"
+                                                value={data.category}
+                                                onChange={(e) => {
+                                                    if (e.target.value === '__custom__') {
+                                                        setIsCustomCategory(true);
+                                                        setData('category', '');
+                                                    } else {
+                                                        setData('category', e.target.value);
+                                                    }
+                                                }}
+                                                className="w-full h-10 px-3.5 py-2 rounded-2xl bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-gray-900 dark:text-white text-sm focus:outline-none"
+                                            >
+                                                {existingCategories.map(cat => (
+                                                    <option key={cat} value={cat}>{cat}</option>
+                                                ))}
+                                                <option value="__custom__">+ Ketik Kategori Baru (Custom)...</option>
+                                            </select>
+                                        )}
+                                    </div>
+
+                                    <div className="space-y-1.5">
+                                        <div className="flex justify-between text-xs font-semibold text-gray-700 dark:text-slate-300">
+                                            <Label>Tingkat Kemahiran (%)</Label>
+                                            <span className="font-mono text-gray-900 dark:text-white font-bold">{data.percentage}%</span>
+                                        </div>
+                                        <input
+                                            type="range"
+                                            min="0"
+                                            max="100"
+                                            value={data.percentage}
+                                            onChange={(e) => setData('percentage', e.target.value)}
+                                            className="w-full accent-gray-900 dark:accent-white cursor-pointer"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-1.5">
+                                        <Label htmlFor="icon" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Deskripsi Singkat / Catatan Teknis (Opsional)</Label>
+                                        <Input
+                                            id="icon"
+                                            type="text"
+                                            value={data.icon}
+                                            onChange={(e) => setData('icon', e.target.value)}
+                                            placeholder="misal: React 19, Next.js App Router, Redux Toolkit"
+                                            className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
+                                        />
+                                    </div>
                                 </div>
 
-                                <div className="space-y-1.5">
-                                    <Label htmlFor="icon" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Deskripsi Singkat / Catatan Teknis (Opsional)</Label>
-                                    <Input
-                                        id="icon"
-                                        type="text"
-                                        value={data.icon}
-                                        onChange={(e) => setData('icon', e.target.value)}
-                                        placeholder="misal: React 19, Next.js App Router, Redux Toolkit"
-                                        className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
-                                    />
-                                </div>
-
-                                <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-slate-800">
+                                {/* Pinned Modal Footer */}
+                                <div className="flex items-center justify-end gap-3 px-6 py-4 bg-gray-50/80 dark:bg-slate-950/80 border-t border-gray-100 dark:border-slate-800 shrink-0">
                                     <Button
                                         type="button"
                                         variant="ghost"

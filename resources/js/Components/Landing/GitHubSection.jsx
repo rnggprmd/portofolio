@@ -250,7 +250,9 @@ export default function GitHubSection({ settings = {}, githubUrl = 'https://gith
                             </div>
                         </div>
 
-                        <a
+                        <motion.a
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                             href={cleanUrl}
                             target="_blank"
                             rel="noreferrer"
@@ -258,7 +260,7 @@ export default function GitHubSection({ settings = {}, githubUrl = 'https://gith
                         >
                             <span>{lang === 'en' ? 'Visit GitHub Profile' : 'Kunjungi Profil GitHub'}</span>
                             <ArrowUpRight className="w-4 h-4" />
-                        </a>
+                        </motion.a>
                     </div>
 
                     {/* Heatmap Grid with Interactive GitHub Snake */}

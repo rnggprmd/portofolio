@@ -40,8 +40,12 @@ export default function Login() {
                 >
                     <Card className="rounded-3xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 shadow-2xl overflow-hidden">
                         <CardHeader className="text-center pb-6 border-b border-gray-100 dark:border-slate-800">
-                            <div className="w-12 h-12 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center font-bold text-xl mx-auto mb-3 shadow-md">
-                                <Code2 className="w-6 h-6" />
+                            <div className="w-12 h-12 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center mx-auto mb-3 shadow-md overflow-hidden p-1.5">
+                                <img 
+                                    src="/storage/logo/logo portofolio.png" 
+                                    alt="Logo" 
+                                    className="w-full h-full object-contain rounded-xl"
+                                />
                             </div>
                             <CardTitle className="font-heading font-extrabold text-2xl tracking-tight text-gray-900 dark:text-white">
                                 Login Admin Panel

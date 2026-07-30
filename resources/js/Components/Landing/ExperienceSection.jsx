@@ -57,8 +57,10 @@ export default function ExperienceSection({ initialExperiences = [] }) {
                 {/* Filter Tabs */}
                 <div className="flex flex-wrap items-center justify-center gap-2">
                     {categories.map((cat) => (
-                        <button
+                        <motion.button
                             key={cat}
+                            whileHover={{ scale: 1.06 }}
+                            whileTap={{ scale: 0.94 }}
                             onClick={() => setSelectedCategory(cat)}
                             className={`px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer ${
                                 selectedCategory === cat
@@ -67,7 +69,7 @@ export default function ExperienceSection({ initialExperiences = [] }) {
                             }`}
                         >
                             {cat === 'All' ? t.skills.all : cat}
-                        </button>
+                        </motion.button>
                     ))}
                 </div>
 

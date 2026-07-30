@@ -1,18 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-    ReactIcon,
-    LaravelIcon,
-    TailwindIcon,
-    InertiaIcon,
-    NodeIcon,
-    ExpressIcon,
-    MysqlIcon,
-    PostgresqlIcon,
-    DockerIcon,
-    GitIcon,
-    FigmaIcon
-} from './BrandIcons';
+import TechIcon from './TechIcon';
 import { useLanguage } from '../../Context/LanguageContext';
 
 export default function TechStackSection({ initialTechStacks = [] }) {
@@ -20,44 +8,30 @@ export default function TechStackSection({ initialTechStacks = [] }) {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [activeTooltip, setActiveTooltip] = useState(null);
 
-    const iconMap = {
-        React: ReactIcon,
-        Laravel: LaravelIcon,
-        Tailwind: TailwindIcon,
-        Inertia: InertiaIcon,
-        Node: NodeIcon,
-        Express: ExpressIcon,
-        Mysql: MysqlIcon,
-        Postgresql: PostgresqlIcon,
-        Docker: DockerIcon,
-        Git: GitIcon,
-        Figma: FigmaIcon,
-    };
-
-    const categories = ['All', 'Frontend', 'Backend', 'Database & Tools'];
-
     const defaultTechs = [
-        { name: 'React 19', category: 'Frontend', Icon: ReactIcon, desc: 'Modern SPA development, Hooks & State' },
-        { name: 'Laravel 13', category: 'Backend', Icon: LaravelIcon, desc: 'Robust MVC framework, REST APIs & Eloquent' },
-        { name: 'Tailwind CSS v4', category: 'Frontend', Icon: TailwindIcon, desc: 'Utility-first CSS styling & responsive UI' },
-        { name: 'Inertia.js', category: 'Frontend', Icon: InertiaIcon, desc: 'Monolithic SPA connector without API complexity' },
-        { name: 'Node.js', category: 'Backend', Icon: NodeIcon, desc: 'Asynchronous event-driven JavaScript runtime' },
-        { name: 'Express.js', category: 'Backend', Icon: ExpressIcon, desc: 'Fast, unopinionated minimalist web framework' },
-        { name: 'MySQL', category: 'Database & Tools', Icon: MysqlIcon, desc: 'Relational database management & query optimization' },
-        { name: 'PostgreSQL', category: 'Database & Tools', Icon: PostgresqlIcon, desc: 'Advanced open-source relational database' },
-        { name: 'Docker', category: 'Database & Tools', Icon: DockerIcon, desc: 'App containerization & deployment environments' },
-        { name: 'Git & GitHub', category: 'Database & Tools', Icon: GitIcon, desc: 'Version control & collaborative code workflows' },
-        { name: 'Figma', category: 'Frontend', Icon: FigmaIcon, desc: 'UI/UX design prototyping & design systems' },
+        { name: 'React 19', icon_name: 'react', category: 'Frontend', desc: 'Modern SPA development, Hooks & State' },
+        { name: 'Laravel 13', icon_name: 'laravel', category: 'Backend', desc: 'Robust MVC framework, REST APIs & Eloquent' },
+        { name: 'Tailwind CSS v4', icon_name: 'tailwind', category: 'Frontend', desc: 'Utility-first CSS styling & responsive UI' },
+        { name: 'Inertia.js', icon_name: 'inertia', category: 'Frontend', desc: 'Monolithic SPA connector without API complexity' },
+        { name: 'Node.js', icon_name: 'node', category: 'Backend', desc: 'Asynchronous event-driven JavaScript runtime' },
+        { name: 'Express.js', icon_name: 'express', category: 'Backend', desc: 'Fast, unopinionated minimalist web framework' },
+        { name: 'MySQL', icon_name: 'mysql', category: 'Database & Tools', desc: 'Relational database management & query optimization' },
+        { name: 'PostgreSQL', icon_name: 'postgresql', category: 'Database & Tools', desc: 'Advanced open-source relational database' },
+        { name: 'Docker', icon_name: 'docker', category: 'Database & Tools', desc: 'App containerization & deployment environments' },
+        { name: 'Git & GitHub', icon_name: 'git', category: 'Database & Tools', desc: 'Version control & collaborative code workflows' },
+        { name: 'Figma', icon_name: 'figma', category: 'Frontend', desc: 'UI/UX design prototyping & design systems' },
     ];
 
     const displayTechs = initialTechStacks.length > 0
         ? initialTechStacks.map(tItem => ({
             name: tItem.name,
+            icon_name: tItem.icon_name,
             category: tItem.category || 'Backend',
-            Icon: iconMap[tItem.icon_name] || LaravelIcon,
             desc: `${tItem.name} • ${tItem.proficiency || 'Advanced'}`,
         }))
         : defaultTechs;
+
+    const categories = ['All', ...new Set(displayTechs.map(tItem => tItem.category || 'Backend'))];
 
     const filteredTechs = selectedCategory === 'All'
         ? displayTechs
@@ -78,17 +52,19 @@ export default function TechStackSection({ initialTechStacks = [] }) {
                 {/* Filter Tabs */}
                 <div className="flex flex-wrap items-center justify-center gap-2">
                     {categories.map((cat) => (
-                        <button
+                        <motion.button
                             key={cat}
+                            whileHover={{ scale: 1.06 }}
+                            whileTap={{ scale: 0.94 }}
                             onClick={() => setSelectedCategory(cat)}
-                            className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                            className={`px-4 py-2 rounded-full text-xs font-mono transition-all duration-300 cursor-pointer ${
                                 selectedCategory === cat
-                                    ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-sm'
-                                    : 'bg-white dark:bg-slate-900 text-gray-600 dark:text-slate-400 border border-gray-200 dark:border-slate-800 hover:bg-gray-100 dark:hover:bg-slate-800'
+                                    ? 'bg-gray-900 text-white dark:bg-white dark:text-gray-900 shadow-md font-bold'
+                                    : 'bg-white/60 dark:bg-slate-900/60 text-gray-600 dark:text-slate-400 border border-gray-200 dark:border-slate-800 hover:bg-gray-100 dark:hover:bg-slate-800'
                             }`}
                         >
                             {cat === 'All' ? t.skills.all : cat}
-                        </button>
+                        </motion.button>
                     ))}
                 </div>
 
@@ -96,7 +72,6 @@ export default function TechStackSection({ initialTechStacks = [] }) {
                 <motion.div layout className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 max-w-4xl mx-auto pt-2">
                     <AnimatePresence>
                         {filteredTechs.map((tech) => {
-                            const IconComponent = tech.Icon;
                             return (
                                 <motion.div
                                     key={tech.name}
@@ -110,7 +85,7 @@ export default function TechStackSection({ initialTechStacks = [] }) {
                                     onMouseLeave={() => setActiveTooltip(null)}
                                     className="relative flex items-center gap-2 px-4 py-3 rounded-2xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 shadow-2xs hover:shadow-xl hover:border-gray-400 dark:hover:border-slate-700 transition duration-300 cursor-pointer group"
                                 >
-                                    <IconComponent className="w-5 h-5 shrink-0" />
+                                    <TechIcon iconName={tech.icon_name} name={tech.name} className="w-5 h-5 shrink-0" />
                                     <span className="text-xs font-mono font-bold text-gray-800 dark:text-slate-200">
                                         {tech.name}
                                     </span>

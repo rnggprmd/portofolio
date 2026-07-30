@@ -1,11 +1,18 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Code2, Mail, MapPin, Globe } from 'lucide-react';
 import { GithubIcon, LinkedinIcon, ReactIcon, LaravelIcon, TailwindIcon, InertiaIcon, DockerIcon, PostgresqlIcon } from './BrandIcons';
 import { useLanguage } from '../../Context/LanguageContext';
 
-export default function Footer() {
+export default function Footer({ settings = {} }) {
     const { t } = useLanguage();
     const currentYear = new Date().getFullYear();
+
+    const heroName = settings.hero_name || 'Rangga Pramudya';
+    const heroRole = settings.hero_role || 'Software Engineer';
+    const contactEmail = settings.contact_email || settings.email || 'rangga.pramudya@example.com';
+    const githubUrl = settings.github_url || 'https://github.com/rnggprmd';
+    const linkedinUrl = settings.linkedin_url || 'https://linkedin.com';
 
     const techBadges = [
         { name: 'Laravel 13', Icon: LaravelIcon },
@@ -24,17 +31,20 @@ export default function Footer() {
                     {/* Column 1: Brand & Personal Tagline (4 cols) */}
                     <div className="md:col-span-4 space-y-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-white text-gray-900 flex items-center justify-center font-bold text-lg shadow-sm">
-                                <Code2 className="w-5 h-5" />
-                            </div>
-                            <div>
-                                <span className="font-heading font-bold text-lg text-white block leading-none">
-                                    Rangga Pramudya
-                                </span>
-                                <span className="font-mono text-xs text-gray-400">
-                                    Software Engineer
-                                </span>
-                            </div>
+                            <motion.div whileHover={{ rotate: 12, scale: 1.1 }} className="w-10 h-10 rounded-xl bg-white text-gray-900 flex items-center justify-center shadow-sm overflow-hidden p-1">
+                                <img 
+                                    src={settings.site_logo || "/storage/logo/logo portofolio.png"} 
+                                    alt="Logo" 
+                                    className="w-full h-full object-contain rounded-lg"
+                                    onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = "/storage/logo/logo portofolio.png";
+                                    }}
+                                />
+                            </motion.div>
+                            <span className="font-heading font-bold text-lg text-white">
+                                {heroName}
+                            </span>
                         </div>
 
                         <p className="text-xs text-gray-400 leading-relaxed font-sans max-w-sm">
@@ -43,31 +53,37 @@ export default function Footer() {
 
                         {/* Social Buttons */}
                         <div className="flex items-center gap-3 pt-1">
-                            <a
-                                href="https://github.com"
+                            <motion.a
+                                whileHover={{ scale: 1.15, rotate: 6 }}
+                                whileTap={{ scale: 0.9 }}
+                                href={githubUrl}
                                 target="_blank"
                                 rel="noreferrer"
                                 className="p-2.5 rounded-xl bg-gray-800/80 border border-gray-700/80 text-gray-300 hover:bg-white hover:text-gray-900 transition shadow-2xs"
                                 title="GitHub"
                             >
                                 <GithubIcon className="w-4 h-4" />
-                            </a>
-                            <a
-                                href="https://linkedin.com"
+                            </motion.a>
+                            <motion.a
+                                whileHover={{ scale: 1.15, rotate: -6 }}
+                                whileTap={{ scale: 0.9 }}
+                                href={linkedinUrl}
                                 target="_blank"
                                 rel="noreferrer"
                                 className="p-2.5 rounded-xl bg-gray-800/80 border border-gray-700/80 text-gray-300 hover:bg-white hover:text-gray-900 transition shadow-2xs"
                                 title="LinkedIn"
                             >
                                 <LinkedinIcon className="w-4 h-4" />
-                            </a>
-                            <a
-                                href="mailto:rangga.pramudya@example.com"
+                            </motion.a>
+                            <motion.a
+                                whileHover={{ scale: 1.15, rotate: 6 }}
+                                whileTap={{ scale: 0.9 }}
+                                href={`mailto:${contactEmail}`}
                                 className="p-2.5 rounded-xl bg-gray-800/80 border border-gray-700/80 text-gray-300 hover:bg-white hover:text-gray-900 transition shadow-2xs"
                                 title="Email"
                             >
                                 <Mail className="w-4 h-4" />
-                            </a>
+                            </motion.a>
                         </div>
                     </div>
 
@@ -129,11 +145,7 @@ export default function Footer() {
                 {/* Bottom Sub-Footer Bar */}
                 <div className="flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4 font-mono">
                     <div>
-                        © {currentYear} Rangga Pramudya. {t.footer.rights}
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                        <span>{t.footer.crafted}</span>
+                        © {currentYear} {heroName}. {t.footer.rights}
                     </div>
                 </div>
             </div>

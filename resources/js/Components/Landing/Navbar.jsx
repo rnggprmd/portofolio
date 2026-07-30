@@ -3,11 +3,12 @@ import { motion, useScroll, useSpring } from 'framer-motion';
 import { ArrowUpRight, Menu, X, Code2, Sun, Moon, Command, Globe } from 'lucide-react';
 import { useLanguage } from '../../Context/LanguageContext';
 
-export default function Navbar({ theme, toggleTheme, onOpenCommandPalette }) {
+export default function Navbar({ theme, toggleTheme, onOpenCommandPalette, settings = {} }) {
     const [scrolled, setScrolled] = useState(false);
     const [activeSection, setActiveSection] = useState('home');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const { lang, toggleLanguage, t } = useLanguage();
+    const heroName = settings.hero_name || 'Rangga Pramudya';
 
     const { scrollYProgress } = useScroll();
     const scaleX = useSpring(scrollYProgress, {
@@ -94,17 +95,20 @@ export default function Navbar({ theme, toggleTheme, onOpenCommandPalette }) {
                     whileTap={{ scale: 0.95 }}
                     className="flex items-center gap-2.5 group cursor-pointer"
                 >
-                    <div className="w-10 h-10 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center font-bold text-lg shadow-md group-hover:rotate-6 transition-transform duration-300">
-                        <Code2 className="w-5 h-5" />
+                    <div className="w-10 h-10 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center shadow-md group-hover:rotate-6 transition-transform duration-300 overflow-hidden p-1">
+                        <img 
+                            src={settings.site_logo || "/storage/logo/logo portofolio.png"} 
+                            alt="Logo" 
+                            className="w-full h-full object-contain rounded-lg"
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = "/storage/logo/logo portofolio.png";
+                            }}
+                        />
                     </div>
-                    <div className="flex flex-col">
-                        <span className="font-heading font-bold text-gray-900 dark:text-white text-base leading-tight tracking-tight">
-                            Rangga Pramudya
-                        </span>
-                        <span className="font-mono text-[11px] text-gray-500 dark:text-gray-400 font-medium">
-                            Software Engineer
-                        </span>
-                    </div>
+                    <span className="font-heading font-bold text-gray-900 dark:text-white text-base tracking-tight">
+                        {heroName}
+                    </span>
                 </motion.a>
 
                 {/* Floating Navigation Bar */}

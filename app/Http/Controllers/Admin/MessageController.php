@@ -17,15 +17,13 @@ class MessageController extends Controller
         ]);
     }
 
-    public function show(Message $message): Response
+    public function show(Message $message): RedirectResponse
     {
         if (!$message->is_read) {
             $message->update(['is_read' => true]);
         }
 
-        return Inertia::render('Admin/Messages/Show', [
-            'message' => $message,
-        ]);
+        return redirect()->back();
     }
 
     public function destroy(Message $message): RedirectResponse

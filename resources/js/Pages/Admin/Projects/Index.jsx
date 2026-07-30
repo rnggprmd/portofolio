@@ -13,11 +13,28 @@ import { Plus, Pencil, Trash2, X, Star, Search, ChevronLeft, ChevronRight, Folde
 export default function ProjectsIndex({ projects = [] }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProject, setEditingProject] = useState(null);
+    const [isCustomCategory, setIsCustomCategory] = useState(false);
 
     // Search & Pagination State
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
+
+    const defaultPresets = [
+        { value: 'Full Stack', label: 'Full Stack' },
+        { value: 'Frontend', label: 'Frontend' },
+        { value: 'Backend', label: 'Backend' },
+        { value: 'Mobile App', label: 'Mobile App' },
+        { value: 'UI/UX Design', label: 'UI/UX Design' },
+        { value: 'DevOps & Cloud', label: 'DevOps & Cloud' },
+    ];
+
+    const existingCategories = Array.from(
+        new Set([
+            ...defaultPresets.map(p => p.value),
+            ...projects.map(p => p.category).filter(Boolean)
+        ])
+    );
 
     const { data, setData, reset, processing } = useForm({
         title: '',
@@ -33,15 +50,19 @@ export default function ProjectsIndex({ projects = [] }) {
 
     const openCreateModal = () => {
         setEditingProject(null);
+        setIsCustomCategory(false);
         reset();
         setIsModalOpen(true);
     };
 
     const openEditModal = (project) => {
         setEditingProject(project);
+        const projectCat = project.category || 'Full Stack';
+        const isPreset = existingCategories.includes(projectCat);
+        setIsCustomCategory(!isPreset && projectCat !== '');
         setData({
             title: project.title,
-            category: project.category || 'Full Stack',
+            category: projectCat,
             description: project.description,
             image_url: project.image_url || project.image || '',
             image_file: null,
@@ -118,20 +139,19 @@ export default function ProjectsIndex({ projects = [] }) {
                         </p>
                     </div>
 
-                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                        <Button onClick={openCreateModal} className="rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-black dark:hover:bg-gray-100 gap-1.5 shadow-md cursor-pointer">
-                            <Plus className="w-4 h-4" />
-                            <span>Tambah Proyek Baru</span>
-                        </Button>
-                    </motion.div>
+                    <Button
+                        onClick={openCreateModal}
+                        className="rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold text-xs px-5 py-2.5 shadow-lg hover:bg-gray-800 dark:hover:bg-slate-100 transition cursor-pointer self-start sm:self-auto flex items-center gap-2"
+                    >
+                        <Plus className="w-4 h-4" /> Tambah Proyek Baru
+                    </Button>
                 </div>
 
-                {/* Filter Search Bar & Total Counter */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="relative w-full sm:w-80">
+                {/* Filter Search Bar */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-4 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm">
+                    <div className="relative flex-1 max-w-md">
                         <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
                         <Input
-                            type="text"
                             placeholder="Cari nama atau deskripsi proyek..."
                             value={searchQuery}
                             onChange={(e) => {
@@ -208,20 +228,24 @@ export default function ProjectsIndex({ projects = [] }) {
 
                                             <td className="py-4 px-6 text-right">
                                                 <div className="flex items-center justify-end gap-1.5">
-                                                    <button
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.15 }}
+                                                        whileTap={{ scale: 0.9 }}
                                                         onClick={() => openEditModal(project)}
                                                         title="Edit Proyek"
                                                         className="p-2 rounded-full border border-gray-200 dark:border-slate-800 text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 transition cursor-pointer"
                                                     >
                                                         <Pencil className="w-3.5 h-3.5" />
-                                                    </button>
-                                                    <button
+                                                    </motion.button>
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.15 }}
+                                                        whileTap={{ scale: 0.9 }}
                                                         onClick={() => handleDelete(project.id)}
                                                         title="Hapus Proyek"
                                                         className="p-2 rounded-full border border-rose-200 dark:border-rose-900/50 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
                                                     >
                                                         <Trash2 className="w-3.5 h-3.5" />
-                                                    </button>
+                                                    </motion.button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -310,17 +334,46 @@ export default function ProjectsIndex({ projects = [] }) {
                                                 required
                                             />
                                         </div>
-                                        <div className="space-y-1.5">
-                                            <Label htmlFor="category" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Kategori Proyek</Label>
-                                            <Input
-                                                id="category"
-                                                type="text"
-                                                value={data.category}
-                                                onChange={(e) => setData('category', e.target.value)}
-                                                placeholder="Full Stack / Frontend / Backend"
-                                                className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
-                                                required
-                                            />
+                                         <div className="space-y-1.5">
+                                            <div className="flex items-center justify-between">
+                                                <Label htmlFor="category" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Kategori Proyek</Label>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setIsCustomCategory(!isCustomCategory);
+                                                        if (!isCustomCategory) setData('category', '');
+                                                        else setData('category', 'Full Stack');
+                                                    }}
+                                                    className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 hover:underline font-semibold cursor-pointer"
+                                                >
+                                                    {isCustomCategory ? '← Pilih Preset' : '+ Baru (Custom)'}
+                                                </button>
+                                            </div>
+
+                                            {isCustomCategory ? (
+                                                <Input
+                                                    id="category"
+                                                    type="text"
+                                                    value={data.category}
+                                                    onChange={(e) => setData('category', e.target.value)}
+                                                    placeholder="Ketik kategori kustom (e.g. AI / ML)..."
+                                                    className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-xs sm:text-sm"
+                                                    required
+                                                />
+                                            ) : (
+                                                <select
+                                                    id="category"
+                                                    value={data.category}
+                                                    onChange={(e) => setData('category', e.target.value)}
+                                                    className="w-full h-10 px-3 rounded-2xl bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-xs sm:text-sm text-gray-900 dark:text-slate-200 focus:outline-none"
+                                                >
+                                                    {existingCategories.map((cat) => (
+                                                        <option key={cat} value={cat}>
+                                                            {cat}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            )}
                                         </div>
                                     </div>
 

@@ -13,11 +13,28 @@ import { Plus, Pencil, Trash2, X, Briefcase, Search, ChevronLeft, ChevronRight }
 export default function ExperiencesIndex({ experiences = [] }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingExp, setEditingExp] = useState(null);
+    const [isCustomCategory, setIsCustomCategory] = useState(false);
 
     // Search & Pagination State
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
+
+    const defaultPresets = [
+        { value: 'Career', label: 'Career (Pekerjaan Utama)' },
+        { value: 'Internship', label: 'Internship (Magang)' },
+        { value: 'Freelance', label: 'Freelance (Proyek Bebas)' },
+        { value: 'Organization', label: 'Organization (Organisasi)' },
+        { value: 'Volunteering', label: 'Volunteering (Sukarelawan)' },
+        { value: 'Education', label: 'Education (Pendidikan)' },
+    ];
+
+    const existingCategories = Array.from(
+        new Set([
+            ...defaultPresets.map(p => p.value),
+            ...experiences.map(e => e.type).filter(Boolean)
+        ])
+    );
 
     const { data, setData, reset, processing } = useForm({
         period: '',
@@ -33,17 +50,21 @@ export default function ExperiencesIndex({ experiences = [] }) {
 
     const openCreateModal = () => {
         setEditingExp(null);
+        setIsCustomCategory(false);
         reset();
         setIsModalOpen(true);
     };
 
     const openEditModal = (exp) => {
         setEditingExp(exp);
+        const expType = exp.type || 'Career';
+        const isPreset = defaultPresets.some(p => p.value === expType);
+        setIsCustomCategory(!isPreset && expType !== '');
         setData({
             period: exp.period,
             role: exp.role,
             company: exp.company,
-            type: exp.type || 'Career',
+            type: expType,
             location: exp.location || '',
             description: exp.description || '',
             responsibilities: Array.isArray(exp.responsibilities) ? exp.responsibilities.join('\n') : '',
@@ -90,9 +111,9 @@ export default function ExperiencesIndex({ experiences = [] }) {
 
     return (
         <AdminLayout>
-            <Head title="Manajemen Pengalaman" />
+            <Head title="Manajemen Pengalaman & Karir" />
 
-            <div className="space-y-8 max-w-6xl mx-auto">
+            <div className="space-y-6">
                 {/* Header Title */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
@@ -100,27 +121,26 @@ export default function ExperiencesIndex({ experiences = [] }) {
                             Seksi 05 // Landing Page
                         </span>
                         <h2 className="font-heading text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
-                            Manajemen Pengalaman Kerja
+                            Manajemen Pengalaman & Karir
                         </h2>
                         <p className="text-xs sm:text-sm text-gray-500 dark:text-slate-400 font-sans mt-1">
-                            Kelola riwayat pekerjaan, posisi, perusahaan, dan periode karir Anda
+                            Kelola riwayat pekerjaan, magang, organisasi, proyek freelance, dan aktivitas karir Anda
                         </p>
                     </div>
 
-                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                        <Button onClick={openCreateModal} className="rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-black dark:hover:bg-gray-100 gap-1.5 shadow-md cursor-pointer">
-                            <Plus className="w-4 h-4" />
-                            <span>Tambah Pengalaman</span>
-                        </Button>
-                    </motion.div>
+                    <Button
+                        onClick={openCreateModal}
+                        className="rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold text-xs px-5 py-2.5 shadow-lg hover:bg-gray-800 dark:hover:bg-slate-100 transition cursor-pointer self-start sm:self-auto flex items-center gap-2"
+                    >
+                        <Plus className="w-4 h-4" /> Tambah Pengalaman Baru
+                    </Button>
                 </div>
 
-                {/* Filter Search Bar & Total Counter */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="relative w-full sm:w-80">
+                {/* Filter Search Bar */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-4 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm">
+                    <div className="relative flex-1 max-w-md">
                         <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
                         <Input
-                            type="text"
                             placeholder="Cari posisi atau perusahaan..."
                             value={searchQuery}
                             onChange={(e) => {
@@ -193,20 +213,24 @@ export default function ExperiencesIndex({ experiences = [] }) {
 
                                             <td className="py-4 px-6 text-right">
                                                 <div className="flex items-center justify-end gap-1.5">
-                                                    <button
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.15 }}
+                                                        whileTap={{ scale: 0.9 }}
                                                         onClick={() => openEditModal(exp)}
                                                         title="Edit Pengalaman"
                                                         className="p-2 rounded-full border border-gray-200 dark:border-slate-800 text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 transition cursor-pointer"
                                                     >
                                                         <Pencil className="w-3.5 h-3.5" />
-                                                    </button>
-                                                    <button
+                                                    </motion.button>
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.15 }}
+                                                        whileTap={{ scale: 0.9 }}
                                                         onClick={() => handleDelete(exp.id)}
                                                         title="Hapus Pengalaman"
                                                         className="p-2 rounded-full border border-rose-200 dark:border-rose-900/50 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
                                                     >
                                                         <Trash2 className="w-3.5 h-3.5" />
-                                                    </button>
+                                                    </motion.button>
                                                 </div>
                                             </td>
                                         </tr>
@@ -272,7 +296,7 @@ export default function ExperiencesIndex({ experiences = [] }) {
                             {/* Pinned Modal Header */}
                             <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 px-6 py-5 shrink-0 bg-white dark:bg-slate-900">
                                 <h3 className="font-heading font-bold text-lg sm:text-xl text-gray-900 dark:text-white">
-                                    {editingExp ? 'Edit Pengalaman Kerja' : 'Tambah Pengalaman Baru'}
+                                    {editingExp ? 'Edit Pengalaman' : 'Tambah Pengalaman Baru'}
                                 </h3>
                                 <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition cursor-pointer">
                                     <X className="w-5 h-5" />
@@ -290,19 +314,19 @@ export default function ExperiencesIndex({ experiences = [] }) {
                                                 type="text"
                                                 value={data.role}
                                                 onChange={(e) => setData('role', e.target.value)}
-                                                placeholder="Senior Full Stack Engineer"
+                                                placeholder="Senior Full Stack Engineer / Ketua Himpunan"
                                                 className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
                                                 required
                                             />
                                         </div>
                                         <div className="space-y-1.5">
-                                            <Label htmlFor="company" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Perusahaan</Label>
+                                            <Label htmlFor="company" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Perusahaan / Organisasi</Label>
                                             <Input
                                                 id="company"
                                                 type="text"
                                                 value={data.company}
                                                 onChange={(e) => setData('company', e.target.value)}
-                                                placeholder="Tech Corporation Ltd."
+                                                placeholder="Tech Corp / HIMA SI"
                                                 className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
                                                 required
                                             />
@@ -311,18 +335,48 @@ export default function ExperiencesIndex({ experiences = [] }) {
 
                                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                         <div className="space-y-1.5">
-                                            <Label htmlFor="type" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Kategori</Label>
-                                            <select
-                                                id="type"
-                                                value={data.type}
-                                                onChange={(e) => setData('type', e.target.value)}
-                                                className="w-full h-10 px-3 rounded-2xl bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-xs sm:text-sm text-gray-900 dark:text-slate-200 focus:outline-none"
-                                            >
-                                                <option value="Career">Career</option>
-                                                <option value="Internship">Internship</option>
-                                                <option value="Freelance">Freelance</option>
-                                                <option value="Organization">Organization</option>
-                                            </select>
+                                            <div className="flex items-center justify-between">
+                                                <Label htmlFor="type" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Kategori</Label>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setIsCustomCategory(!isCustomCategory);
+                                                        if (!isCustomCategory) setData('type', '');
+                                                        else setData('type', 'Career');
+                                                    }}
+                                                    className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 hover:underline font-semibold cursor-pointer"
+                                                >
+                                                    {isCustomCategory ? '← Pilih Preset' : '+ Baru (Custom)'}
+                                                </button>
+                                            </div>
+
+                                            {isCustomCategory ? (
+                                                <Input
+                                                    id="type"
+                                                    type="text"
+                                                    value={data.type}
+                                                    onChange={(e) => setData('type', e.target.value)}
+                                                    placeholder="Ketik kategori kustom (e.g. Bootcamp)..."
+                                                    className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-xs sm:text-sm"
+                                                    required
+                                                />
+                                            ) : (
+                                                <select
+                                                    id="type"
+                                                    value={data.type}
+                                                    onChange={(e) => setData('type', e.target.value)}
+                                                    className="w-full h-10 px-3 rounded-2xl bg-gray-50 dark:bg-slate-950 border border-gray-200 dark:border-slate-800 text-xs sm:text-sm text-gray-900 dark:text-slate-200 focus:outline-none"
+                                                >
+                                                    {existingCategories.map((cat) => {
+                                                        const preset = defaultPresets.find(p => p.value === cat);
+                                                        return (
+                                                            <option key={cat} value={cat}>
+                                                                {preset ? preset.label : cat}
+                                                            </option>
+                                                        );
+                                                    })}
+                                                </select>
+                                            )}
                                         </div>
                                         <div className="space-y-1.5">
                                             <Label htmlFor="period" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Periode Kerja</Label>

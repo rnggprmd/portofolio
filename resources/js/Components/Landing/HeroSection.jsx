@@ -227,15 +227,15 @@ export default function HeroSection({ settings = {} }) {
                         transition={{ duration: 0.6, delay: 0.5 }}
                         className="flex items-center justify-center lg:justify-start gap-6 pt-1 text-gray-500 dark:text-slate-400"
                     >
-                        <a href={githubUrl} target="_blank" rel="noreferrer" className="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition">
+                        <motion.a whileHover={{ scale: 1.2, rotate: 6 }} whileTap={{ scale: 0.9 }} href={githubUrl} target="_blank" rel="noreferrer" className="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition cursor-pointer">
                             <GithubIcon className="w-5 h-5" />
-                        </a>
-                        <a href={linkedinUrl} target="_blank" rel="noreferrer" className="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition">
+                        </motion.a>
+                        <motion.a whileHover={{ scale: 1.2, rotate: -6 }} whileTap={{ scale: 0.9 }} href={linkedinUrl} target="_blank" rel="noreferrer" className="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition cursor-pointer">
                             <LinkedinIcon className="w-5 h-5" />
-                        </a>
-                        <a href={`mailto:${settings.contact_email || 'contact@example.com'}`} className="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition">
+                        </motion.a>
+                        <motion.a whileHover={{ scale: 1.2, rotate: 6 }} whileTap={{ scale: 0.9 }} href={`mailto:${settings.contact_email || 'contact@example.com'}`} className="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition cursor-pointer">
                             <Mail className="w-5 h-5" />
-                        </a>
+                        </motion.a>
                     </motion.div>
                 </div>
 
