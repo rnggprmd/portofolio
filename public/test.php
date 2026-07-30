@@ -11,16 +11,16 @@ try {
     require __DIR__ . '/../vendor/autoload.php';
     echo "<p>✅ Autoload OK</p>";
 
+    /** @var Illuminate\Foundation\Application $app */
     $app = require_once __DIR__ . '/../bootstrap/app.php';
     echo "<p>✅ App Bootstrapped OK</p>";
 
-    echo "<h2>Executing Request...</h2>";
-    $request = Request::capture();
-    $response = $app->handleRequest($request);
+    echo "<h2>Executing Laravel Request:</h2>";
+    echo "<div style='border: 2px solid #0070f3; padding: 15px; margin-top: 15px; background: #fff;'>";
+    
+    // In Laravel 11/13, handleRequest outputs response directly
+    $app->handleRequest(Request::capture());
 
-    echo "<p>✅ Request Handled! Status Code: " . $response->getStatusCode() . "</p>";
-    echo "<div style='border: 1px solid #ccc; padding: 15px; margin-top: 15px;'>";
-    echo $response->getContent();
     echo "</div>";
 
 } catch (Throwable $e) {
