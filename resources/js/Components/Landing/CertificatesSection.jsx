@@ -7,7 +7,7 @@ export default function CertificatesSection({ initialCertificates = [] }) {
     const { t } = useLanguage();
     const [selectedCert, setSelectedCert] = useState(null);
 
-    const defaultItems = t.certificates.items.map(item => ({
+    const defaultItems = (t?.certificates?.items || []).map(item => ({
         ...item,
         credential_id: `CRED-${item.id}00`,
         verify_url: 'https://example.com/verify',

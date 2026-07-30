@@ -8,9 +8,11 @@ export default function ExperienceSection({ initialExperiences = [] }) {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [expandedId, setExpandedId] = useState(1);
 
-    const defaultItems = t.experience.items.map(item => ({
+    const rawItems = t?.experience?.items || [];
+    const defaultItems = rawItems.map(item => ({
         ...item,
-        tech: ['Laravel', 'React', 'Tailwind CSS', 'MySQL', 'Redis'],
+        responsibilities: item.achievements || item.responsibilities || [],
+        tech: item.tech || ['Laravel', 'React', 'Tailwind CSS', 'MySQL', 'Redis'],
     }));
 
     const displayExperiences = initialExperiences.length > 0
@@ -21,8 +23,16 @@ export default function ExperienceSection({ initialExperiences = [] }) {
             company: exp.company,
             location: exp.location || 'Remote',
             description: exp.description || '',
-            responsibilities: Array.isArray(exp.responsibilities) ? exp.responsibilities : [exp.description],
-            tech: Array.isArray(exp.tech_badges) ? exp.tech_badges : ['Laravel', 'React'],
+            responsibilities: Array.isArray(exp.responsibilities) 
+                ? exp.responsibilities 
+                : (typeof exp.responsibilities === 'string' && exp.responsibilities.trim().startsWith('[') 
+                    ? JSON.parse(exp.responsibilities) 
+                    : (exp.responsibilities ? [exp.responsibilities] : (exp.description ? [exp.description] : []))),
+            tech: Array.isArray(exp.tech_badges) 
+                ? exp.tech_badges 
+                : (typeof exp.tech_badges === 'string' && exp.tech_badges.trim().startsWith('[')
+                    ? JSON.parse(exp.tech_badges)
+                    : (exp.tech_badges ? [exp.tech_badges] : ['Laravel', 'React'])),
             type: exp.type || 'Career',
         }))
         : defaultItems;
@@ -44,13 +54,13 @@ export default function ExperienceSection({ initialExperiences = [] }) {
                 {/* Section Header */}
                 <div className="text-center max-w-2xl mx-auto space-y-3">
                     <span className="font-mono text-xs uppercase tracking-widest text-gray-500 dark:text-slate-400 font-semibold">
-                        {t.experience.tag}
+                        {t?.experience?.tag || "04 // CAREER & EXPERIENCE"}
                     </span>
                     <h2 className="font-heading font-bold text-3xl sm:text-4xl text-gray-900 dark:text-white tracking-tight">
-                        {t.experience.title}
+                        {t?.experience?.title || "Professional Journey"}
                     </h2>
                     <p className="text-sm text-gray-500 dark:text-slate-400 font-sans">
-                        {t.experience.subtitle}
+                        {t?.experience?.subtitle || "Filter categories below or click any entry to expand details"}
                     </p>
                 </div>
 
@@ -68,7 +78,7 @@ export default function ExperienceSection({ initialExperiences = [] }) {
                                     : 'bg-white dark:bg-slate-900 text-gray-600 dark:text-slate-400 border border-gray-200 dark:border-slate-800 hover:bg-gray-100 dark:hover:bg-slate-800'
                             }`}
                         >
-                            {cat === 'All' ? t.skills.all : cat}
+                            {cat === 'All' ? (t?.skills?.all || 'All') : cat}
                         </motion.button>
                     ))}
                 </div>
@@ -77,6 +87,9 @@ export default function ExperienceSection({ initialExperiences = [] }) {
                 <div className="space-y-4 relative before:absolute before:inset-0 before:left-6 sm:before:left-8 before:w-0.5 before:bg-gray-200 dark:before:bg-slate-800">
                     {filteredExperiences.map((exp) => {
                         const isExpanded = expandedId === exp.id;
+                        const respList = Array.isArray(exp.responsibilities) ? exp.responsibilities : (exp.achievements || []);
+                        const techList = Array.isArray(exp.tech) ? exp.tech : [];
+
                         return (
                             <motion.div
                                 key={exp.id}
@@ -124,7 +137,7 @@ export default function ExperienceSection({ initialExperiences = [] }) {
 
                                         <div className="flex items-center gap-3 self-end sm:self-center">
                                             <span className="text-xs font-semibold font-mono text-gray-500 dark:text-slate-400">
-                                                {isExpanded ? t.experience.less : t.experience.more}
+                                                {isExpanded ? (t?.experience?.less || 'Show Less') : (t?.experience?.more || 'Show More')}
                                             </span>
                                             <motion.div
                                                 animate={{ rotate: isExpanded ? 180 : 0 }}
@@ -152,30 +165,34 @@ export default function ExperienceSection({ initialExperiences = [] }) {
                                                     </p>
                                                 )}
 
-                                                <div className="space-y-2">
-                                                    <div className="text-xs font-mono font-bold uppercase tracking-wider text-gray-400 dark:text-slate-500">
-                                                        {t.experience.responsibilities}
+                                                {respList.length > 0 && (
+                                                    <div className="space-y-2">
+                                                        <div className="text-xs font-mono font-bold uppercase tracking-wider text-gray-400 dark:text-slate-500">
+                                                            {t?.experience?.keyAccomplishments || t?.experience?.responsibilities || "Key Accomplishments:"}
+                                                        </div>
+                                                        <ul className="space-y-2">
+                                                            {respList.map((resp, rIdx) => (
+                                                                <li key={rIdx} className="flex items-start gap-2.5 text-xs text-gray-700 dark:text-slate-300">
+                                                                    <CheckCircle2 className="w-4 h-4 text-gray-900 dark:text-white shrink-0 mt-0.5" />
+                                                                    <span className="leading-relaxed">{resp}</span>
+                                                                </li>
+                                                            ))}
+                                                        </ul>
                                                     </div>
-                                                    <ul className="space-y-2">
-                                                        {exp.responsibilities.map((resp, rIdx) => (
-                                                            <li key={rIdx} className="flex items-start gap-2.5 text-xs text-gray-700 dark:text-slate-300">
-                                                                <CheckCircle2 className="w-4 h-4 text-gray-900 dark:text-white shrink-0 mt-0.5" />
-                                                                <span className="leading-relaxed">{resp}</span>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </div>
+                                                )}
 
-                                                <div className="pt-2 flex flex-wrap gap-1.5">
-                                                    {exp.tech.map((tItem, tIdx) => (
-                                                        <span
-                                                            key={tIdx}
-                                                            className="px-2.5 py-1 rounded-md text-[11px] font-mono font-medium bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-200 border border-gray-200 dark:border-slate-800"
-                                                        >
-                                                            {tItem}
-                                                        </span>
-                                                    ))}
-                                                </div>
+                                                {techList.length > 0 && (
+                                                    <div className="pt-2 flex flex-wrap gap-1.5">
+                                                        {techList.map((tItem, tIdx) => (
+                                                            <span
+                                                                key={tIdx}
+                                                                className="px-2.5 py-1 rounded-md text-[11px] font-mono font-medium bg-white dark:bg-slate-900 text-gray-800 dark:text-slate-200 border border-gray-200 dark:border-slate-800"
+                                                            >
+                                                                {tItem}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                )}
                                             </motion.div>
                                         )}
                                     </AnimatePresence>

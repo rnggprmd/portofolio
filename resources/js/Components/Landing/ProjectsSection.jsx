@@ -32,7 +32,7 @@ export default function ProjectsSection({ initialProjects = [] }) {
             github_url: p.github_url || 'https://github.com',
             is_featured: Boolean(p.is_featured),
         }))
-        : t.projects.items.map(item => ({
+        : (t?.projects?.items || []).map(item => ({
             ...item,
             tech_stack: techStacks[item.id] || ['React', 'Laravel', 'Tailwind CSS'],
             demo_url: 'https://example.com',
