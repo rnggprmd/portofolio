@@ -33,42 +33,42 @@ export default function Dashboard({ stats = {}, recent_messages = [], recent_pro
             title: 'Total Proyek',
             value: stats.total_projects || 0,
             icon: FolderKanban,
-            color: 'bg-gray-100 dark:bg-slate-950 text-gray-900 dark:text-white border-gray-200 dark:border-slate-800',
+            color: 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white shadow-2xs',
             href: '/admin/projects',
         },
         {
             title: 'Total Skill',
             value: stats.total_skills || 0,
             icon: Wrench,
-            color: 'bg-gray-100 dark:bg-slate-950 text-gray-900 dark:text-white border-gray-200 dark:border-slate-800',
+            color: 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white shadow-2xs',
             href: '/admin/skills',
         },
         {
             title: 'Pengalaman Karir',
             value: stats.total_experiences || 0,
             icon: Briefcase,
-            color: 'bg-gray-100 dark:bg-slate-950 text-gray-900 dark:text-white border-gray-200 dark:border-slate-800',
+            color: 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white shadow-2xs',
             href: '/admin/experiences',
         },
         {
             title: 'Sertifikasi',
             value: stats.total_certificates || 0,
             icon: Award,
-            color: 'bg-gray-100 dark:bg-slate-950 text-gray-900 dark:text-white border-gray-200 dark:border-slate-800',
+            color: 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white shadow-2xs',
             href: '/admin/certificates',
         },
         {
             title: 'Tech Stack Logos',
             value: stats.total_tech_stacks || 0,
             icon: Layers,
-            color: 'bg-gray-100 dark:bg-slate-950 text-gray-900 dark:text-white border-gray-200 dark:border-slate-800',
+            color: 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 border-gray-900 dark:border-white shadow-2xs',
             href: '/admin/tech-stacks',
         },
         {
             title: 'Pesan Belum Dibaca',
             value: stats.unread_messages || 0,
             icon: Mail,
-            color: 'bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-800',
+            color: 'bg-rose-500 dark:bg-rose-600 text-white border-rose-500 shadow-2xs',
             href: '/admin/messages',
         },
     ];
@@ -336,7 +336,7 @@ export default function Dashboard({ stats = {}, recent_messages = [], recent_pro
                                                     {proj.image ? (
                                                         <img src={proj.image} alt={proj.title} className="w-full h-full object-cover" />
                                                     ) : (
-                                                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                                        <div className="w-full h-full flex items-center justify-center bg-gray-900 dark:bg-white text-white dark:text-gray-900">
                                                             <FolderKanban className="w-4 h-4" />
                                                         </div>
                                                     )}
