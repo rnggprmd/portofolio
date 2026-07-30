@@ -25,6 +25,8 @@ class ProjectController extends Controller
             'title' => 'required|string|max:255',
             'category' => 'nullable|string|max:255',
             'description' => 'required|string',
+            'features' => 'nullable|array',
+            'features.*' => 'nullable|string|max:255',
             'image' => 'nullable|string',
             'image_url' => 'nullable|string',
             'image_file' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:5120',
@@ -33,6 +35,11 @@ class ProjectController extends Controller
             'github_url' => 'nullable|string',
             'is_featured' => 'boolean',
         ]);
+
+        // Filter out empty feature strings
+        if (!empty($validated['features'])) {
+            $validated['features'] = array_values(array_filter($validated['features'], fn($f) => !empty(trim($f))));
+        }
 
         if ($request->hasFile('image_file')) {
             $path = $request->file('image_file')->store('projects', 'public');
@@ -55,6 +62,8 @@ class ProjectController extends Controller
             'title' => 'required|string|max:255',
             'category' => 'nullable|string|max:255',
             'description' => 'required|string',
+            'features' => 'nullable|array',
+            'features.*' => 'nullable|string|max:255',
             'image' => 'nullable|string',
             'image_url' => 'nullable|string',
             'image_file' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:5120',
@@ -63,6 +72,11 @@ class ProjectController extends Controller
             'github_url' => 'nullable|string',
             'is_featured' => 'boolean',
         ]);
+
+        // Filter out empty feature strings
+        if (!empty($validated['features'])) {
+            $validated['features'] = array_values(array_filter($validated['features'], fn($f) => !empty(trim($f))));
+        }
 
         if ($request->hasFile('image_file')) {
             $path = $request->file('image_file')->store('projects', 'public');

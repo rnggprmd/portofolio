@@ -8,7 +8,7 @@ import { Badge } from '@/Components/ui/badge';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
-import { Plus, Pencil, Trash2, X, Star, Search, ChevronLeft, ChevronRight, FolderKanban } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Star, Search, ChevronLeft, ChevronRight, FolderKanban, CheckCircle2 } from 'lucide-react';
 
 export default function ProjectsIndex({ projects = [] }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,6 +40,7 @@ export default function ProjectsIndex({ projects = [] }) {
         title: '',
         category: 'Full Stack',
         description: '',
+        features: [''],
         image_url: '',
         image_file: null,
         demo_url: '',
@@ -47,6 +48,11 @@ export default function ProjectsIndex({ projects = [] }) {
         tech_stack: '',
         is_featured: false,
     });
+
+    // Helpers for dynamic features list
+    const addFeature = () => setData('features', [...(data.features || []), '']);
+    const removeFeature = (idx) => setData('features', (data.features || []).filter((_, i) => i !== idx));
+    const updateFeature = (idx, val) => setData('features', (data.features || []).map((f, i) => i === idx ? val : f));
 
     const openCreateModal = () => {
         setEditingProject(null);
@@ -64,6 +70,7 @@ export default function ProjectsIndex({ projects = [] }) {
             title: project.title,
             category: projectCat,
             description: project.description,
+            features: Array.isArray(project.features) && project.features.length > 0 ? project.features : [''],
             image_url: project.image_url || project.image || '',
             image_file: null,
             demo_url: project.demo_url || '',
@@ -81,6 +88,7 @@ export default function ProjectsIndex({ projects = [] }) {
             tech_stack: typeof data.tech_stack === 'string'
                 ? data.tech_stack.split(',').map((s) => s.trim()).filter(Boolean)
                 : data.tech_stack,
+            features: (data.features || []).map(f => f.trim()).filter(Boolean),
         };
 
         if (editingProject) {
@@ -457,6 +465,49 @@ export default function ProjectsIndex({ projects = [] }) {
                                                 placeholder="https://github.com/..."
                                                 className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm"
                                             />
+                                        </div>
+                                    </div>
+
+                                    {/* Key Features & Highlights */}
+                                    <div className="space-y-2 p-4 rounded-2xl bg-gray-50 dark:bg-slate-950/60 border border-gray-200 dark:border-slate-800">
+                                        <div className="flex items-center justify-between">
+                                            <Label className="text-xs font-semibold text-gray-700 dark:text-slate-300 flex items-center gap-1.5">
+                                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                                Key Features &amp; Highlights
+                                            </Label>
+                                            <button
+                                                type="button"
+                                                onClick={addFeature}
+                                                className="text-[10px] font-mono font-semibold text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-slate-700 rounded-full px-2.5 py-0.5 hover:border-gray-900 dark:hover:border-white transition cursor-pointer flex items-center gap-1"
+                                            >
+                                                <Plus className="w-3 h-3" /> Tambah
+                                            </button>
+                                        </div>
+                                        <p className="text-[10px] text-gray-400 dark:text-slate-500 font-mono">
+                                            Fitur utama yang ditampilkan di modal detail proyek (opsional, maks. 8)
+                                        </p>
+                                        <div className="space-y-2 mt-1">
+                                            {(data.features || ['']).map((feat, idx) => (
+                                                <div key={idx} className="flex items-center gap-2">
+                                                    <CheckCircle2 className="w-4 h-4 text-gray-400 dark:text-slate-600 shrink-0" />
+                                                    <Input
+                                                        type="text"
+                                                        value={feat}
+                                                        onChange={(e) => updateFeature(idx, e.target.value)}
+                                                        placeholder={`Fitur ${idx + 1} (contoh: JWT Token authentication)`}
+                                                        className="rounded-xl bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 text-xs flex-1"
+                                                    />
+                                                    {(data.features || []).length > 1 && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => removeFeature(idx)}
+                                                            className="p-1 rounded-lg text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition cursor-pointer shrink-0"
+                                                        >
+                                                            <X className="w-3.5 h-3.5" />
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
 

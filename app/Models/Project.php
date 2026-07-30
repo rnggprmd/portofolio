@@ -15,6 +15,7 @@ class Project extends Model
         'slug',
         'category',
         'description',
+        'features',
         'image',
         'tech_stack',
         'demo_url',
@@ -24,6 +25,7 @@ class Project extends Model
 
     protected $casts = [
         'tech_stack' => 'array',
+        'features'   => 'array',
         'is_featured' => 'boolean',
     ];
 

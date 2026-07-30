@@ -8,7 +8,7 @@ import { Badge } from '@/Components/ui/badge';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { Textarea } from '@/Components/ui/textarea';
-import { Plus, Pencil, Trash2, X, Briefcase, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Briefcase, Search, ChevronLeft, ChevronRight, CheckCircle2 } from 'lucide-react';
 
 export default function ExperiencesIndex({ experiences = [] }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,10 +43,15 @@ export default function ExperiencesIndex({ experiences = [] }) {
         type: 'Career',
         location: '',
         description: '',
-        responsibilities: '',
+        responsibilities: [''],
         tech_badges: '',
         order: 0,
     });
+
+    // Helpers for dynamic responsibilities list
+    const addResp = () => setData('responsibilities', [...(data.responsibilities || []), '']);
+    const removeResp = (idx) => setData('responsibilities', (data.responsibilities || []).filter((_, i) => i !== idx));
+    const updateResp = (idx, val) => setData('responsibilities', (data.responsibilities || []).map((r, i) => i === idx ? val : r));
 
     const openCreateModal = () => {
         setEditingExp(null);
@@ -67,7 +72,7 @@ export default function ExperiencesIndex({ experiences = [] }) {
             type: expType,
             location: exp.location || '',
             description: exp.description || '',
-            responsibilities: Array.isArray(exp.responsibilities) ? exp.responsibilities.join('\n') : '',
+            responsibilities: Array.isArray(exp.responsibilities) && exp.responsibilities.length > 0 ? exp.responsibilities : [''],
             tech_badges: Array.isArray(exp.tech_badges) ? exp.tech_badges.join(', ') : '',
             order: exp.order || 0,
         });
@@ -78,7 +83,7 @@ export default function ExperiencesIndex({ experiences = [] }) {
         e.preventDefault();
         const payload = {
             ...data,
-            responsibilities: data.responsibilities.split('\n').map((s) => s.trim()).filter(Boolean),
+            responsibilities: (data.responsibilities || []).map(r => r.trim()).filter(Boolean),
             tech_badges: data.tech_badges.split(',').map((s) => s.trim()).filter(Boolean),
         };
 
@@ -414,15 +419,47 @@ export default function ExperiencesIndex({ experiences = [] }) {
                                         />
                                     </div>
 
-                                    <div className="space-y-1.5">
-                                        <Label htmlFor="responsibilities" className="text-xs font-semibold text-gray-700 dark:text-slate-300">Tanggung Jawab (1 Poin Per Baris)</Label>
-                                        <Textarea
-                                            id="responsibilities"
-                                            value={data.responsibilities}
-                                            onChange={(e) => setData('responsibilities', e.target.value)}
-                                            placeholder="Mengembangkan arsitektur RESTful API&#10;Memimpin tim frontend dalam migrasi React 19"
-                                            className="rounded-2xl bg-gray-50 dark:bg-slate-950 border-gray-200 dark:border-slate-800 text-sm min-h-[90px]"
-                                        />
+                                    {/* Key Accomplishments & Outcomes (dynamic list) */}
+                                    <div className="space-y-2 p-4 rounded-2xl bg-gray-50 dark:bg-slate-950/60 border border-gray-200 dark:border-slate-800">
+                                        <div className="flex items-center justify-between">
+                                            <Label className="text-xs font-semibold text-gray-700 dark:text-slate-300 flex items-center gap-1.5">
+                                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                                Key Accomplishments &amp; Outcomes
+                                            </Label>
+                                            <button
+                                                type="button"
+                                                onClick={addResp}
+                                                className="text-[10px] font-mono font-semibold text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white border border-gray-300 dark:border-slate-700 rounded-full px-2.5 py-0.5 hover:border-gray-900 dark:hover:border-white transition cursor-pointer flex items-center gap-1"
+                                            >
+                                                <Plus className="w-3 h-3" /> Tambah
+                                            </button>
+                                        </div>
+                                        <p className="text-[10px] text-gray-400 dark:text-slate-500 font-mono">
+                                            Pencapaian &amp; tanggung jawab utama (tiap baris = satu poin bullet)
+                                        </p>
+                                        <div className="space-y-2 mt-1">
+                                            {(data.responsibilities || ['']).map((resp, idx) => (
+                                                <div key={idx} className="flex items-center gap-2">
+                                                    <CheckCircle2 className="w-4 h-4 text-gray-400 dark:text-slate-600 shrink-0" />
+                                                    <Input
+                                                        type="text"
+                                                        value={resp}
+                                                        onChange={(e) => updateResp(idx, e.target.value)}
+                                                        placeholder={`Pencapaian ${idx + 1} (contoh: Optimized API query by 35%)`}
+                                                        className="rounded-xl bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 text-xs flex-1"
+                                                    />
+                                                    {(data.responsibilities || []).length > 1 && (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => removeResp(idx)}
+                                                            className="p-1 rounded-lg text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition cursor-pointer shrink-0"
+                                                        >
+                                                            <X className="w-3.5 h-3.5" />
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
 
                                     <div className="space-y-1.5">
