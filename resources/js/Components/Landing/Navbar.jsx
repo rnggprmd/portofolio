@@ -151,6 +151,7 @@ export default function Navbar({ theme, toggleTheme, onOpenCommandPalette, setti
                         whileHover={{ scale: 1.08 }}
                         whileTap={{ scale: 0.92, rotate: 12 }}
                         onClick={toggleLanguage}
+                        aria-label="Switch language (EN / ID)"
                         className="px-3.5 py-2 rounded-full bg-gray-100/90 dark:bg-slate-800/90 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-900 dark:text-white text-xs font-mono font-bold transition duration-200 flex items-center gap-1.5 border border-gray-200 dark:border-slate-700 shadow-2xs cursor-pointer"
                         title="Switch Language (EN / ID)"
                     >
@@ -163,6 +164,7 @@ export default function Navbar({ theme, toggleTheme, onOpenCommandPalette, setti
                         whileHover={{ scale: 1.06 }}
                         whileTap={{ scale: 0.94 }}
                         onClick={onOpenCommandPalette}
+                        aria-label="Search / Command Palette (Ctrl+K)"
                         className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-gray-100/90 dark:bg-slate-800/90 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-slate-300 text-xs font-mono transition duration-200 border border-gray-200 dark:border-slate-700 cursor-pointer"
                         title="Search / Command Palette (Ctrl+K)"
                     >
@@ -185,6 +187,7 @@ export default function Navbar({ theme, toggleTheme, onOpenCommandPalette, setti
                     <motion.button
                         whileTap={{ scale: 0.9 }}
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        aria-label="Toggle navigation menu"
                         className="md:hidden p-2.5 rounded-full bg-gray-100/90 dark:bg-slate-800/90 text-gray-900 dark:text-white transition cursor-pointer"
                     >
                         {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}

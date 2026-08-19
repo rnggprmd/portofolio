@@ -28,9 +28,11 @@ export default function ContactSection({ settings = {} }) {
     ];
 
     const handleCopyEmail = () => {
-        navigator.clipboard.writeText(contactEmail);
-        setCopiedEmail(true);
-        setTimeout(() => setCopiedEmail(false), 2000);
+        if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(contactEmail);
+            setCopiedEmail(true);
+            setTimeout(() => setCopiedEmail(false), 2000);
+        }
     };
 
     const handleSubmit = (e) => {
@@ -74,7 +76,9 @@ export default function ContactSection({ settings = {} }) {
                                                 {contactEmail}
                                             </a>
                                             <button
+                                                type="button"
                                                 onClick={handleCopyEmail}
+                                                aria-label="Copy email address"
                                                 className="p-1 text-gray-400 hover:text-gray-900 dark:hover:text-white transition cursor-pointer"
                                                 title="Copy email"
                                             >
@@ -105,13 +109,13 @@ export default function ContactSection({ settings = {} }) {
                             <div className="pt-4 border-t border-gray-100 dark:border-slate-800">
                                 <div className="text-xs font-mono font-medium text-gray-400 dark:text-slate-500 uppercase mb-3">Connect via Social</div>
                                 <div className="flex gap-3">
-                                    <a href={githubUrl} target="_blank" rel="noreferrer" className="p-3 rounded-2xl bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white hover:bg-gray-900 dark:hover:bg-white dark:hover:text-gray-900 hover:text-white hover:scale-105 transition">
+                                    <a href={githubUrl} target="_blank" rel="noreferrer" aria-label="GitHub Profile" className="p-3 rounded-2xl bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white hover:bg-gray-900 dark:hover:bg-white dark:hover:text-gray-900 hover:text-white hover:scale-105 transition">
                                         <GithubIcon className="w-4 h-4" />
                                     </a>
-                                    <a href={linkedinUrl} target="_blank" rel="noreferrer" className="p-3 rounded-2xl bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white hover:bg-gray-900 dark:hover:bg-white dark:hover:text-gray-900 hover:text-white hover:scale-105 transition">
+                                    <a href={linkedinUrl} target="_blank" rel="noreferrer" aria-label="LinkedIn Profile" className="p-3 rounded-2xl bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white hover:bg-gray-900 dark:hover:bg-white dark:hover:text-gray-900 hover:text-white hover:scale-105 transition">
                                         <LinkedinIcon className="w-4 h-4" />
                                     </a>
-                                    <a href={`mailto:${contactEmail}`} className="p-3 rounded-2xl bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white hover:bg-gray-900 dark:hover:bg-white dark:hover:text-gray-900 hover:text-white hover:scale-105 transition">
+                                    <a href={`mailto:${contactEmail}`} aria-label="Send Email" className="p-3 rounded-2xl bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-white hover:bg-gray-900 dark:hover:bg-white dark:hover:text-gray-900 hover:text-white hover:scale-105 transition">
                                         <Mail className="w-4 h-4" />
                                     </a>
                                 </div>
@@ -165,8 +169,9 @@ export default function ContactSection({ settings = {} }) {
                             <form onSubmit={handleSubmit} className="space-y-5">
                                 <div className="grid sm:grid-cols-2 gap-5">
                                     <div className="space-y-1.5">
-                                        <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300">{t.contact.name}</label>
+                                        <label htmlFor="contact_name" className="block text-xs font-semibold text-gray-700 dark:text-slate-300">{t.contact.name}</label>
                                         <input
+                                            id="contact_name"
                                             type="text"
                                             value={data.name}
                                             onChange={(e) => setData('name', e.target.value)}
@@ -178,8 +183,9 @@ export default function ContactSection({ settings = {} }) {
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300">{t.contact.email}</label>
+                                        <label htmlFor="contact_email" className="block text-xs font-semibold text-gray-700 dark:text-slate-300">{t.contact.email}</label>
                                         <input
+                                            id="contact_email"
                                             type="email"
                                             value={data.email}
                                             onChange={(e) => setData('email', e.target.value)}
@@ -192,8 +198,9 @@ export default function ContactSection({ settings = {} }) {
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label className="block text-xs font-semibold text-gray-700 dark:text-slate-300">{t.contact.subject}</label>
+                                    <label htmlFor="contact_subject" className="block text-xs font-semibold text-gray-700 dark:text-slate-300">{t.contact.subject}</label>
                                     <input
+                                        id="contact_subject"
                                         type="text"
                                         value={data.subject}
                                         onChange={(e) => setData('subject', e.target.value)}
@@ -205,10 +212,11 @@ export default function ContactSection({ settings = {} }) {
 
                                 <div className="space-y-1.5">
                                     <div className="flex justify-between items-center text-xs font-semibold text-gray-700 dark:text-slate-300">
-                                        <span>{t.contact.message}</span>
+                                        <label htmlFor="contact_message">{t.contact.message}</label>
                                         <span className="font-mono text-[10px] text-gray-400">{data.message.length} chars</span>
                                     </div>
                                     <textarea
+                                        id="contact_message"
                                         value={data.message}
                                         onChange={(e) => setData('message', e.target.value)}
                                         rows={4}

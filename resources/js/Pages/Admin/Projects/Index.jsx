@@ -87,8 +87,8 @@ export default function ProjectsIndex({ projects = [] }) {
             ...data,
             tech_stack: typeof data.tech_stack === 'string'
                 ? data.tech_stack.split(',').map((s) => s.trim()).filter(Boolean)
-                : data.tech_stack,
-            features: (data.features || []).map(f => f.trim()).filter(Boolean),
+                : (Array.isArray(data.tech_stack) ? data.tech_stack : []),
+            features: (data.features || []).map(f => typeof f === 'string' ? f.trim() : f).filter(Boolean),
         };
 
         if (editingProject) {
@@ -241,6 +241,7 @@ export default function ProjectsIndex({ projects = [] }) {
                                                         whileTap={{ scale: 0.9 }}
                                                         onClick={() => openEditModal(project)}
                                                         title="Edit Proyek"
+                                                        aria-label="Edit Proyek"
                                                         className="p-2 rounded-full border border-gray-200 dark:border-slate-800 text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 transition cursor-pointer"
                                                     >
                                                         <Pencil className="w-3.5 h-3.5" />
@@ -250,6 +251,7 @@ export default function ProjectsIndex({ projects = [] }) {
                                                         whileTap={{ scale: 0.9 }}
                                                         onClick={() => handleDelete(project.id)}
                                                         title="Hapus Proyek"
+                                                        aria-label="Hapus Proyek"
                                                         className="p-2 rounded-full border border-rose-200 dark:border-rose-900/50 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
                                                     >
                                                         <Trash2 className="w-3.5 h-3.5" />
@@ -321,7 +323,12 @@ export default function ProjectsIndex({ projects = [] }) {
                                 <h3 className="font-heading font-bold text-lg sm:text-xl text-gray-900 dark:text-white">
                                     {editingProject ? 'Edit Proyek' : 'Tambah Proyek Baru'}
                                 </h3>
-                                <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition cursor-pointer">
+                                <button 
+                                    type="button" 
+                                    onClick={() => setIsModalOpen(false)} 
+                                    aria-label="Tutup modal"
+                                    className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition cursor-pointer"
+                                >
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>

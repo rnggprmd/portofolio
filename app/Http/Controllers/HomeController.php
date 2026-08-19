@@ -32,7 +32,7 @@ class HomeController extends Controller
         ];
 
         $projects = Project::latest()->get();
-        $skills = Skill::all();
+        $skills = Skill::orderBy('category', 'asc')->orderBy('id', 'asc')->get();
         $experiences = Experience::orderBy('order', 'asc')->orderBy('id', 'desc')->get();
         $certificates = Certificate::orderBy('order', 'asc')->orderBy('id', 'desc')->get();
         $techStacks = TechStack::orderBy('order', 'asc')->orderBy('id', 'desc')->get();

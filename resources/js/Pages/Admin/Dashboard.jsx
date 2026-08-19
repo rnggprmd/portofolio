@@ -268,11 +268,12 @@ export default function Dashboard({ stats = {}, recent_messages = [], recent_pro
                                 <CardTitle className="font-heading text-base font-bold text-gray-900 dark:text-white">Pesan Masuk Terbaru</CardTitle>
                                 <CardDescription className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">Pesan dari pengunjung landing page</CardDescription>
                             </div>
-                            <Link href="/admin/messages">
-                                <Button className="rounded-full bg-gray-900 hover:bg-black dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 font-bold px-4 py-1.5 text-xs gap-1.5 shadow-xs cursor-pointer transition-colors">
-                                    <span>Lihat Semua</span>
-                                    <ArrowRight className="w-3.5 h-3.5" />
-                                </Button>
+                            <Link
+                                href="/admin/messages"
+                                className="inline-flex items-center rounded-full bg-gray-900 hover:bg-black dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 font-bold px-4 py-1.5 text-xs gap-1.5 shadow-xs cursor-pointer transition-colors"
+                            >
+                                <span>Lihat Semua</span>
+                                <ArrowRight className="w-3.5 h-3.5" />
                             </Link>
                         </CardHeader>
 
@@ -314,11 +315,12 @@ export default function Dashboard({ stats = {}, recent_messages = [], recent_pro
                                 <CardTitle className="font-heading text-base font-bold text-gray-900 dark:text-white">Proyek Portofolio Terbaru</CardTitle>
                                 <CardDescription className="text-xs text-gray-500 dark:text-slate-400 mt-0.5">Karya yang baru ditambahkan</CardDescription>
                             </div>
-                            <Link href="/admin/projects">
-                                <Button className="rounded-full bg-gray-900 hover:bg-black dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 font-bold px-4 py-1.5 text-xs gap-1.5 shadow-xs cursor-pointer transition-colors">
-                                    <span>Kelola</span>
-                                    <ArrowRight className="w-3.5 h-3.5" />
-                                </Button>
+                            <Link
+                                href="/admin/projects"
+                                className="inline-flex items-center rounded-full bg-gray-900 hover:bg-black dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-900 font-bold px-4 py-1.5 text-xs gap-1.5 shadow-xs cursor-pointer transition-colors"
+                            >
+                                <span>Kelola</span>
+                                <ArrowRight className="w-3.5 h-3.5" />
                             </Link>
                         </CardHeader>
 

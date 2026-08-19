@@ -44,9 +44,9 @@ export default function TechStackSection({ initialTechStacks = [] }) {
                     <span className="font-mono text-xs uppercase tracking-widest text-gray-500 dark:text-slate-400 font-semibold">
                         {t.techStack.tag}
                     </span>
-                    <h3 className="font-heading font-bold text-2xl text-gray-900 dark:text-white">
+                    <h2 className="font-heading font-bold text-2xl text-gray-900 dark:text-white">
                         {t.techStack.title}
-                    </h3>
+                    </h2>
                 </div>
 
                 {/* Filter Tabs */}

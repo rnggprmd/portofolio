@@ -136,6 +136,7 @@ export default function Home({
                     setIsOpen={setCommandPaletteOpen}
                     theme={theme}
                     toggleTheme={toggleTheme}
+                    settings={settings}
                 />
             </div>
         </LanguageProvider>

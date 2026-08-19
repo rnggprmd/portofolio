@@ -73,7 +73,7 @@ export default function ExperiencesIndex({ experiences = [] }) {
             location: exp.location || '',
             description: exp.description || '',
             responsibilities: Array.isArray(exp.responsibilities) && exp.responsibilities.length > 0 ? exp.responsibilities : [''],
-            tech_badges: Array.isArray(exp.tech_badges) ? exp.tech_badges.join(', ') : '',
+            tech_badges: Array.isArray(exp.tech_badges) ? exp.tech_badges.join(', ') : (typeof exp.tech_badges === 'string' ? exp.tech_badges : ''),
             order: exp.order || 0,
         });
         setIsModalOpen(true);
@@ -83,8 +83,10 @@ export default function ExperiencesIndex({ experiences = [] }) {
         e.preventDefault();
         const payload = {
             ...data,
-            responsibilities: (data.responsibilities || []).map(r => r.trim()).filter(Boolean),
-            tech_badges: data.tech_badges.split(',').map((s) => s.trim()).filter(Boolean),
+            responsibilities: (data.responsibilities || []).map(r => typeof r === 'string' ? r.trim() : r).filter(Boolean),
+            tech_badges: typeof data.tech_badges === 'string'
+                ? data.tech_badges.split(',').map((s) => s.trim()).filter(Boolean)
+                : (Array.isArray(data.tech_badges) ? data.tech_badges : []),
         };
 
         if (editingExp) {
@@ -223,6 +225,7 @@ export default function ExperiencesIndex({ experiences = [] }) {
                                                         whileTap={{ scale: 0.9 }}
                                                         onClick={() => openEditModal(exp)}
                                                         title="Edit Pengalaman"
+                                                        aria-label="Edit Pengalaman"
                                                         className="p-2 rounded-full border border-gray-200 dark:border-slate-800 text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 transition cursor-pointer"
                                                     >
                                                         <Pencil className="w-3.5 h-3.5" />
@@ -232,6 +235,7 @@ export default function ExperiencesIndex({ experiences = [] }) {
                                                         whileTap={{ scale: 0.9 }}
                                                         onClick={() => handleDelete(exp.id)}
                                                         title="Hapus Pengalaman"
+                                                        aria-label="Hapus Pengalaman"
                                                         className="p-2 rounded-full border border-rose-200 dark:border-rose-900/50 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
                                                     >
                                                         <Trash2 className="w-3.5 h-3.5" />
@@ -303,7 +307,12 @@ export default function ExperiencesIndex({ experiences = [] }) {
                                 <h3 className="font-heading font-bold text-lg sm:text-xl text-gray-900 dark:text-white">
                                     {editingExp ? 'Edit Pengalaman' : 'Tambah Pengalaman Baru'}
                                 </h3>
-                                <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition cursor-pointer">
+                                <button 
+                                    type="button" 
+                                    onClick={() => setIsModalOpen(false)} 
+                                    aria-label="Tutup modal"
+                                    className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition cursor-pointer"
+                                >
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>

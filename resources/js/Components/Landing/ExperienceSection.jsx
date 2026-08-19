@@ -15,6 +15,23 @@ export default function ExperienceSection({ initialExperiences = [] }) {
         tech: item.tech || ['Laravel', 'React', 'Tailwind CSS', 'MySQL', 'Redis'],
     }));
 
+    const safeJsonParse = (val, fallback) => {
+        if (Array.isArray(val)) return val;
+        if (typeof val === 'string') {
+            const trimmed = val.trim();
+            if (trimmed.startsWith('[')) {
+                try {
+                    const parsed = JSON.parse(trimmed);
+                    if (Array.isArray(parsed)) return parsed;
+                } catch (e) {
+                    // Fallback
+                }
+            }
+            if (trimmed) return trimmed.includes(',') ? trimmed.split(',').map(s => s.trim()).filter(Boolean) : [trimmed];
+        }
+        return fallback;
+    };
+
     const displayExperiences = initialExperiences.length > 0
         ? initialExperiences.map(exp => ({
             id: exp.id,
@@ -23,16 +40,8 @@ export default function ExperienceSection({ initialExperiences = [] }) {
             company: exp.company,
             location: exp.location || 'Remote',
             description: exp.description || '',
-            responsibilities: Array.isArray(exp.responsibilities) 
-                ? exp.responsibilities 
-                : (typeof exp.responsibilities === 'string' && exp.responsibilities.trim().startsWith('[') 
-                    ? JSON.parse(exp.responsibilities) 
-                    : (exp.responsibilities ? [exp.responsibilities] : (exp.description ? [exp.description] : []))),
-            tech: Array.isArray(exp.tech_badges) 
-                ? exp.tech_badges 
-                : (typeof exp.tech_badges === 'string' && exp.tech_badges.trim().startsWith('[')
-                    ? JSON.parse(exp.tech_badges)
-                    : (exp.tech_badges ? [exp.tech_badges] : ['Laravel', 'React'])),
+            responsibilities: safeJsonParse(exp.responsibilities, exp.description ? [exp.description] : []),
+            tech: safeJsonParse(exp.tech_badges, ['Laravel', 'React']),
             type: exp.type || 'Career',
         }))
         : defaultItems;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Head, useForm, Link } from '@inertiajs/react';
+import { Head, useForm, Link, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
@@ -8,6 +8,11 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/Com
 import { Code2, ArrowLeft } from 'lucide-react';
 
 export default function Login() {
+    const { props } = usePage();
+    const siteLogo = props?.site_settings?.site_logo || "/storage/logo/logo-portofolio.png";
+
+    const heroName = props?.site_settings?.hero_name || 'Rangga Pramudya';
+
     const { data, setData, post, processing, errors } = useForm({
         email: '',
         password: '',
@@ -42,16 +47,20 @@ export default function Login() {
                         <CardHeader className="text-center pb-6 border-b border-gray-100 dark:border-slate-800">
                             <div className="w-12 h-12 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center mx-auto mb-3 shadow-md overflow-hidden p-1.5">
                                 <img 
-                                    src="/storage/logo/logo-portofolio.png" 
+                                    src={siteLogo} 
                                     alt="Logo" 
                                     className="w-full h-full object-contain rounded-xl"
+                                    onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = "/storage/logo/logo-portofolio.png";
+                                    }}
                                 />
                             </div>
                             <CardTitle className="font-heading font-extrabold text-2xl tracking-tight text-gray-900 dark:text-white">
                                 Login Admin Panel
                             </CardTitle>
                             <CardDescription className="mt-1 text-xs text-gray-500 dark:text-slate-400 font-sans">
-                                Masuk untuk mengelola data portofolio Rangga Pramudya
+                                Masuk untuk mengelola data portofolio {heroName}
                             </CardDescription>
                         </CardHeader>
 

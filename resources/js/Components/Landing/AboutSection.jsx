@@ -55,6 +55,7 @@ export default function AboutSection({ settings = {}, statsCounts = {} }) {
     const { t } = useLanguage();
     const [activeTab, setActiveTab] = useState('story');
     const [activeInterest, setActiveInterest] = useState(null);
+    const [avatarError, setAvatarError] = useState(false);
 
     const tag = settings.about_tag || t.about.tag;
     const title = settings.about_title || t.about.title;
@@ -232,8 +233,13 @@ export default function AboutSection({ settings = {}, statsCounts = {} }) {
                             className="relative p-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl shadow-xl transition duration-300 [perspective:1000px]"
                         >
                             <div className="w-full h-80 sm:h-96 rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 dark:from-slate-950 dark:to-slate-900 flex flex-col items-center justify-center text-white relative overflow-hidden group">
-                                {aboutAvatarUrl ? (
-                                    <img src={aboutAvatarUrl} alt={name} className="w-full h-full rounded-2xl object-cover" />
+                                {aboutAvatarUrl && !avatarError ? (
+                                    <img 
+                                        src={aboutAvatarUrl} 
+                                        alt={name} 
+                                        className="w-full h-full rounded-2xl object-cover" 
+                                        onError={() => setAvatarError(true)}
+                                    />
                                 ) : (
                                     <>
                                         <div className="w-24 h-24 rounded-2xl bg-slate-800 border border-slate-700 flex items-center justify-center mb-4 group-hover:scale-110 transition duration-300">

@@ -11,9 +11,9 @@ export default function MessagesIndex({ messages = [] }) {
     const [selectedMessage, setSelectedMessage] = useState(null);
 
     const handleSelectMessage = (msg) => {
-        setSelectedMessage(msg);
+        setSelectedMessage({ ...msg, is_read: true });
         if (!msg.is_read) {
-            router.get(`/admin/messages/${msg.id}`, {}, { preserveState: true });
+            router.get(`/admin/messages/${msg.id}`, {}, { preserveState: true, preserveScroll: true });
         }
     };
 
@@ -120,10 +120,9 @@ export default function MessagesIndex({ messages = [] }) {
                                 <div className="pt-2">
                                     <a
                                         href={`mailto:${selectedMessage.email}?subject=Re: ${encodeURIComponent(selectedMessage.subject || '')}`}
+                                        className="inline-flex items-center gap-2 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-black dark:hover:bg-gray-100 font-semibold text-xs px-4 py-2 shadow-md transition-colors"
                                     >
-                                        <Button size="sm" className="gap-2 rounded-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-black dark:hover:bg-gray-100 font-semibold text-xs shadow-md">
-                                            <Send className="w-3.5 h-3.5" /> Balas via Email
-                                        </Button>
+                                        <Send className="w-3.5 h-3.5" /> Balas via Email
                                     </a>
                                 </div>
                             </div>

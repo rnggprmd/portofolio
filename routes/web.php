@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 // Public Landing Page
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:6,1')->name('contact.store');
 
 // Auth Routes (Login Admin)
 Route::get('/login', [LoginController::class, 'showLogin'])->name('login');

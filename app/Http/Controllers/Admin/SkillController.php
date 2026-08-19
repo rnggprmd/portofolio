@@ -14,7 +14,7 @@ class SkillController extends Controller
     public function index(): Response
     {
         return Inertia::render('Admin/Skills/Index', [
-            'skills' => Skill::latest()->get(),
+            'skills' => Skill::orderBy('category', 'asc')->orderBy('id', 'asc')->get(),
         ]);
     }
 

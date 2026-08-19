@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
+import { usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import AdminSidebar from '../Components/Admin/AdminSidebar';
 import AdminHeader from '../Components/Admin/AdminHeader';
 import { cn } from '@/lib/utils';
 
 export default function AdminLayout({ children }) {
+    const { props } = usePage();
+    const heroName = props?.site_settings?.hero_name || 'Rangga Pramudya';
+
     const [sidebarOpen, setSidebarOpen] = useState(() => {
         if (typeof window !== 'undefined') {
             return window.innerWidth >= 1024;
@@ -37,7 +41,7 @@ export default function AdminLayout({ children }) {
 
                 {/* Footer */}
                 <footer className="py-4 px-6 text-center text-xs text-gray-500 dark:text-slate-500 border-t border-gray-200 dark:border-slate-800 font-mono">
-                    &copy; {new Date().getFullYear()} Rangga Pramudya — Admin Control Center
+                    &copy; {new Date().getFullYear()} {heroName} — Admin Control Center
                 </footer>
             </div>
         </div>

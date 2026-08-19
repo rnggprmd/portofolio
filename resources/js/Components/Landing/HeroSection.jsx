@@ -11,11 +11,12 @@ export default function HeroSection({ settings = {} }) {
     const [isFlipped, setIsFlipped] = useState(false);
     const [hoveredTag, setHoveredTag] = useState(null);
     const [displayedName, setDisplayedName] = useState('');
+    const [avatarError, setAvatarError] = useState(false);
 
     const name = settings.hero_name || 'Rangga Pramudya';
     const role = settings.hero_role || 'Software Engineer';
     const description = settings.hero_description || t.hero.description;
-    const githubUrl = settings.github_url || 'https://github.com';
+    const githubUrl = settings.github_url || 'https://github.com/rnggprmd';
     const linkedinUrl = settings.linkedin_url || 'https://linkedin.com';
     const cvUrl = settings.cv_url || '#';
     const avatarUrl = settings.avatar_url || '';
@@ -227,13 +228,13 @@ export default function HeroSection({ settings = {} }) {
                         transition={{ duration: 0.6, delay: 0.5 }}
                         className="flex items-center justify-center lg:justify-start gap-6 pt-1 text-gray-500 dark:text-slate-400"
                     >
-                        <motion.a whileHover={{ scale: 1.2, rotate: 6 }} whileTap={{ scale: 0.9 }} href={githubUrl} target="_blank" rel="noreferrer" className="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition cursor-pointer">
+                        <motion.a whileHover={{ scale: 1.2, rotate: 6 }} whileTap={{ scale: 0.9 }} href={githubUrl} target="_blank" rel="noreferrer" aria-label="GitHub Profile" className="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition cursor-pointer">
                             <GithubIcon className="w-5 h-5" />
                         </motion.a>
-                        <motion.a whileHover={{ scale: 1.2, rotate: -6 }} whileTap={{ scale: 0.9 }} href={linkedinUrl} target="_blank" rel="noreferrer" className="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition cursor-pointer">
+                        <motion.a whileHover={{ scale: 1.2, rotate: -6 }} whileTap={{ scale: 0.9 }} href={linkedinUrl} target="_blank" rel="noreferrer" aria-label="LinkedIn Profile" className="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition cursor-pointer">
                             <LinkedinIcon className="w-5 h-5" />
                         </motion.a>
-                        <motion.a whileHover={{ scale: 1.2, rotate: 6 }} whileTap={{ scale: 0.9 }} href={`mailto:${settings.contact_email || 'contact@example.com'}`} className="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition cursor-pointer">
+                        <motion.a whileHover={{ scale: 1.2, rotate: 6 }} whileTap={{ scale: 0.9 }} href={`mailto:${settings.contact_email || 'rangga.pramudya@example.com'}`} aria-label="Send Email" className="p-2.5 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white transition cursor-pointer">
                             <Mail className="w-5 h-5" />
                         </motion.a>
                     </motion.div>
@@ -319,11 +320,12 @@ export default function HeroSection({ settings = {} }) {
 
                                     {/* Avatar Frame (Dynamic Photo or Fallback Initials) */}
                                     <div className="relative z-10 w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 dark:from-slate-950 dark:to-slate-900 border border-gray-300 dark:border-slate-700 p-1 shadow-md overflow-hidden flex items-center justify-center shrink-0">
-                                        {avatarUrl ? (
+                                        {avatarUrl && !avatarError ? (
                                             <img
                                                 src={avatarUrl}
                                                 alt={name}
                                                 className="w-full h-full rounded-xl object-cover"
+                                                onError={() => setAvatarError(true)}
                                             />
                                         ) : (
                                             <div className="w-full h-full rounded-xl bg-slate-900 flex flex-col items-center justify-center text-white relative">

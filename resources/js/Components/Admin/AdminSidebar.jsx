@@ -5,7 +5,8 @@ import { LayoutDashboard, FolderKanban, Wrench, Mail, Globe, X, Code2, Briefcase
 import { cn } from '@/lib/utils';
 
 export default function AdminSidebar({ isOpen, setIsOpen }) {
-    const { url } = usePage();
+    const { url, props } = usePage();
+    const siteLogo = props?.site_settings?.site_logo || "/storage/logo/logo-portofolio.png";
 
     const sections = [
         {
@@ -108,9 +109,13 @@ export default function AdminSidebar({ isOpen, setIsOpen }) {
                         <Link href="/admin/dashboard" className="flex items-center gap-2.5 font-heading font-bold text-base text-gray-900 dark:text-white group">
                             <div className="w-8 h-8 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center shadow-xs group-hover:rotate-6 transition-transform overflow-hidden p-1">
                                 <img 
-                                    src="/storage/logo/logo-portofolio.png" 
+                                    src={siteLogo} 
                                     alt="Logo" 
                                     className="w-full h-full object-contain rounded-lg"
+                                    onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = "/storage/logo/logo-portofolio.png";
+                                    }}
                                 />
                             </div>
                             <span className="tracking-tight">Admin Center</span>

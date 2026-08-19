@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import AdminLayout from '@/Layouts/AdminLayout';
@@ -22,15 +22,15 @@ export default function AboutIndex({ settings = {} }) {
     };
 
     const initialParagraphs = parseInitialArray('about_paragraphs', [
-        settings.about_story_1 || "Saya adalah seorang Software Engineer...",
-        settings.about_story_2 || "Pengalaman berfokus pada ekosistem Laravel & React...",
-        settings.about_story_3 || "Selalu bersemangat mempelajari teknologi web modern..."
+        settings.about_story_1 || "Saya adalah seorang Software Engineer berlatar belakang Sistem Informasi dengan passion kuat pada pengembangan aplikasi web performan tinggi.",
+        settings.about_story_2 || "Pengalaman berfokus pada ekosistem Laravel & React, membangun arsitektur clean code, arsitektur database terstruktur, serta antarmuka pengguna yang responsif.",
+        settings.about_story_3 || "Selalu bersemangat mempelajari teknologi web modern, metodologi arsitektur sistem terbaru, dan menciptakan produk digital yang berdampak nyata."
     ]);
 
     const initialPrinciples = parseInitialArray('about_principles', [
-        settings.about_clean_code || "Clean Code & Scalable Architecture",
-        settings.about_human_ui || "Human-Centric & Modern UI/UX Design",
-        settings.about_continuous_growth || "Continuous Learning & Adaptive Mindset"
+        settings.about_clean_code || "Clean Code & Arsitektur Terstruktur yang Mudah Dideploy",
+        settings.about_human_ui || "Pengalaman Pengguna (UI/UX) Presisi & Responsif",
+        settings.about_continuous_growth || "Pembelajaran Berkelanjutan & Adaptasi Teknologi Terbaru"
     ]);
 
     const initialFocusSkills = parseInitialArray('about_focus_skills', [
@@ -50,6 +50,12 @@ export default function AboutIndex({ settings = {} }) {
         about_focus_skills: initialFocusSkills,
         about_interests: settings.about_interests || 'UI/UX Design, Web Security, Cloud Architecture, Open Source, Machine Learning, Clean Architecture',
     });
+
+    useEffect(() => {
+        if (settings.about_avatar_url) {
+            setData('about_avatar_url', settings.about_avatar_url);
+        }
+    }, [settings.about_avatar_url]);
 
     // Dynamic Paragraph Controls
     const handleParagraphChange = (index, value) => {

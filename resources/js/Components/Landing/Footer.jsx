@@ -105,6 +105,7 @@ export default function Footer({ settings = {} }) {
                         </h4>
                         <ul className="space-y-2 text-xs font-medium text-gray-400">
                             <li><button onClick={(e) => scrollToSection(e, 'home')} className="hover:text-white transition cursor-pointer text-left">{t.nav.home}</button></li>
+                            <li><button onClick={(e) => scrollToSection(e, 'github')} className="hover:text-white transition cursor-pointer text-left">{t.nav.github}</button></li>
                             <li><button onClick={(e) => scrollToSection(e, 'about')} className="hover:text-white transition cursor-pointer text-left">{t.nav.about}</button></li>
                             <li><button onClick={(e) => scrollToSection(e, 'skills')} className="hover:text-white transition cursor-pointer text-left">{t.nav.skills}</button></li>
                             <li><button onClick={(e) => scrollToSection(e, 'projects')} className="hover:text-white transition cursor-pointer text-left">{t.nav.projects}</button></li>

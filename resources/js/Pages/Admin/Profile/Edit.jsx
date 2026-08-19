@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Head, useForm } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import AdminLayout from '@/Layouts/AdminLayout';
@@ -17,6 +17,12 @@ export default function ProfileEdit({ user, site_logo }) {
         site_logo: site_logo || '/storage/logo/logo-portofolio.png',
         logo_file: null,
     });
+
+    useEffect(() => {
+        if (site_logo) {
+            profileForm.setData('site_logo', site_logo);
+        }
+    }, [site_logo]);
 
     // Form 2: Password Change Form
     const passwordForm = useForm({

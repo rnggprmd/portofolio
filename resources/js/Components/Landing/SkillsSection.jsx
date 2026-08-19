@@ -176,7 +176,9 @@ export default function SkillsSection({ initialSkills = [] }) {
         const section = document.getElementById('skills');
         if (section) {
             section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            history.replaceState(null, '', window.location.pathname + window.location.search);
+            if (window.history.replaceState) {
+                window.history.replaceState(null, '', window.location.pathname + window.location.search);
+            }
         }
     };
 

@@ -44,6 +44,10 @@ class HandleInertiaRequests extends Middleware
                     'email' => $request->user()->email,
                 ] : null,
             ],
+            'site_settings' => [
+                'site_logo' => \App\Models\SiteSetting::getByKey('site_logo', '/storage/logo/logo-portofolio.png'),
+                'hero_name' => \App\Models\SiteSetting::getByKey('hero_name', 'Rangga Pramudya'),
+            ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),

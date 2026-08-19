@@ -19,16 +19,27 @@ export default function ProjectsSection({ initialProjects = [] }) {
         4: ['Node.js', 'Express', 'MySQL', 'Docker', 'JWT'],
     };
 
+    const parseTechStack = (tech) => {
+        if (Array.isArray(tech)) return tech;
+        if (typeof tech === 'string') {
+            const trimmed = tech.trim();
+            if (trimmed.startsWith('[')) {
+                try {
+                    const parsed = JSON.parse(trimmed);
+                    if (Array.isArray(parsed)) return parsed;
+                } catch (e) {
+                    // Fallback to comma separation
+                }
+            }
+            return trimmed.split(',').map(s => s.trim()).filter(Boolean);
+        }
+        return ['Laravel', 'React'];
+    };
+
     const projectItems = initialProjects.length > 0
         ? initialProjects.map(p => ({
             ...p,
-            tech_stack: Array.isArray(p.tech_stack)
-                ? p.tech_stack
-                : (typeof p.tech_stack === 'string'
-                    ? (p.tech_stack.trim().startsWith('[')
-                        ? JSON.parse(p.tech_stack)
-                        : p.tech_stack.split(',').map(s => s.trim()).filter(Boolean))
-                    : ['Laravel', 'React']),
+            tech_stack: parseTechStack(p.tech_stack),
             category: p.category || 'Full Stack',
             demo_url: p.demo_url || 'https://example.com',
             github_url: p.github_url || 'https://github.com',

@@ -3,9 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Home, User, Wrench, FolderKanban, Briefcase, Award, Mail, Sun, Moon, Copy, Check, Command } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from './BrandIcons';
 
-export default function CommandPalette({ isOpen, setIsOpen, theme, toggleTheme }) {
+export default function CommandPalette({ isOpen, setIsOpen, theme, toggleTheme, settings = {} }) {
     const [query, setQuery] = useState('');
     const [copied, setCopied] = useState(false);
+
+    const githubUrl = settings.github_url || (settings.github_username ? `https://github.com/${settings.github_username}` : 'https://github.com/rnggprmd');
+    const linkedinUrl = settings.linkedin_url || 'https://linkedin.com';
+    const contactEmail = settings.contact_email || settings.email || 'rangga.pramudya@example.com';
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -30,11 +34,11 @@ export default function CommandPalette({ isOpen, setIsOpen, theme, toggleTheme }
         { id: 'experience', title: 'Go to Experience Timeline', icon: Briefcase, section: '#experience' },
         { id: 'certificates', title: 'Go to Certifications', icon: Award, section: '#certificates' },
         { id: 'contact', title: 'Go to Contact Form', icon: Mail, section: '#contact' },
-        { id: 'github', title: 'Open GitHub Profile', icon: GithubIcon, link: 'https://github.com' },
-        { id: 'linkedin', title: 'Open LinkedIn Profile', icon: LinkedinIcon, link: 'https://linkedin.com' },
+        { id: 'github', title: 'Open GitHub Profile', icon: GithubIcon, link: githubUrl },
+        { id: 'linkedin', title: 'Open LinkedIn Profile', icon: LinkedinIcon, link: linkedinUrl },
         { id: 'theme', title: theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode', icon: theme === 'dark' ? Sun : Moon, handler: toggleTheme },
         { id: 'copy', title: 'Copy Email Address', icon: Copy, handler: () => {
-            navigator.clipboard.writeText('rangga.pramudya@example.com');
+            navigator.clipboard.writeText(contactEmail);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
         }},

@@ -86,8 +86,8 @@ export default function SkillsIndex({ skills = [] }) {
 
     // Search Filtering & Pagination Math
     const filteredSkills = skills.filter(skill =>
-        skill.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        skill.category.toLowerCase().includes(searchQuery.toLowerCase())
+        (skill.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (skill.category || '').toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const totalPages = Math.ceil(filteredSkills.length / itemsPerPage) || 1;
@@ -208,6 +208,7 @@ export default function SkillsIndex({ skills = [] }) {
                                                         whileTap={{ scale: 0.9 }}
                                                         onClick={() => openEditModal(skill)}
                                                         title="Edit Skill"
+                                                        aria-label="Edit Skill"
                                                         className="p-2 rounded-full border border-gray-200 dark:border-slate-800 text-gray-600 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 transition cursor-pointer"
                                                     >
                                                         <Pencil className="w-3.5 h-3.5" />
@@ -217,6 +218,7 @@ export default function SkillsIndex({ skills = [] }) {
                                                         whileTap={{ scale: 0.9 }}
                                                         onClick={() => handleDelete(skill.id)}
                                                         title="Hapus Skill"
+                                                        aria-label="Hapus Skill"
                                                         className="p-2 rounded-full border border-rose-200 dark:border-rose-900/50 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
                                                     >
                                                         <Trash2 className="w-3.5 h-3.5" />
@@ -289,7 +291,12 @@ export default function SkillsIndex({ skills = [] }) {
                                 <h3 className="font-heading font-bold text-lg sm:text-xl text-gray-900 dark:text-white">
                                     {editingSkill ? 'Edit Skill' : 'Tambah Skill Baru'}
                                 </h3>
-                                <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition cursor-pointer">
+                                <button 
+                                    type="button" 
+                                    onClick={() => setIsModalOpen(false)} 
+                                    aria-label="Tutup modal"
+                                    className="text-gray-400 hover:text-gray-900 dark:hover:text-white transition cursor-pointer"
+                                >
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
