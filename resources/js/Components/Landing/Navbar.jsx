@@ -97,12 +97,12 @@ export default function Navbar({ theme, toggleTheme, onOpenCommandPalette, setti
                 >
                     <div className="w-10 h-10 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center shadow-md group-hover:rotate-6 transition-transform duration-300 overflow-hidden p-1">
                         <img 
-                            src={settings.site_logo || "/storage/logo/logo portofolio.png"} 
+                            src={settings.site_logo || "/storage/logo/logo%20portofolio.png"} 
                             alt="Logo" 
                             className="w-full h-full object-contain rounded-lg"
                             onError={(e) => {
                                 e.target.onerror = null;
-                                e.target.src = "/storage/logo/logo portofolio.png";
+                                e.target.src = "/storage/logo/logo%20portofolio.png";
                             }}
                         />
                     </div>

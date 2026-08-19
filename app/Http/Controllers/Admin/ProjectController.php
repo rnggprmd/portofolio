@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -79,6 +80,11 @@ class ProjectController extends Controller
         }
 
         if ($request->hasFile('image_file')) {
+            // Delete old image file from storage if it exists
+            if (!empty($project->image) && str_starts_with($project->image, '/storage/')) {
+                $oldPath = str_replace('/storage/', '', $project->image);
+                Storage::disk('public')->delete($oldPath);
+            }
             $path = $request->file('image_file')->store('projects', 'public');
             $validated['image'] = '/storage/' . $path;
         } elseif (empty($validated['image']) && !empty($validated['image_url'])) {
@@ -93,6 +99,12 @@ class ProjectController extends Controller
 
     public function destroy(Project $project): RedirectResponse
     {
+        // Delete project image from storage if it exists
+        if (!empty($project->image) && str_starts_with($project->image, '/storage/')) {
+            $oldPath = str_replace('/storage/', '', $project->image);
+            Storage::disk('public')->delete($oldPath);
+        }
+
         $project->delete();
 
         return redirect()->route('admin.projects.index')->with('success', 'Proyek berhasil dihapus!');

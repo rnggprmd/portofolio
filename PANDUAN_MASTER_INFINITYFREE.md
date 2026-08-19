@@ -1,9 +1,11 @@
-# 📘 Panduan Khusus Deployment InfinityFree: portofoliorangga.rf.gd
+# 📘 Panduan Deployment InfinityFree: portofoliorangga.rf.gd
 
-Dokumen ini sudah disesuaikan secara khusus untuk akun InfinityFree Anda:
+> ⚠️ **KEAMANAN:** Jangan upload file ini ke server! Tambahkan ke `.gitignore`.
+
+Dokumen ini sudah disesuaikan untuk deployment InfinityFree.
 - **Domain:** `https://portofoliorangga.rf.gd`
-- **FTP & Database Username:** `if0_42535726`
-- **FTP & Database Password:** `wH09nHEWgUJeSib`
+- **Username:** `if0_42535726`
+- **Password:** *(Lihat di cPanel InfinityFree Anda — jangan simpan di sini)*
 
 ---
 
@@ -49,7 +51,7 @@ DB_HOST=sqlxxx.infinityfree.com           <-- GANTI sqlxxx DENGAN MYSQL HOSTNAME
 DB_PORT=3306
 DB_DATABASE=if0_42535726_portofolio       <-- NAMA DATABASE INFINITYFREE ANDA
 DB_USERNAME=if0_42535726
-DB_PASSWORD=wH09nHEWgUJeSib
+DB_PASSWORD=[PASSWORD_ANDA]       <- Isi dengan password DB dari cPanel InfinityFree
 
 BROADCAST_DRIVER=log
 CACHE_DRIVER=file
@@ -68,7 +70,7 @@ SESSION_LIFETIME=120
 2. Di baris paling atas (Quickconnect):
    - **Host:** `ftpupload.net`
    - **Username:** `if0_42535726`
-   - **Password:** `wH09nHEWgUJeSib`
+   - **Password:** `ftpupload.net` | Gunakan password FTP dari cPanel InfinityFree Anda
    - **Port:** `21`
    - Klik **Quickconnect**.
 3. **Di panel kanan (Server):** Buka folder **`htdocs`**. Hapus file `index2.html` jika ada.
@@ -87,7 +89,7 @@ SESSION_LIFETIME=120
 2. Masuk ke Admin Panel:  
    👉 **`https://portofoliorangga.rf.gd/login`**
    - 📧 **Email:** `admin@portofolio.com`
-   - 🔑 **Password:** `devByPass`
+   - 🔑 **Password:** *(Default dari SQL dump — **SEGERA GANTI** setelah login pertama!)*
 
 3. **Ubah Password Admin:**  
    Masuk ke **Pengaturan Profil & Password** di Admin Panel, lalu ganti `devByPass` dengan password rahasia pribadi Anda.

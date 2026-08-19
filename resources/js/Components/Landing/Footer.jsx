@@ -33,12 +33,12 @@ export default function Footer({ settings = {} }) {
                         <div className="flex items-center gap-3">
                             <motion.div whileHover={{ rotate: 12, scale: 1.1 }} className="w-10 h-10 rounded-xl bg-white text-gray-900 flex items-center justify-center shadow-sm overflow-hidden p-1">
                                 <img 
-                                    src={settings.site_logo || "/storage/logo/logo portofolio.png"} 
+                                    src={settings.site_logo || "/storage/logo/logo%20portofolio.png"} 
                                     alt="Logo" 
                                     className="w-full h-full object-contain rounded-lg"
                                     onError={(e) => {
                                         e.target.onerror = null;
-                                        e.target.src = "/storage/logo/logo portofolio.png";
+                                        e.target.src = "/storage/logo/logo%20portofolio.png";
                                     }}
                                 />
                             </motion.div>

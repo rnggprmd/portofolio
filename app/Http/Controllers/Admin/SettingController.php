@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\SiteSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -28,7 +29,7 @@ class SettingController extends Controller
             'github_url' => 'https://github.com/rnggprmd',
             'linkedin_url' => 'https://linkedin.com',
             'cv_url' => '#',
-            'site_logo' => '/storage/logo/logo portofolio.png',
+            'site_logo' => '/storage/logo/logo%20portofolio.png',
         ];
 
         $settings = [];
@@ -53,6 +54,11 @@ class SettingController extends Controller
 
         // 1. Handle PDF CV Upload
         if ($request->hasFile('cv_file')) {
+            // Delete old CV file
+            $oldCv = SiteSetting::getByKey('cv_url');
+            if (!empty($oldCv) && str_starts_with($oldCv, '/storage/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $oldCv));
+            }
             $path = $request->file('cv_file')->store('cv', 'public');
             SiteSetting::setKey('cv_url', '/storage/' . $path);
             unset($data['cv_url']); // Prevent overwriting newly uploaded CV path!
@@ -60,6 +66,11 @@ class SettingController extends Controller
 
         // 2. Handle Avatar Image Upload
         if ($request->hasFile('avatar_file')) {
+            // Delete old avatar file
+            $oldAvatar = SiteSetting::getByKey('avatar_url');
+            if (!empty($oldAvatar) && str_starts_with($oldAvatar, '/storage/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $oldAvatar));
+            }
             $path = $request->file('avatar_file')->store('avatars', 'public');
             SiteSetting::setKey('avatar_url', '/storage/' . $path);
             unset($data['avatar_url']); // Prevent overwriting newly uploaded Avatar path!

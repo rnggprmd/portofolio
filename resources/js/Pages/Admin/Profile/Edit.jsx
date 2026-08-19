@@ -14,7 +14,7 @@ export default function ProfileEdit({ user, site_logo }) {
         _method: 'PUT',
         name: user.name || '',
         email: user.email || '',
-        site_logo: site_logo || '/storage/logo/logo portofolio.png',
+        site_logo: site_logo || '/storage/logo/logo%20portofolio.png',
         logo_file: null,
     });
 

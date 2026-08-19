@@ -24,7 +24,7 @@ class ProfileController extends Controller
                 'name' => $request->user()->name,
                 'email' => $request->user()->email,
             ],
-            'site_logo' => SiteSetting::getByKey('site_logo', '/storage/logo/logo portofolio.png'),
+            'site_logo' => SiteSetting::getByKey('site_logo', '/storage/logo/logo%20portofolio.png'),
         ]);
     }
 
