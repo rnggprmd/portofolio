@@ -43,6 +43,22 @@ export default function Home({
         localStorage.setItem('theme', theme);
     }, [theme]);
 
+    // Automatically clean up any # hash from the browser URL on load while smoothly scrolling to target
+    useEffect(() => {
+        if (typeof window !== 'undefined' && window.location.hash) {
+            const id = window.location.hash.substring(1);
+            const el = document.getElementById(id);
+            if (el) {
+                setTimeout(() => {
+                    el.scrollIntoView({ behavior: 'smooth' });
+                    if (window.history.replaceState) {
+                        window.history.replaceState(null, '', window.location.pathname);
+                    }
+                }, 150);
+            }
+        }
+    }, []);
+
     const toggleTheme = () => {
         setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
     };

@@ -10,14 +10,14 @@ return new class extends Migration
     {
         Schema::create('certificates', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('issuer');
-            $table->string('year');
-            $table->string('credential_id')->nullable();
-            $table->string('badge')->nullable(); // Expert, Professional, Certified
-            $table->string('verify_url')->nullable();
+            $table->string('title', 150);
+            $table->string('issuer', 100);
+            $table->string('year', 20);
+            $table->string('credential_id', 100)->nullable();
+            $table->string('badge', 50)->nullable(); // Expert, Professional, Certified
+            $table->string('verify_url', 255)->nullable();
             $table->text('description')->nullable();
-            $table->integer('order')->default(0);
+            $table->unsignedSmallInteger('order')->default(0);
             $table->timestamps();
         });
     }

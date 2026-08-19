@@ -86,30 +86,30 @@ export default function Navbar({ theme, toggleTheme, onOpenCommandPalette, setti
 
             <div className="max-w-7xl mx-auto flex items-center justify-between">
                 {/* Brand Logo with Interactive Spring Hover */}
-                <motion.a
-                    href="#home"
+                <motion.button
+                    type="button"
                     onClick={(e) => scrollToSection(e, 'home')}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="flex items-center gap-2.5 group cursor-pointer"
+                    className="flex items-center gap-2.5 group cursor-pointer text-left bg-transparent border-0 p-0"
                 >
                     <div className="w-10 h-10 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center shadow-md group-hover:rotate-6 transition-transform duration-300 overflow-hidden p-1">
                         <img 
-                            src={settings.site_logo || "/storage/logo/logo%20portofolio.png"} 
+                            src={settings.site_logo || "/storage/logo/logo-portofolio.png"} 
                             alt="Logo" 
                             className="w-full h-full object-contain rounded-lg"
                             onError={(e) => {
                                 e.target.onerror = null;
-                                e.target.src = "/storage/logo/logo%20portofolio.png";
+                                e.target.src = "/storage/logo/logo-portofolio.png";
                             }}
                         />
                     </div>
                     <span className="font-heading font-bold text-gray-900 dark:text-white text-base tracking-tight">
                         {heroName}
                     </span>
-                </motion.a>
+                </motion.button>
 
                 {/* Floating Navigation Bar */}
                 <motion.nav

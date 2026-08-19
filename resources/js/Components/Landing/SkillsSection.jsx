@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Code2, Server, Database, Layout, Cloud, Wrench, Network as NetworkIcon, Globe, Cpu, Terminal, ShieldCheck, Smartphone } from 'lucide-react';
+import { Code2, Server, Database, Layout, Cloud, Wrench, Network as NetworkIcon, Globe, Cpu, Terminal, ShieldCheck, Smartphone, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../../Context/LanguageContext';
 
 const getCategoryIcon = (category) => {
@@ -50,11 +50,11 @@ function BentoCard({ item, idx, totalItems }) {
     return (
         <motion.div
             layout
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.95, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: -15 }}
             whileHover={{ y: -6, scale: 1.01 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.35 }}
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -126,6 +126,8 @@ function BentoCard({ item, idx, totalItems }) {
 export default function SkillsSection({ initialSkills = [] }) {
     const { t } = useLanguage();
     const [selectedFilter, setSelectedFilter] = useState('All');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 3;
 
     // Build Bento items dynamically from Database Skills if available
     const bentoItems = initialSkills.length > 0 ? Object.values(
@@ -158,6 +160,26 @@ export default function SkillsSection({ initialSkills = [] }) {
         return item.tag === selectedFilter;
     });
 
+    // Pagination calculations
+    const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedItems = filteredItems.slice(startIndex, startIndex + itemsPerPage);
+
+    const handleFilterChange = (cat) => {
+        setSelectedFilter(cat);
+        setCurrentPage(1);
+    };
+
+    const handlePageChange = (page) => {
+        if (page < 1 || page > totalPages) return;
+        setCurrentPage(page);
+        const section = document.getElementById('skills');
+        if (section) {
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+    };
+
     return (
         <section id="skills" className="py-24 px-4 sm:px-8 bg-transparent transition-colors duration-300">
             <div className="max-w-6xl mx-auto space-y-12">
@@ -187,7 +209,7 @@ export default function SkillsSection({ initialSkills = [] }) {
                             key={cat}
                             whileHover={{ scale: 1.06 }}
                             whileTap={{ scale: 0.94 }}
-                            onClick={() => setSelectedFilter(cat)}
+                            onClick={() => handleFilterChange(cat)}
                             className={`px-4 py-2 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer ${
                                 selectedFilter === cat
                                     ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md'
@@ -199,14 +221,73 @@ export default function SkillsSection({ initialSkills = [] }) {
                     ))}
                 </div>
 
-                {/* Intelligent Bento Grid (Guarantees rows fill 12 cols perfectly with zero holes) */}
+                {/* Intelligent Bento Grid with Smooth Page Transitions */}
                 <motion.div layout className="grid md:grid-cols-12 gap-6">
-                    <AnimatePresence>
-                        {filteredItems.map((item, idx) => (
-                            <BentoCard key={item.category} item={item} idx={idx} totalItems={filteredItems.length} />
+                    <AnimatePresence mode="popLayout">
+                        {paginatedItems.map((item, idx) => (
+                            <BentoCard key={item.category} item={item} idx={idx} totalItems={paginatedItems.length} />
                         ))}
                     </AnimatePresence>
                 </motion.div>
+
+                {/* Aesthetic Pagination Controls */}
+                {totalPages > 1 && (
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-200/80 dark:border-slate-800">
+                        <p className="text-xs text-gray-500 dark:text-slate-400 font-mono">
+                            {t.skills.showing}{' '}
+                            <span className="font-bold text-gray-900 dark:text-white">
+                                {startIndex + 1} - {Math.min(startIndex + itemsPerPage, filteredItems.length)}
+                            </span>{' '}
+                            {t.skills.of}{' '}
+                            <span className="font-bold text-gray-900 dark:text-white">
+                                {filteredItems.length}
+                            </span>{' '}
+                            {t.skills.skillsCount}
+                        </p>
+
+                        <div className="flex items-center gap-2">
+                            <motion.button
+                                whileHover={{ scale: currentPage > 1 ? 1.08 : 1 }}
+                                whileTap={{ scale: currentPage > 1 ? 0.95 : 1 }}
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                aria-label={t.skills.prevPage}
+                                className="p-2.5 rounded-2xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 text-gray-700 dark:text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-slate-800 transition shadow-2xs cursor-pointer flex items-center justify-center"
+                            >
+                                <ChevronLeft className="w-4 h-4" />
+                            </motion.button>
+
+                            <div className="flex items-center gap-1.5">
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                    <motion.button
+                                        key={page}
+                                        whileHover={{ scale: 1.1 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() => handlePageChange(page)}
+                                        className={`w-9 h-9 rounded-2xl text-xs font-mono font-bold transition-all duration-200 cursor-pointer flex items-center justify-center ${
+                                            currentPage === page
+                                                ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 shadow-md scale-105'
+                                                : 'bg-white dark:bg-slate-900 text-gray-700 dark:text-slate-400 border border-gray-200 dark:border-slate-800 hover:bg-gray-100 dark:hover:bg-slate-800 hover:text-gray-900 dark:hover:text-white'
+                                        }`}
+                                    >
+                                        {page}
+                                    </motion.button>
+                                ))}
+                            </div>
+
+                            <motion.button
+                                whileHover={{ scale: currentPage < totalPages ? 1.08 : 1 }}
+                                whileTap={{ scale: currentPage < totalPages ? 0.95 : 1 }}
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                aria-label={t.skills.nextPage}
+                                className="p-2.5 rounded-2xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 text-gray-700 dark:text-slate-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-slate-800 transition shadow-2xs cursor-pointer flex items-center justify-center"
+                            >
+                                <ChevronRight className="w-4 h-4" />
+                            </motion.button>
+                        </div>
+                    </div>
+                )}
             </div>
         </section>
     );

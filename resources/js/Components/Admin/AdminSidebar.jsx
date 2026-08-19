@@ -108,7 +108,7 @@ export default function AdminSidebar({ isOpen, setIsOpen }) {
                         <Link href="/admin/dashboard" className="flex items-center gap-2.5 font-heading font-bold text-base text-gray-900 dark:text-white group">
                             <div className="w-8 h-8 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center shadow-xs group-hover:rotate-6 transition-transform overflow-hidden p-1">
                                 <img 
-                                    src="/storage/logo/logo%20portofolio.png" 
+                                    src="/storage/logo/logo-portofolio.png" 
                                     alt="Logo" 
                                     className="w-full h-full object-contain rounded-lg"
                                 />

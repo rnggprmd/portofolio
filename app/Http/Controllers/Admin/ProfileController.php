@@ -7,6 +7,7 @@ use App\Models\SiteSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
@@ -24,7 +25,7 @@ class ProfileController extends Controller
                 'name' => $request->user()->name,
                 'email' => $request->user()->email,
             ],
-            'site_logo' => SiteSetting::getByKey('site_logo', '/storage/logo/logo%20portofolio.png'),
+            'site_logo' => SiteSetting::getByKey('site_logo', '/storage/logo/logo-portofolio.png'),
         ]);
     }
 
@@ -55,6 +56,14 @@ class ProfileController extends Controller
         $user->save();
 
         if ($request->hasFile('logo_file')) {
+            $oldLogo = SiteSetting::getByKey('site_logo');
+            if ($oldLogo && str_starts_with($oldLogo, '/storage/') && !str_ends_with($oldLogo, 'logo-portofolio.png')) {
+                $oldPath = str_replace('/storage/', '', $oldLogo);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
+
             $path = $request->file('logo_file')->store('logo', 'public');
             SiteSetting::setKey('site_logo', '/storage/' . $path);
         }

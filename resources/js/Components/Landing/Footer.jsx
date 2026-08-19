@@ -23,6 +23,17 @@ export default function Footer({ settings = {} }) {
         { name: 'Docker', Icon: DockerIcon },
     ];
 
+    const scrollToSection = (e, id) => {
+        if (e) e.preventDefault();
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+            if (window.history.replaceState) {
+                window.history.replaceState(null, '', window.location.pathname);
+            }
+        }
+    };
+
     return (
         <footer className="relative z-10 bg-gray-900 dark:bg-slate-950 text-white border-t border-gray-800 dark:border-slate-900 transition-colors duration-300 pt-16 pb-12 px-4 sm:px-8">
             <div className="max-w-6xl mx-auto space-y-12">
@@ -33,12 +44,12 @@ export default function Footer({ settings = {} }) {
                         <div className="flex items-center gap-3">
                             <motion.div whileHover={{ rotate: 12, scale: 1.1 }} className="w-10 h-10 rounded-xl bg-white text-gray-900 flex items-center justify-center shadow-sm overflow-hidden p-1">
                                 <img 
-                                    src={settings.site_logo || "/storage/logo/logo%20portofolio.png"} 
+                                    src={settings.site_logo || "/storage/logo/logo-portofolio.png"} 
                                     alt="Logo" 
                                     className="w-full h-full object-contain rounded-lg"
                                     onError={(e) => {
                                         e.target.onerror = null;
-                                        e.target.src = "/storage/logo/logo%20portofolio.png";
+                                        e.target.src = "/storage/logo/logo-portofolio.png";
                                     }}
                                 />
                             </motion.div>
@@ -93,13 +104,13 @@ export default function Footer({ settings = {} }) {
                             {t.footer.quickNav}
                         </h4>
                         <ul className="space-y-2 text-xs font-medium text-gray-400">
-                            <li><a href="#home" className="hover:text-white transition">{t.nav.home}</a></li>
-                            <li><a href="#about" className="hover:text-white transition">{t.nav.about}</a></li>
-                            <li><a href="#skills" className="hover:text-white transition">{t.nav.skills}</a></li>
-                            <li><a href="#projects" className="hover:text-white transition">{t.nav.projects}</a></li>
-                            <li><a href="#experience" className="hover:text-white transition">{t.nav.experience}</a></li>
-                            <li><a href="#certificates" className="hover:text-white transition">{t.nav.certificates}</a></li>
-                            <li><a href="#contact" className="hover:text-white transition">{t.nav.contact}</a></li>
+                            <li><button onClick={(e) => scrollToSection(e, 'home')} className="hover:text-white transition cursor-pointer text-left">{t.nav.home}</button></li>
+                            <li><button onClick={(e) => scrollToSection(e, 'about')} className="hover:text-white transition cursor-pointer text-left">{t.nav.about}</button></li>
+                            <li><button onClick={(e) => scrollToSection(e, 'skills')} className="hover:text-white transition cursor-pointer text-left">{t.nav.skills}</button></li>
+                            <li><button onClick={(e) => scrollToSection(e, 'projects')} className="hover:text-white transition cursor-pointer text-left">{t.nav.projects}</button></li>
+                            <li><button onClick={(e) => scrollToSection(e, 'experience')} className="hover:text-white transition cursor-pointer text-left">{t.nav.experience}</button></li>
+                            <li><button onClick={(e) => scrollToSection(e, 'certificates')} className="hover:text-white transition cursor-pointer text-left">{t.nav.certificates}</button></li>
+                            <li><button onClick={(e) => scrollToSection(e, 'contact')} className="hover:text-white transition cursor-pointer text-left">{t.nav.contact}</button></li>
                         </ul>
                     </div>
 

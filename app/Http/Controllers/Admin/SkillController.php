@@ -21,10 +21,10 @@ class SkillController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
+            'name' => 'required|string|max:80',
+            'category' => 'required|string|max:50',
             'percentage' => 'required|integer|min:0|max:100',
-            'icon' => 'nullable|string|max:255',
+            'icon' => 'nullable|string|max:80',
         ]);
 
         Skill::create($validated);
@@ -35,10 +35,10 @@ class SkillController extends Controller
     public function update(Request $request, Skill $skill): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
+            'name' => 'required|string|max:80',
+            'category' => 'required|string|max:50',
             'percentage' => 'required|integer|min:0|max:100',
-            'icon' => 'nullable|string|max:255',
+            'icon' => 'nullable|string|max:80',
         ]);
 
         $skill->update($validated);

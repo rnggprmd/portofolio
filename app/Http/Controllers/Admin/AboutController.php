@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\SiteSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -74,6 +75,14 @@ class AboutController extends Controller
 
         // Handle dedicated About avatar file upload
         if ($request->hasFile('about_avatar_file')) {
+            $oldAvatar = SiteSetting::getByKey('about_avatar_url');
+            if ($oldAvatar && str_starts_with($oldAvatar, '/storage/')) {
+                $oldPath = str_replace('/storage/', '', $oldAvatar);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
+
             $path = $request->file('about_avatar_file')->store('about', 'public');
             SiteSetting::setKey('about_avatar_url', '/storage/' . $path);
             unset($data['about_avatar_url']); // Prevent overwriting with form fallback!

@@ -47,12 +47,23 @@ export default function CommandPalette({ isOpen, setIsOpen, theme, toggleTheme }
 
     const handleActionClick = (action) => {
         if (action.section) {
-            window.location.hash = action.section;
+            const sectionId = action.section.replace('#', '');
+            const el = document.getElementById(sectionId);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth' });
+                if (window.history.replaceState) {
+                    window.history.replaceState(null, '', window.location.pathname);
+                }
+            }
             setIsOpen(false);
         } else if (action.handler) {
             action.handler();
         } else if (action.link) {
-            window.open(action.link, '_blank');
+            if (action.link.startsWith('/')) {
+                window.location.href = action.link;
+            } else {
+                window.open(action.link, '_blank');
+            }
             setIsOpen(false);
         }
     };

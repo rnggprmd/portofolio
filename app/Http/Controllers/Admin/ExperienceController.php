@@ -21,14 +21,15 @@ class ExperienceController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'period' => 'required|string|max:255',
-            'role' => 'required|string|max:255',
-            'company' => 'required|string|max:255',
-            'type' => 'nullable|string|max:255',
-            'location' => 'nullable|string|max:255',
+            'period' => 'required|string|max:60',
+            'role' => 'required|string|max:100',
+            'company' => 'required|string|max:100',
+            'type' => 'nullable|string|max:50',
+            'location' => 'nullable|string|max:100',
             'description' => 'nullable|string',
             'responsibilities' => 'nullable|array',
             'tech_badges' => 'nullable|array',
+            'order' => 'nullable|integer|min:0|max:65535',
         ]);
 
         Experience::create($validated);
@@ -39,14 +40,15 @@ class ExperienceController extends Controller
     public function update(Request $request, Experience $experience): RedirectResponse
     {
         $validated = $request->validate([
-            'period' => 'required|string|max:255',
-            'role' => 'required|string|max:255',
-            'company' => 'required|string|max:255',
-            'type' => 'nullable|string|max:255',
-            'location' => 'nullable|string|max:255',
+            'period' => 'required|string|max:60',
+            'role' => 'required|string|max:100',
+            'company' => 'required|string|max:100',
+            'type' => 'nullable|string|max:50',
+            'location' => 'nullable|string|max:100',
             'description' => 'nullable|string',
             'responsibilities' => 'nullable|array',
             'tech_badges' => 'nullable|array',
+            'order' => 'nullable|integer|min:0|max:65535',
         ]);
 
         $experience->update($validated);

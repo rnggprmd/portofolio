@@ -42,7 +42,7 @@ export default function Login() {
                         <CardHeader className="text-center pb-6 border-b border-gray-100 dark:border-slate-800">
                             <div className="w-12 h-12 rounded-2xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 flex items-center justify-center mx-auto mb-3 shadow-md overflow-hidden p-1.5">
                                 <img 
-                                    src="/storage/logo/logo%20portofolio.png" 
+                                    src="/storage/logo/logo-portofolio.png" 
                                     alt="Logo" 
                                     className="w-full h-full object-contain rounded-xl"
                                 />

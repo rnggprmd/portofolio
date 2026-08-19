@@ -21,10 +21,11 @@ class TechStackController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
-            'icon_name' => 'required|string|max:255',
-            'proficiency' => 'nullable|string|max:255',
+            'name' => 'required|string|max:80',
+            'category' => 'required|string|max:50',
+            'icon_name' => 'required|string|max:50',
+            'proficiency' => 'nullable|string|max:50',
+            'order' => 'nullable|integer|min:0|max:65535',
         ]);
 
         TechStack::create($validated);
@@ -35,10 +36,11 @@ class TechStackController extends Controller
     public function update(Request $request, TechStack $techStack): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
-            'icon_name' => 'required|string|max:255',
-            'proficiency' => 'nullable|string|max:255',
+            'name' => 'required|string|max:80',
+            'category' => 'required|string|max:50',
+            'icon_name' => 'required|string|max:50',
+            'proficiency' => 'nullable|string|max:50',
+            'order' => 'nullable|integer|min:0|max:65535',
         ]);
 
         $techStack->update($validated);

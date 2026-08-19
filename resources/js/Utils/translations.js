@@ -63,6 +63,11 @@ export const translations = {
             title: "Core Competencies & Technologies",
             subtitle: "Filter categories below or hover over cards for interactive spotlight tracking",
             all: "All",
+            showing: "Showing",
+            of: "of",
+            skillsCount: "skill groups",
+            prevPage: "Previous Page",
+            nextPage: "Next Page",
             categories: {
                 frontend: "Frontend Development",
                 backend: "Backend Development",
@@ -128,6 +133,13 @@ export const translations = {
             techUsed: "Tech Stack Used",
             livePreview: "Live Preview",
             sourceCode: "Source Code",
+            showing: "Showing",
+            of: "of",
+            projectsCount: "projects",
+            prevPage: "Previous Page",
+            nextPage: "Next Page",
+            noProjects: "No projects found matching your criteria",
+            resetFilters: "Reset Filter",
             items: [
                 {
                     id: 1,
@@ -418,10 +430,15 @@ export const translations = {
             ]
         },
         skills: {
-            tag: "02 // KEAHLIAN & TEKNOLOGI",
+            tag: "02 // SKILL & KEAHLIAN",
             title: "Kompetensi Utama & Teknologi",
             subtitle: "Saring kategori di bawah ini atau arahkan kursor ke kartu untuk efek spotlight interaktif",
             all: "Semua",
+            showing: "Menampilkan",
+            of: "dari",
+            skillsCount: "kelompok skill",
+            prevPage: "Halaman Sebelumnya",
+            nextPage: "Halaman Selanjutnya",
             categories: {
                 frontend: "Pengembangan Frontend",
                 backend: "Pengembangan Backend",
@@ -487,6 +504,13 @@ export const translations = {
             techUsed: "Tech Stack yang Digunakan",
             livePreview: "Pratinjau Langsung",
             sourceCode: "Kode Sumber",
+            showing: "Menampilkan",
+            of: "dari",
+            projectsCount: "proyek",
+            prevPage: "Halaman Sebelumnya",
+            nextPage: "Halaman Berikutnya",
+            noProjects: "Tidak ada proyek yang sesuai dengan pencarian Anda",
+            resetFilters: "Reset Filter",
             items: [
                 {
                     id: 1,

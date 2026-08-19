@@ -10,11 +10,11 @@ return new class extends Migration
     {
         Schema::create('tech_stacks', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('category')->default('Frontend');
-            $table->string('icon_name')->default('React');
-            $table->string('proficiency')->default('Advanced');
-            $table->integer('order')->default(0);
+            $table->string('name', 80);
+            $table->string('category', 50)->default('Frontend');
+            $table->string('icon_name', 50)->default('React');
+            $table->string('proficiency', 50)->default('Advanced');
+            $table->unsignedSmallInteger('order')->default(0);
             $table->timestamps();
         });
     }

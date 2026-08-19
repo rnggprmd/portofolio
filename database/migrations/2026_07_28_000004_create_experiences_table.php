@@ -10,15 +10,15 @@ return new class extends Migration
     {
         Schema::create('experiences', function (Blueprint $table) {
             $table->id();
-            $table->string('period');
-            $table->string('role');
-            $table->string('company');
-            $table->string('type')->nullable()->default('Career');
-            $table->string('location')->nullable();
+            $table->string('period', 60);
+            $table->string('role', 100);
+            $table->string('company', 100);
+            $table->string('type', 50)->nullable()->default('Career');
+            $table->string('location', 100)->nullable();
             $table->text('description')->nullable();
             $table->json('responsibilities')->nullable();
             $table->json('tech_badges')->nullable();
-            $table->integer('order')->default(0);
+            $table->unsignedSmallInteger('order')->default(0);
             $table->timestamps();
         });
     }

@@ -18,7 +18,7 @@ class DashboardController extends Controller
     public function index(): Response
     {
         $cvUrl = SiteSetting::getByKey('cv_url', '#');
-        $siteLogo = SiteSetting::getByKey('site_logo', '/storage/logo/logo%20portofolio.png');
+        $siteLogo = SiteSetting::getByKey('site_logo', '/storage/logo/logo-portofolio.png');
         $githubUsername = SiteSetting::getByKey('github_username', 'rnggprmd');
 
         return Inertia::render('Admin/Dashboard', [

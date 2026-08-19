@@ -10,9 +10,9 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email');
-            $table->string('subject')->nullable();
+            $table->string('name', 100);
+            $table->string('email', 150);
+            $table->string('subject', 200)->nullable();
             $table->text('message');
             $table->boolean('is_read')->default(false);
             $table->timestamps();

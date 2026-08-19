@@ -29,7 +29,7 @@ class SettingController extends Controller
             'github_url' => 'https://github.com/rnggprmd',
             'linkedin_url' => 'https://linkedin.com',
             'cv_url' => '#',
-            'site_logo' => '/storage/logo/logo%20portofolio.png',
+            'site_logo' => '/storage/logo/logo-portofolio.png',
         ];
 
         $settings = [];

@@ -21,13 +21,14 @@ class CertificateController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'issuer' => 'required|string|max:255',
-            'year' => 'required|string|max:255',
-            'credential_id' => 'nullable|string|max:255',
-            'badge' => 'nullable|string|max:255',
+            'title' => 'required|string|max:150',
+            'issuer' => 'required|string|max:100',
+            'year' => 'required|string|max:20',
+            'credential_id' => 'nullable|string|max:100',
+            'badge' => 'nullable|string|max:50',
             'verify_url' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'order' => 'nullable|integer|min:0|max:65535',
         ]);
 
         Certificate::create($validated);
@@ -38,13 +39,14 @@ class CertificateController extends Controller
     public function update(Request $request, Certificate $certificate): RedirectResponse
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'issuer' => 'required|string|max:255',
-            'year' => 'required|string|max:255',
-            'credential_id' => 'nullable|string|max:255',
-            'badge' => 'nullable|string|max:255',
+            'title' => 'required|string|max:150',
+            'issuer' => 'required|string|max:100',
+            'year' => 'required|string|max:20',
+            'credential_id' => 'nullable|string|max:100',
+            'badge' => 'nullable|string|max:50',
             'verify_url' => 'nullable|string|max:255',
             'description' => 'nullable|string',
+            'order' => 'nullable|integer|min:0|max:65535',
         ]);
 
         $certificate->update($validated);

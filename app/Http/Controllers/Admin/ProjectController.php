@@ -23,17 +23,17 @@ class ProjectController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'category' => 'nullable|string|max:255',
+            'title' => 'required|string|max:150',
+            'category' => 'nullable|string|max:60',
             'description' => 'required|string',
             'features' => 'nullable|array',
             'features.*' => 'nullable|string|max:255',
-            'image' => 'nullable|string',
-            'image_url' => 'nullable|string',
+            'image' => 'nullable|string|max:255',
+            'image_url' => 'nullable|string|max:255',
             'image_file' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:5120',
             'tech_stack' => 'nullable|array',
-            'demo_url' => 'nullable|string',
-            'github_url' => 'nullable|string',
+            'demo_url' => 'nullable|string|max:255',
+            'github_url' => 'nullable|string|max:255',
             'is_featured' => 'boolean',
         ]);
 
@@ -60,17 +60,17 @@ class ProjectController extends Controller
     public function update(Request $request, Project $project): RedirectResponse
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'category' => 'nullable|string|max:255',
+            'title' => 'required|string|max:150',
+            'category' => 'nullable|string|max:60',
             'description' => 'required|string',
             'features' => 'nullable|array',
             'features.*' => 'nullable|string|max:255',
-            'image' => 'nullable|string',
-            'image_url' => 'nullable|string',
+            'image' => 'nullable|string|max:255',
+            'image_url' => 'nullable|string|max:255',
             'image_file' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:5120',
             'tech_stack' => 'nullable|array',
-            'demo_url' => 'nullable|string',
-            'github_url' => 'nullable|string',
+            'demo_url' => 'nullable|string|max:255',
+            'github_url' => 'nullable|string|max:255',
             'is_featured' => 'boolean',
         ]);
 
