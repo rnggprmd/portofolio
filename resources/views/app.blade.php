@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title inertia>Rangga Pramudya - Portofolio</title>
-        <link rel="icon" type="image/png" href="/storage/logo/logo-portofolio.png">
+        <link rel="icon" type="image/png" href="{{ \App\Models\SiteSetting::getByKey('site_logo', '/storage/logo/logo-portofolio.png') }}">
 
         <!-- Fonts: Space Grotesk, Inter, JetBrains Mono -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
