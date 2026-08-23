@@ -1,27 +1,29 @@
-# 📘 Panduan Deployment InfinityFree: portofoliorangga.rf.gd
+# 📘 Panduan Deployment InfinityFree: portofoliorangga.page.gd
 
 > ⚠️ **KEAMANAN:** Jangan upload file ini ke server! Tambahkan ke `.gitignore`.
 
 Dokumen ini sudah disesuaikan untuk deployment InfinityFree.
-- **Domain:** `https://portofoliorangga.rf.gd`
-- **Username:** `if0_42535726`
-- **Password:** *(Lihat di cPanel InfinityFree Anda — jangan simpan di sini)*
+- **Domain:** `https://portofoliorangga.page.gd`
+- **Username:** `if0_42692600`
+- **FTP Password:** `KgQFk4NxTg`
 
 ---
 
 ## 📌 Status File yang Sudah Siap di Project Anda:
-1. **[`config/filesystems.php`](file:///c:/laragon/www/portofolio/config/filesystems.php):** Disetel ke `public_path('storage')` (Gambar upload admin otomatis bisa diakses tanpa symlink).
-2. **[`.htaccess`](file:///c:/laragon/www/portofolio/.htaccess):** Meroute traffic dari `htdocs` ke `public/index.php`.
-3. **[`portofolio_infinityfree.sql`](file:///c:/laragon/www/portofolio/portofolio_infinityfree.sql):** Database export siap diimport via phpMyAdmin.
+1. **Frontend Assets:** Sudah di-build (`npm run build` sukses).
+2. **Vendor:** Sudah teroptimasi (`composer install --optimize-autoloader --no-dev`).
+3. **[`config/filesystems.php`](file:///c:/laragon/www/portofolio/config/filesystems.php):** Disetel ke `public_path('storage')` (upload admin otomatis bisa diakses tanpa symlink).
+4. **[`.htaccess`](file:///c:/laragon/www/portofolio/.htaccess):** Meroute traffic dari `htdocs` ke `public/index.php`.
+5. **[`portofolio_infinityfree.sql`](file:///c:/laragon/www/portofolio/portofolio_infinityfree.sql):** Database export siap diimport via phpMyAdmin.
 
 ---
 
 ## 📑 LANGKAH 1: Buat Database & Import SQL (2 Menit)
 
-1. Buka [InfinityFree Control Panel](https://app.infinityfree.com/) dan pilih akun Anda (`if0_42535726`).
-2. Klik menu **MySQL Databases**.
-3. Di kolom **Create Database**, beri nama misal: `portofolio` → Klik **Create Database**.
-4. Setelah dibuat, **catat MySQL Hostname** yang muncul di halaman tersebut (contoh: `sql302.infinityfree.com`). Nama database Anda akan menjadi: `if0_42535726_portofolio`.
+1. Buka [InfinityFree Control Panel](https://app.infinityfree.com/) dan pilih akun Anda (`if0_42692600`).
+2. Klik menu **MySQL Databases** di vPanel / Control Panel.
+3. Di kolom **Create Database**, masukkan nama: `portofolio` → Klik **Create Database**.
+4. Setelah dibuat, **catat MySQL Hostname** yang muncul di halaman tersebut (contoh: `sql302.infinityfree.com` atau `sql204.infinityfree.com`). Nama database lengkap Anda adalah: `if0_42692600_portofolio`.
 5. Klik tombol **phpMyAdmin** di samping nama database tersebut.
 6. Di phpMyAdmin:
    - Klik tab **Import** (di bagian atas).
@@ -33,25 +35,25 @@ Dokumen ini sudah disesuaikan untuk deployment InfinityFree.
 
 ## 📑 LANGKAH 2: Sesuaikan File `.env` di Laptop
 
-Buka file **`.env`** di folder project komputer Anda (`c:\laragon\www\portofolio\.env`) dan ganti isinya dengan kode di bawah ini:
+Buka file **`.env`** di folder project komputer Anda (`c:\laragon\www\portofolio\.env`) dan ganti konfigurasinya dengan:
 
 ```env
 APP_NAME="Portofolio Rangga"
 APP_ENV=production
 APP_KEY=base64:gww02KvJhQJZpviahDcrYITiIOXKwHmCkk9AyZgzZ5A=
 APP_DEBUG=false
-APP_URL=https://portofoliorangga.rf.gd
+APP_URL=https://portofoliorangga.page.gd
 
 LOG_CHANNEL=stack
 LOG_DEPRECATIONS_CHANNEL=null
 LOG_LEVEL=error
 
 DB_CONNECTION=mysql
-DB_HOST=sqlxxx.infinityfree.com           <-- GANTI sqlxxx DENGAN MYSQL HOSTNAME DARI KANTONG VPANEL
+DB_HOST=sql204.infinityfree.com
 DB_PORT=3306
-DB_DATABASE=if0_42535726_portofolio       <-- NAMA DATABASE INFINITYFREE ANDA
-DB_USERNAME=if0_42535726
-DB_PASSWORD=[PASSWORD_ANDA]       <- Isi dengan password DB dari cPanel InfinityFree
+DB_DATABASE=if0_42692600_portofolio
+DB_USERNAME=if0_42692600
+DB_PASSWORD=KgQFk4NxTg
 
 BROADCAST_DRIVER=log
 CACHE_DRIVER=file
@@ -60,6 +62,7 @@ QUEUE_CONNECTION=sync
 SESSION_DRIVER=file
 SESSION_LIFETIME=120
 ```
+> *(Ganti `sqlxxx.infinityfree.com` dengan MySQL Hostname yang Anda dapatkan di Langkah 1).*
 *Simpan file `.env` (Ctrl + S).*
 
 ---
@@ -69,31 +72,31 @@ SESSION_LIFETIME=120
 1. Buka aplikasi **FileZilla** di laptop Anda.
 2. Di baris paling atas (Quickconnect):
    - **Host:** `ftpupload.net`
-   - **Username:** `if0_42535726`
-   - **Password:** `ftpupload.net` | Gunakan password FTP dari cPanel InfinityFree Anda
+   - **Username:** `if0_42692600`
+   - **Password:** `KgQFk4NxTg`
    - **Port:** `21`
    - Klik **Quickconnect**.
 3. **Di panel kanan (Server):** Buka folder **`htdocs`**. Hapus file `index2.html` jika ada.
 4. **Di panel kiri (Laptop):** Buka folder `c:\laragon\www\portofolio`.
-5. Pilih **SEMUA FILE DAN FOLDER** di dalam `c:\laragon\www\portofolio` (`app`, `bootstrap`, `config`, `database`, `public`, `resources`, `routes`, `storage`, `vendor`, `.env`, `.htaccess`, dll).
+5. Pilih **SEMUA FILE DAN FOLDER** di dalam `c:\laragon\www\portofolio` KECUALI folder `node_modules` dan `.git`.
 6. Klik kanan → **Upload**.
-7. Tunggu hingga semua file selesai ditransfer (sekitar 5-10 menit).
+7. Tunggu hingga semua file selesai ditransfer.
 
 ---
 
 ## 📑 LANGKAH 4: Buka Website & Login Admin
 
 1. Buka Landing Page di browser:  
-   👉 **`https://portofoliorangga.rf.gd`**
+   👉 **`https://portofoliorangga.page.gd`**
 
 2. Masuk ke Admin Panel:  
-   👉 **`https://portofoliorangga.rf.gd/login`**
+   👉 **`https://portofoliorangga.page.gd/login`**
    - 📧 **Email:** `admin@portofolio.com`
-   - 🔑 **Password:** *(Default dari SQL dump — **SEGERA GANTI** setelah login pertama!)*
+   - 🔑 **Password:** *(Default dari database SQL)*
 
 3. **Ubah Password Admin:**  
-   Masuk ke **Pengaturan Profil & Password** di Admin Panel, lalu ganti `devByPass` dengan password rahasia pribadi Anda.
+   Masuk ke **Pengaturan Profil & Password** di Admin Panel, lalu ganti dengan password rahasia pribadi Anda.
 
 ---
 
-Selesai! Portofolio Anda kini sudah **100% Live** di `https://portofoliorangga.rf.gd`! 🎉
+Selesai! Portofolio Anda kini sudah **100% Live** di `https://portofoliorangga.page.gd`! 🎉
